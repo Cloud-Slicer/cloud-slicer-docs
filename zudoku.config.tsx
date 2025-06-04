@@ -42,7 +42,7 @@ const config: ZudokuConfig = {
     },
   },
   basePath: "/cloud-slicer-docs",
-  redirects: [{ from: "/", to: "/docs/introduction" }],
+  redirects: [{ from: "/", to: "/cloud-slicer-docs/docs/introduction" }],
   apis: {
     type: "file",
     input: "./apis/openapi.json",
