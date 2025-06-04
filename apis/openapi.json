@@ -1,0 +1,1080 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Cloud Slicer API",
+        "description": "API for slicing 3D models",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/v1/printability/": {
+            "post": {
+                "tags": [
+                    "Basic Level"
+                ],
+                "summary": "Check Model Printability",
+                "description": "Check if an STL model fits on the print bed.  Dimensions are in millimeters (mm)",
+                "operationId": "check_model_printability_v1_printability__post",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "User ID for the print job",
+                            "title": "User Id"
+                        },
+                        "description": "User ID for the print job"
+                    },
+                    {
+                        "name": "x_dimension",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number",
+                            "description": "Printer X dimension in mm",
+                            "default": 210.0,
+                            "title": "X Dimension"
+                        },
+                        "description": "Printer X dimension in mm"
+                    },
+                    {
+                        "name": "y_dimension",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number",
+                            "description": "Printer Y dimension in mm",
+                            "default": 210.0,
+                            "title": "Y Dimension"
+                        },
+                        "description": "Printer Y dimension in mm"
+                    },
+                    {
+                        "name": "z_dimension",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number",
+                            "description": "Printer Z dimension in mm",
+                            "default": 250.0,
+                            "title": "Z Dimension"
+                        },
+                        "description": "Printer Z dimension in mm"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_check_model_printability_v1_printability__post"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/quote-profile/": {
+            "post": {
+                "tags": [
+                    "Basic Level"
+                ],
+                "summary": "Create Quote Profile",
+                "description": "Creates a printer profile and uploads the configuration files to storage",
+                "operationId": "create_quote_profile_v1_quote_profile__post",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "User ID for the print job",
+                            "title": "User Id"
+                        },
+                        "description": "User ID for the print job"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfileConfig",
+                                "default": {
+                                    "profile_name": "default",
+                                    "printer_config": {
+                                        "bed_size_x": 210,
+                                        "bed_size_y": 210,
+                                        "bed_size_z": 250,
+                                        "print_speed": 100,
+                                        "first_layer_speed": 50,
+                                        "nozzle_diameter": 0.4,
+                                        "layer_height": 0.2,
+                                        "perimeters": 3,
+                                        "top_solid_layers": 3,
+                                        "bottom_solid_layers": 3,
+                                        "fill_density": 20,
+                                        "support_material": false,
+                                        "filament_type": "PLA",
+                                        "temperature": 210,
+                                        "bed_temperature": 60
+                                    },
+                                    "quote_config": {
+                                        "currency": "USD",
+                                        "cost_per_hour": 2.5,
+                                        "cost_per_gram": 0.02,
+                                        "base_price": 5.0
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProfileConfigRepsonse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/instant-quote/": {
+            "post": {
+                "tags": [
+                    "Basic Level"
+                ],
+                "summary": "Instant Quote",
+                "description": "Get instant quote details for a sliced model",
+                "operationId": "instant_quote_v1_instant_quote__post",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "User ID for the print job",
+                            "title": "User Id"
+                        },
+                        "description": "User ID for the print job"
+                    },
+                    {
+                        "name": "profile_name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Name of the printer config profile",
+                            "title": "Profile Name"
+                        },
+                        "description": "Name of the printer config profile"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_instant_quote_v1_instant_quote__post"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InstantQuoteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/stl/": {
+            "post": {
+                "tags": [
+                    "Advanced Level"
+                ],
+                "summary": "Upload Stl",
+                "description": "Upload an STL file to the database",
+                "operationId": "upload_stl_v1_stl__post",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "User ID for the print job",
+                            "title": "User Id"
+                        },
+                        "description": "User ID for the print job"
+                    },
+                    {
+                        "name": "folder_name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "description": "Folder name in the bucket to upload the file into",
+                            "title": "Folder Name"
+                        },
+                        "description": "Folder name in the bucket to upload the file into"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_upload_stl_v1_stl__post"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/STLResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/stl/slice/": {
+            "post": {
+                "tags": [
+                    "Advanced Level"
+                ],
+                "summary": "Slice Model",
+                "description": "Slice the uploaded STL file and generate the G-code",
+                "operationId": "slice_model_v1_stl_slice__post",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "User ID for the print job",
+                            "title": "User Id"
+                        },
+                        "description": "User ID for the print job"
+                    },
+                    {
+                        "name": "file_path",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Path to the STL file (this can be found in the upload response)",
+                            "title": "File Path"
+                        },
+                        "description": "Path to the STL file (this can be found in the upload response)"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PrinterConfig",
+                                "default": {
+                                    "bed_size_x": 210,
+                                    "bed_size_y": 210,
+                                    "bed_size_z": 250,
+                                    "print_speed": 100,
+                                    "first_layer_speed": 50,
+                                    "nozzle_diameter": 0.4,
+                                    "layer_height": 0.2,
+                                    "perimeters": 3,
+                                    "top_solid_layers": 3,
+                                    "bottom_solid_layers": 3,
+                                    "fill_density": 20,
+                                    "support_material": false,
+                                    "filament_type": "PLA",
+                                    "temperature": 210,
+                                    "bed_temperature": 60
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SliceResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/gcode/quote/": {
+            "post": {
+                "tags": [
+                    "Advanced Level"
+                ],
+                "summary": "Quote Model",
+                "description": "Calculate the cost of printing a sliced model",
+                "operationId": "quote_model_v1_gcode_quote__post",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "User ID for the print job",
+                            "title": "User Id"
+                        },
+                        "description": "User ID for the print job"
+                    },
+                    {
+                        "name": "gcode_path",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Path to the G-code file (this can be found in the slice response)",
+                            "title": "Gcode Path"
+                        },
+                        "description": "Path to the G-code file (this can be found in the slice response)"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/QuoteConfig",
+                                "default": {
+                                    "currency": "USD",
+                                    "cost_per_hour": 2.5,
+                                    "cost_per_gram": 0.02,
+                                    "base_price": 5.0
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuoteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/gcode/": {
+            "get": {
+                "tags": [
+                    "Advanced Level"
+                ],
+                "summary": "Download Gcode",
+                "description": "Download the generated G-code file",
+                "operationId": "download_gcode_v1_gcode__get",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "User ID for the print job",
+                            "title": "User Id"
+                        },
+                        "description": "User ID for the print job"
+                    },
+                    {
+                        "name": "gcode_path",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Path to the G-code file (this can be found in the slice response)",
+                            "title": "Gcode Path"
+                        },
+                        "description": "Path to the G-code file (this can be found in the slice response)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/generate-token/": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Generate Token",
+                "description": "Authenticate user with Supabase and generate a JWT token.\n\nRequires a valid Supabase token in the Authorization header.\nReturns a JWT token for API authentication if valid.",
+                "operationId": "generate_token_v1_generate_token__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Body_check_model_printability_v1_printability__post": {
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "title": "File",
+                        "description": "STL file to check printability"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "file"
+                ],
+                "title": "Body_check_model_printability_v1_printability__post"
+            },
+            "Body_instant_quote_v1_instant_quote__post": {
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "title": "File",
+                        "description": "STL file for the instant quote"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "file"
+                ],
+                "title": "Body_instant_quote_v1_instant_quote__post"
+            },
+            "Body_upload_stl_v1_stl__post": {
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "title": "File"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "file"
+                ],
+                "title": "Body_upload_stl_v1_stl__post"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "InstantQuoteResponse": {
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "title": "User Id"
+                    },
+                    "total_price": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Total Price"
+                    },
+                    "currency": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Currency"
+                    },
+                    "estimated_time": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Estimated Time"
+                    },
+                    "estimated_time_seconds": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Estimated Time Seconds"
+                    },
+                    "filament_weight": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Filament Weight"
+                    },
+                    "filament_cost": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Filament Cost"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "user_id",
+                    "status"
+                ],
+                "title": "InstantQuoteResponse"
+            },
+            "PrinterConfig": {
+                "properties": {
+                    "bed_size_x": {
+                        "type": "integer",
+                        "title": "Bed Size X",
+                        "description": "X dimension of the print bed in mm",
+                        "default": 210
+                    },
+                    "bed_size_y": {
+                        "type": "integer",
+                        "title": "Bed Size Y",
+                        "description": "Y dimension of the print bed in mm",
+                        "default": 210
+                    },
+                    "bed_size_z": {
+                        "type": "integer",
+                        "title": "Bed Size Z",
+                        "description": "Z dimension of the print bed in mm",
+                        "default": 250
+                    },
+                    "print_speed": {
+                        "type": "integer",
+                        "title": "Print Speed",
+                        "description": "Default print speed in mm/s",
+                        "default": 100
+                    },
+                    "first_layer_speed": {
+                        "type": "integer",
+                        "title": "First Layer Speed",
+                        "description": "First layer speed in mm/s",
+                        "default": 50
+                    },
+                    "nozzle_diameter": {
+                        "type": "number",
+                        "title": "Nozzle Diameter",
+                        "description": "Nozzle diameter in mm",
+                        "default": 0.4
+                    },
+                    "layer_height": {
+                        "type": "number",
+                        "title": "Layer Height",
+                        "description": "Layer height in mm",
+                        "default": 0.2
+                    },
+                    "perimeters": {
+                        "type": "integer",
+                        "title": "Perimeters",
+                        "description": "Number of perimeters to print",
+                        "default": 3
+                    },
+                    "top_solid_layers": {
+                        "type": "integer",
+                        "title": "Top Solid Layers",
+                        "description": "Number of top layers",
+                        "default": 3
+                    },
+                    "bottom_solid_layers": {
+                        "type": "integer",
+                        "title": "Bottom Solid Layers",
+                        "description": "Number of bottom layers",
+                        "default": 3
+                    },
+                    "fill_density": {
+                        "type": "integer",
+                        "maximum": 100.0,
+                        "minimum": 0.0,
+                        "title": "Fill Density",
+                        "description": "Infill density percentage (0-100)",
+                        "default": 20
+                    },
+                    "support_material": {
+                        "type": "boolean",
+                        "title": "Support Material",
+                        "description": "Whether or not to generate the supports",
+                        "default": false
+                    },
+                    "filament_type": {
+                        "type": "string",
+                        "title": "Filament Type",
+                        "description": "Type of filament to print with (PLA, ABS, PETG)",
+                        "default": "PLA"
+                    },
+                    "temperature": {
+                        "type": "integer",
+                        "title": "Temperature",
+                        "description": "Filament temperature in Celsius",
+                        "default": 210
+                    },
+                    "bed_temperature": {
+                        "type": "integer",
+                        "title": "Bed Temperature",
+                        "description": "Bed temperature in Celsius",
+                        "default": 60
+                    }
+                },
+                "type": "object",
+                "title": "PrinterConfig",
+                "description": "Printer configuration settings for slicing"
+            },
+            "ProfileConfig": {
+                "properties": {
+                    "profile_name": {
+                        "type": "string",
+                        "title": "Profile Name",
+                        "description": "Name of the printer profile",
+                        "default": "default"
+                    },
+                    "printer_config": {
+                        "$ref": "#/components/schemas/PrinterConfig",
+                        "description": "Printer configuration settings"
+                    },
+                    "quote_config": {
+                        "$ref": "#/components/schemas/QuoteConfig",
+                        "description": "Quote configuration settings"
+                    }
+                },
+                "type": "object",
+                "title": "ProfileConfig",
+                "description": "Configuration for user profiles"
+            },
+            "ProfileConfigRepsonse": {
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "title": "User Id"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "profile_name": {
+                        "type": "string",
+                        "title": "Profile Name"
+                    },
+                    "printer_config": {
+                        "$ref": "#/components/schemas/PrinterConfig"
+                    },
+                    "quote_config": {
+                        "$ref": "#/components/schemas/QuoteConfig"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "user_id",
+                    "status",
+                    "profile_name",
+                    "printer_config",
+                    "quote_config"
+                ],
+                "title": "ProfileConfigRepsonse"
+            },
+            "QuoteConfig": {
+                "properties": {
+                    "currency": {
+                        "type": "string",
+                        "title": "Currency",
+                        "description": "Currency for the quote",
+                        "default": "USD"
+                    },
+                    "cost_per_hour": {
+                        "type": "number",
+                        "title": "Cost Per Hour",
+                        "description": "Cost per hour of printing",
+                        "default": 2.5
+                    },
+                    "cost_per_gram": {
+                        "type": "number",
+                        "title": "Cost Per Gram",
+                        "description": "Cost per gram of filament used",
+                        "default": 0.02
+                    },
+                    "base_price": {
+                        "type": "number",
+                        "title": "Base Price",
+                        "description": "Base price for the print job",
+                        "default": 5.0
+                    }
+                },
+                "type": "object",
+                "title": "QuoteConfig",
+                "description": "Configuration for instant quote"
+            },
+            "QuoteResponse": {
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "title": "User Id"
+                    },
+                    "gcode_path": {
+                        "type": "string",
+                        "title": "Gcode Path"
+                    },
+                    "total_price": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Total Price"
+                    },
+                    "currency": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Currency"
+                    },
+                    "estimated_time": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Estimated Time"
+                    },
+                    "filament_weight": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Filament Weight"
+                    },
+                    "filament_cost": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Filament Cost"
+                    },
+                    "estimated_time_seconds": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Estimated Time Seconds"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "user_id",
+                    "gcode_path",
+                    "status"
+                ],
+                "title": "QuoteResponse"
+            },
+            "STLResponse": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "title": "User Id"
+                    },
+                    "file_name": {
+                        "type": "string",
+                        "title": "File Name"
+                    },
+                    "stl_file_path": {
+                        "type": "string",
+                        "title": "Stl File Path"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "status",
+                    "user_id",
+                    "file_name",
+                    "stl_file_path"
+                ],
+                "title": "STLResponse"
+            },
+            "SliceResponse": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "title": "User Id"
+                    },
+                    "file_name": {
+                        "type": "string",
+                        "title": "File Name"
+                    },
+                    "gcode_path": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Gcode Path"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "status",
+                    "user_id",
+                    "file_name"
+                ],
+                "title": "SliceResponse"
+            },
+            "TokenResponse": {
+                "properties": {
+                    "access_token": {
+                        "type": "string",
+                        "title": "Access Token"
+                    },
+                    "token_type": {
+                        "type": "string",
+                        "title": "Token Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "access_token",
+                    "token_type"
+                ],
+                "title": "TokenResponse"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        },
+        "securitySchemes": {
+            "HTTPBearer": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    }
+}
