@@ -41,8 +41,7 @@ const config: ZudokuConfig = {
       termSaturation: 1.2,
     },
   },
-  basePath: "/cloud-slicer-docs",
-  redirects: [{ from: "/", to: "/cloud-slicer-docs/docs/introduction" }],
+  redirects: [{ from: "/", to: "/docs/introduction" }],
   apis: {
     type: "file",
     input: "./apis/openapi.json",
