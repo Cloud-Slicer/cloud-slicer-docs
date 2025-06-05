@@ -1,4 +1,5 @@
 import type { ZudokuConfig } from "zudoku";
+import { Home } from "./src/home";
 
 const config: ZudokuConfig = {
   basePath: "/cloud-slicer-docs",
@@ -12,7 +13,10 @@ const config: ZudokuConfig = {
       width: '50px',
     },
     banner: {
-      message: "Welcome to our beta documentation!",
+      message: 
+        <div className="text-center">
+          Welcome to the Cloud Slicer BETA docs! ✨
+        </div>,
       color: "note", // "note" | "tip" | "info" | "caution" | "danger" or custom
       dismissible: true
     }
@@ -48,8 +52,12 @@ const config: ZudokuConfig = {
     navigationId: "api",
   },
   docs: {
-    files: "/pages/**/*.{md,mdx}",
+    files: "pages/**/*.{md,mdx},pages/*.{md,mdx}", // ensure both root and subfolder docs are found
   },
+  // Used to display the home page
+  customPages: [
+    { path: "/", element: <Home /> },
+  ],
   theme: {
     light: {
       background: "oklch(100% 0 none)",
