@@ -1,6 +1,7 @@
 import type { ZudokuConfig } from "zudoku";
 
 const config: ZudokuConfig = {
+  base: "/cloud-slicer-docs/",
   page: {
     logo: {
       src: { 
@@ -15,10 +16,6 @@ const config: ZudokuConfig = {
       color: "note", // "note" | "tip" | "info" | "caution" | "danger" or custom
       dismissible: true
     }
-  },
-  sitemap: {
-    // The base url for your site
-    siteUrl: "https://3d-print-quoter-api.fly.dev/v1/",
   },
   topNavigation: [
     { id: "docs", label: "Documentation" },
