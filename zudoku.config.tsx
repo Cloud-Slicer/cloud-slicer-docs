@@ -52,7 +52,7 @@ const config: ZudokuConfig = {
     navigationId: "api",
   },
   docs: {
-    files: "pages/**/*.{md,mdx},pages/*.{md,mdx}", // ensure both root and subfolder docs are found
+    files: "/pages/**/*.mdx",
   },
   // Used to display the home page
   customPages: [
