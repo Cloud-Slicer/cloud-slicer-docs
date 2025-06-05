@@ -1,7 +1,7 @@
 import type { ZudokuConfig } from "zudoku";
 
 const config: ZudokuConfig = {
-  basePath: "/cloud-slicer-docs/",
+  basePath: "/",
   page: {
     logo: {
       src: { 
