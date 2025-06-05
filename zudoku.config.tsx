@@ -1,7 +1,7 @@
 import type { ZudokuConfig } from "zudoku";
 
 const config: ZudokuConfig = {
-  basePath: "/",
+  basePath: "/cloud-slicer-docs",
   page: {
     logo: {
       src: { 
@@ -42,8 +42,6 @@ const config: ZudokuConfig = {
       termSaturation: 1.2,
     },
   },
-
-  redirects: [{ from: "/", to: "docs/introduction" }],
   apis: {
     type: "file",
     input: "./apis/openapi.json",
