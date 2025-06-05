@@ -26,7 +26,7 @@ const config: ZudokuConfig = {
       {
         type: "category",
         label: "Overview",
-        items: ["docs/introduction", "docs/example"],
+        items: ["docs/introduction", "/cloud-slicer-docs/docs/example"],
       },
     ],
   },
