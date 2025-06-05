@@ -16,6 +16,10 @@ const config: ZudokuConfig = {
       dismissible: true
     }
   },
+  sitemap: {
+    // The base url for your site
+    siteUrl: "https://3d-print-quoter-api.fly.dev/v1/",
+  },
   topNavigation: [
     { id: "docs", label: "Documentation" },
     { id: "api", label: "API Reference" },
@@ -41,7 +45,7 @@ const config: ZudokuConfig = {
       termSaturation: 1.2,
     },
   },
-  basePath: "/cloud-slicer-docs",
+
   redirects: [{ from: "/", to: "/docs/introduction" }],
   apis: {
     type: "file",
