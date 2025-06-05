@@ -26,7 +26,7 @@ const config: ZudokuConfig = {
       {
         type: "category",
         label: "Overview",
-        items: ["docs/introduction", "/cloud-slicer-docs/docs/example"],
+        items: ["docs/introduction", "docs/example"],
       },
     ],
   },
@@ -43,7 +43,7 @@ const config: ZudokuConfig = {
     },
   },
 
-  redirects: [{ from: "/", to: "docs/introduction" }],
+  redirects: [{ from: "/", to: "/cloud-slicer-docs/docs/introduction" }],
   apis: {
     type: "file",
     input: "./apis/openapi.json",
