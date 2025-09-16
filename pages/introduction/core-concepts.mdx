@@ -1,0 +1,62 @@
+---
+title: "Core Concepts"
+description: "Understand the foundational ideas behind the Cloud Slicer API."
+---
+
+This page introduces the foundational ideas and patterns that power the platform. Understanding these concepts will help you get the most out of the API and build robust integrations for 3D printing workflows.
+
+## 1. Authentication & Security
+
+All API endpoints require authentication using a Bearer JWT token. You generate tokens from your Cloud Slicer dashboard and include them in the `Authorization` header of every request.
+
+:::note
+**Reminder:** Keep your API tokens secure. Never share them publicly or commit them to version control.
+:::
+
+## 2. User & Account Management
+
+Manage your account and uploads through dedicated endpoints:
+- **Get user info:** Retrieve your account details
+- **List uploads:** See all files you've uploaded to your account
+
+## 3. File Management
+
+Upload, download, and delete STL files to Cloud Slicer:
+- **Upload:** `POST /v1/file` — Add new STL files
+- **Download:** `GET /v1/file/{file_id}` — Retrieve your files
+- **Delete:** `DELETE /v1/file/{file_id}` — Remove files you no longer need
+
+## 4. Part Info
+
+Check if your models are printable and get part dimensions:
+- **Printability:** Get measurements comparisons in order to check that the part will fit in the printer before your generate a quote.
+
+:::tip
+If you are familiar with Three JS, you can calculate this with Javascript on the client side of your web app, bypassing the need to use this endpoint.  This is provided as an alternative to give you more options.
+:::
+
+## 5. Printer & Quote profiles
+
+Generating instant quotes for your 3D prints:
+- `printer_config` This allows you to configure a profile that matches your printer so you can dial in your instant quote accuracy for print time and material usage.
+- `quote_config` This allows you to create a custom pricig profile to match your business needs.  You can set your own material costs, hourly rates, base cost (think of this as a minumum spend), and your currency.
+
+## 6. Slicing & G-code Generation
+
+Slice STL files with a POST request to the `/file` route to generate the G-code for your .stl file based off of the `printer_config` you have provided.  Using G-code as the source of truth allows you to get the most accurate cost and material usage estimates possible.
+
+## 7. RESTful, Versioned API
+
+- All endpoints are versioned (e.g., `/v1/`)
+- Uses standard HTTP verbs: `GET`, `POST`, `DELETE`
+- Expects and returns JSON
+- Follows OpenAPI standards for schema and documentation
+
+
+## Summary
+
+By understanding these core concepts, you'll be able to:
+- Authenticate securely
+- Manage your files and account
+- Automate quoting and slicing
+- Integrate Cloud Slicer into your 3D printing workflow with confidence

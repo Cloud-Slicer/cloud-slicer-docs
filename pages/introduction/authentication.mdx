@@ -1,0 +1,50 @@
+---
+title: "Authentication"
+description: "How authentication works in the Cloud Slicer API and a primer on JWTs."
+---
+
+Cloud Slicer uses **JWT (JSON Web Token) Bearer authentication** to secure all API endpoints. This ensures that only authorized users can access and interact with your account and 3D printing resources.
+
+## How Authentication Works
+
+1. **Register and log in** to your Cloud Slicer account.
+2. **Generate an API token** (JWT) from your dashboard under the "Tokens" tab.
+3. **Include the token** in the `Authorization` header of every API request:
+
+   ```http
+   Authorization: Bearer YOUR_TOKEN_HERE
+   ```
+
+4. The server verifies your token and grants access if it is valid and unexpired.
+
+## What is a JWT?
+
+A **JWT (JSON Web Token)** is a secure, compact way to represent claims between two parties. It is commonly used for authentication and authorization in modern APIs.
+
+A JWT consists of three parts:
+
+1. **Header**: Specifies the signing algorithm and token type.
+2. **Payload**: Contains user data and claims (like user ID, email, and expiration time).
+3. **Signature**: Verifies that the token has not been tampered with.
+
+A JWT looks like this:
+
+```
+<base64url-encoded header>.<base64url-encoded payload>.<base64url-encoded signature>
+```
+
+When you authenticate, Cloud Slicer checks the signature and the claims (like expiration) to ensure your token is valid.
+
+## Example: Using Your Token
+
+Here’s how you might use your token with `curl`:
+
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN_HERE" https://api.cloudslicer3d.com/v1/user
+```
+
+Or in the API playground, paste your token into the authorization modal (lock icon) to authenticate your session.
+
+:::note
+**Keep your token secret!** Treat it like a password—never share it or expose it in public code repositories.
+:::

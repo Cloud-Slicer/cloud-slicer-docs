@@ -18,7 +18,7 @@ const apiIdentityPlugin: ZudokuPlugin = {
 const config: ZudokuConfig = {
   // Comment out basePath for now to fix dev issues
   // Will need to enable for GitHub Pages deployment
-  basePath: "/cloud-slicer-docs",
+  // basePath: "/cloud-slicer-docs",
   site: {
     logo: {
       src: { light: "/logo-light.svg", dark: "/logo-dark.svg" },
@@ -36,7 +36,7 @@ const config: ZudokuConfig = {
     },
   },
   theme: {
-    registryUrl: "https://tweakcn.com/r/themes/cmfllb5zf000804jscv6e1fuc",
+    registryUrl: "https://tweakcn.com/r/themes/cmfn1g81u000004l12zk01rut",
     fonts: {
       sans: "Inter",
       serif: "Merriweather",
@@ -76,9 +76,23 @@ const config: ZudokuConfig = {
         },
         {
           type: "category",
-          label: "Getting Started",
-          icon: "sparkles",
-          items: ["/introduction"],
+          label: "Introduction",
+          icon: "book-marked",
+          link: "/introduction/introduction",
+          items: [
+            {
+              type: "link",
+              label: "Core Concepts",
+              icon: "shapes",
+              to: "/introduction/core-concepts",
+            },
+            {
+              type: "link",
+              label: "Authentication",
+              icon: "lock",
+              to: "/introduction/authentication",
+            },
+          ],
         },
         {
           type: "link",
