@@ -16,7 +16,7 @@ const apiIdentityPlugin: ZudokuPlugin = {
 };
 
 const config: ZudokuConfig = {
-  basePath: "/Cloud-Slicer/cloud-slicer-docs",
+  basePath: "/cloud-slicer-docs",
   site: {
     logo: {
       src: { light: "/logo-light.svg", dark: "/logo-dark.svg" },
