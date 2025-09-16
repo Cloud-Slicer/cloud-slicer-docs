@@ -18,7 +18,7 @@ const apiIdentityPlugin: ZudokuPlugin = {
 const config: ZudokuConfig = {
   // Comment out basePath for now to fix dev issues
   // Will need to enable for GitHub Pages deployment
-  // basePath: "/cloud-slicer-docs",
+  basePath: "/cloud-slicer-docs",
   site: {
     logo: {
       src: { light: "/logo-light.svg", dark: "/logo-dark.svg" },
