@@ -1,897 +1,1083 @@
 {
-    "openapi": "3.1.0",
-    "info": {
-        "title": "Cloud Slicer API",
-        "description": "API for slicing 3D models",
-        "version": "0.1.0"
-    },
-    "servers": [
-        {
-            "url": "http://127.0.0.1:8081",
-            "description": "Local development server"
-        }
-    ],
-    "paths": {
-        "/v1/user": {
-            "get": {
-                "tags": [
-                    "Account"
-                ],
-                "summary": "Get User Info",
-                "description": "Get information of the given user ID",
-                "operationId": "get_user_info_v1_user_get",
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/AccountInfoResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "HTTPBearer": []
-                    }
-                ]
-            }
-        },
-        "/v1/printability": {
-            "get": {
-                "tags": [
-                    "Part Info"
-                ],
-                "summary": "Check Model Printability",
-                "description": "Check if an STL model fits on the print bed",
-                "operationId": "check_model_printability_v1_printability_get",
-                "security": [
-                    {
-                        "HTTPBearer": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "file_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "ID for the STL file (this can be found in the upload response)",
-                            "title": "File Id"
-                        },
-                        "description": "ID for the STL file (this can be found in the upload response)"
-                    },
-                    {
-                        "name": "bed_size_x",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "description": "X dimension of the print bed in mm",
-                            "default": 210,
-                            "title": "Bed Size X"
-                        },
-                        "description": "X dimension of the print bed in mm"
-                    },
-                    {
-                        "name": "bed_size_y",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "description": "Y dimension of the print bed in mm",
-                            "default": 210,
-                            "title": "Bed Size Y"
-                        },
-                        "description": "Y dimension of the print bed in mm"
-                    },
-                    {
-                        "name": "bed_size_z",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "description": "Z dimension of the print bed in mm",
-                            "default": 250,
-                            "title": "Bed Size Z"
-                        },
-                        "description": "Z dimension of the print bed in mm"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PrintabilityResponse"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/HTTPValidationError"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/stl": {
-            "post": {
-                "tags": [
-                    "Quote"
-                ],
-                "summary": "Upload Stl",
-                "description": "Upload an STL file to the database",
-                "operationId": "upload_stl_v1_stl_post",
-                "security": [
-                    {
-                        "HTTPBearer": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Body_upload_stl_v1_stl_post"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/STLResponse"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/HTTPValidationError"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "get": {
-                "tags": [
-                    "Quote"
-                ],
-                "summary": "Download Stl",
-                "description": "Download the uploaded stl file",
-                "operationId": "download_stl_v1_stl_get",
-                "security": [
-                    {
-                        "HTTPBearer": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "file_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "ID for the STL file (this can be found in the upload response)",
-                            "title": "File Id"
-                        },
-                        "description": "ID for the STL file (this can be found in the upload response)"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful Response"
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/HTTPValidationError"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Quote"
-                ],
-                "summary": "Delete Stl",
-                "description": "Delete an uploaded STL file. **NOTE: This will also delete the quotes associated with this file**",
-                "operationId": "delete_stl_v1_stl_delete",
-                "security": [
-                    {
-                        "HTTPBearer": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "file_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "ID for the STL file (this can be found in the upload response)",
-                            "title": "File Id"
-                        },
-                        "description": "ID for the STL file (this can be found in the upload response)"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/DeleteSTLResponse"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/HTTPValidationError"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/quote": {
-            "post": {
-                "tags": [
-                    "Quote"
-                ],
-                "summary": "Quote Model",
-                "description": "Slice the uploaded STL file and generate a quote",
-                "operationId": "quote_model_v1_quote_post",
-                "security": [
-                    {
-                        "HTTPBearer": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "file_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "ID for the STL file (this can be found in the upload response)",
-                            "title": "File Id"
-                        },
-                        "description": "ID for the STL file (this can be found in the upload response)"
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ProfileConfig",
-                                "default": {
-                                    "printer_config": {
-                                        "bed_size_x": 210,
-                                        "bed_size_y": 210,
-                                        "bed_size_z": 250,
-                                        "print_speed": 100,
-                                        "first_layer_speed": 50,
-                                        "nozzle_diameter": 0.4,
-                                        "layer_height": 0.2,
-                                        "perimeters": 3,
-                                        "top_solid_layers": 3,
-                                        "bottom_solid_layers": 3,
-                                        "fill_density": 20,
-                                        "support_material": false,
-                                        "color": "white",
-                                        "filament_type": "PLA",
-                                        "temperature": 210,
-                                        "bed_temperature": 60
-                                    },
-                                    "quote_config": {
-                                        "currency": "USD",
-                                        "cost_per_hour": 2.5,
-                                        "cost_per_gram": 0.02,
-                                        "base_price": 5
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/QuoteResponse"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/HTTPValidationError"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/auth/token": {
-            "get": {
-                "tags": [
-                    "Authentication"
-                ],
-                "summary": "Generate Token",
-                "description": "Issues a new API JWT for an authenticated user.\n\nRequires a valid user token in the Authorization header (Bearer scheme).\nIf the token is valid, returns a new JWT for API authentication.\nOptionally accepts the query parameter `expires_in_days` to set the token's expiration in days.\nIf `expires_in_days` is not provided, the token will never expire (no expiration set).\nThe response includes the token, its type, duration, creation date, and expiration date (if set).",
-                "operationId": "generate_token_v1_auth_token_get",
-                "security": [
-                    {
-                        "HTTPBearer": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "expires_in_days",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "title": "Expires In Days"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/TokenResponse"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/HTTPValidationError"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "components": {
-        "schemas": {
-            "AccountInfoResponse": {
-                "properties": {
-                    "user_id": {
-                        "type": "string",
-                        "title": "User Id"
-                    },
-                    "plan": {
-                        "type": "string",
-                        "title": "Plan"
-                    },
-                    "email": {
-                        "type": "string",
-                        "title": "Email"
-                    },
-                    "user_name": {
-                        "type": "string",
-                        "title": "User Name"
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "title": "Created At"
-                    },
-                    "data_usage": {
-                        "$ref": "#/components/schemas/DataUsageResponse"
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "user_id",
-                    "plan",
-                    "email",
-                    "user_name",
-                    "created_at",
-                    "data_usage"
-                ],
-                "title": "AccountInfoResponse",
-                "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user.\n\n    email (str): The email address of the user.\n\n    first_name (str): The first name of the user.\n\n    last_name (str): The last name of the user.\n\n    created_at (str): ISO 8601 timestamp of when the account was created."
-            },
-            "Body_upload_stl_v1_stl_post": {
-                "properties": {
-                    "file": {
-                        "type": "string",
-                        "format": "binary",
-                        "title": "File"
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "file"
-                ],
-                "title": "Body_upload_stl_v1_stl_post"
-            },
-            "DataUsageResponse": {
-                "properties": {
-                    "total_storage_used": {
-                        "type": "number",
-                        "title": "Total Storage Used"
-                    },
-                    "total_stl_files": {
-                        "type": "integer",
-                        "title": "Total Stl Files"
-                    },
-                    "last_updated": {
-                        "type": "string",
-                        "title": "Last Updated"
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "total_storage_used",
-                    "total_stl_files",
-                    "last_updated"
-                ],
-                "title": "DataUsageResponse",
-                "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user.\n\n    total_storage_used (float): Total storage used by the user in megabytes (MB).\n\n    total_files (int): Total number of files stored by the user."
-            },
-            "DeleteSTLResponse": {
-                "properties": {
-                    "status": {
-                        "type": "string",
-                        "title": "Status"
-                    },
-                    "timestamp": {
-                        "type": "string",
-                        "title": "Timestamp"
-                    },
-                    "user_id": {
-                        "type": "string",
-                        "title": "User Id"
-                    },
-                    "removed_file_path": {
-                        "type": "string",
-                        "title": "Removed File Path"
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "status",
-                    "timestamp",
-                    "user_id",
-                    "removed_file_path"
-                ],
-                "title": "DeleteSTLResponse",
-                "description": "**Response schema:**\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    removed_file_path (str): The file path to the STL file that was removed from cloud storage."
-            },
-            "HTTPValidationError": {
-                "properties": {
-                    "detail": {
-                        "items": {
-                            "$ref": "#/components/schemas/ValidationError"
-                        },
-                        "type": "array",
-                        "title": "Detail"
-                    }
-                },
-                "type": "object",
-                "title": "HTTPValidationError"
-            },
-            "PrintabilityResponse": {
-                "properties": {
-                    "user_id": {
-                        "type": "string",
-                        "title": "User Id"
-                    },
-                    "stl_file_path": {
-                        "type": "string",
-                        "title": "Stl File Path"
-                    },
-                    "fits_printer": {
-                        "type": "boolean",
-                        "title": "Fits Printer"
-                    },
-                    "model_dimensions": {
-                        "additionalProperties": true,
-                        "type": "object",
-                        "title": "Model Dimensions"
-                    },
-                    "printer_dimensions": {
-                        "additionalProperties": true,
-                        "type": "object",
-                        "title": "Printer Dimensions"
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "user_id",
-                    "stl_file_path",
-                    "fits_printer",
-                    "model_dimensions",
-                    "printer_dimensions"
-                ],
-                "title": "PrintabilityResponse",
-                "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    stl_file_path (str): The file path to the STL file in cloud storage.\n\n    fits_printer (bool): Whether the model fits within the printer's build volume.\n\n    model_dimensions (dict): Dimensions of the model in mm (x, y, z).\n\n    printer_dimensions (dict): Dimensions of the printer's build volume in mm (x, y, z)."
-            },
-            "PrinterConfig": {
-                "properties": {
-                    "bed_size_x": {
-                        "type": "integer",
-                        "title": "Bed Size X",
-                        "description": "X dimension of the print bed in mm",
-                        "default": 210
-                    },
-                    "bed_size_y": {
-                        "type": "integer",
-                        "title": "Bed Size Y",
-                        "description": "Y dimension of the print bed in mm",
-                        "default": 210
-                    },
-                    "bed_size_z": {
-                        "type": "integer",
-                        "title": "Bed Size Z",
-                        "description": "Z dimension of the print bed in mm",
-                        "default": 250
-                    },
-                    "print_speed": {
-                        "type": "integer",
-                        "title": "Print Speed",
-                        "description": "Default print speed in mm/s",
-                        "default": 100
-                    },
-                    "first_layer_speed": {
-                        "type": "integer",
-                        "title": "First Layer Speed",
-                        "description": "First layer speed in mm/s",
-                        "default": 50
-                    },
-                    "nozzle_diameter": {
-                        "type": "number",
-                        "title": "Nozzle Diameter",
-                        "description": "Nozzle diameter in mm",
-                        "default": 0.4
-                    },
-                    "layer_height": {
-                        "type": "number",
-                        "title": "Layer Height",
-                        "description": "Layer height in mm",
-                        "default": 0.2
-                    },
-                    "perimeters": {
-                        "type": "integer",
-                        "title": "Perimeters",
-                        "description": "Number of perimeters to print",
-                        "default": 3
-                    },
-                    "top_solid_layers": {
-                        "type": "integer",
-                        "title": "Top Solid Layers",
-                        "description": "Number of top layers",
-                        "default": 3
-                    },
-                    "bottom_solid_layers": {
-                        "type": "integer",
-                        "title": "Bottom Solid Layers",
-                        "description": "Number of bottom layers",
-                        "default": 3
-                    },
-                    "fill_density": {
-                        "type": "integer",
-                        "maximum": 100,
-                        "minimum": 0,
-                        "title": "Fill Density",
-                        "description": "Infill density percentage (0-100)",
-                        "default": 20
-                    },
-                    "support_material": {
-                        "type": "boolean",
-                        "title": "Support Material",
-                        "description": "Whether or not to generate the supports",
-                        "default": false
-                    },
-                    "color": {
-                        "type": "string",
-                        "title": "Color",
-                        "description": "Color of the filament",
-                        "default": "white"
-                    },
-                    "filament_type": {
-                        "type": "string",
-                        "title": "Filament Type",
-                        "description": "Type of filament to print with (PLA, ABS, PETG)",
-                        "default": "PLA"
-                    },
-                    "temperature": {
-                        "type": "integer",
-                        "title": "Temperature",
-                        "description": "Filament temperature in Celsius",
-                        "default": 210
-                    },
-                    "bed_temperature": {
-                        "type": "integer",
-                        "title": "Bed Temperature",
-                        "description": "Bed temperature in Celsius",
-                        "default": 60
-                    }
-                },
-                "type": "object",
-                "title": "PrinterConfig",
-                "description": "Printer configuration settings for slicing"
-            },
-            "ProfileConfig": {
-                "properties": {
-                    "printer_config": {
-                        "$ref": "#/components/schemas/PrinterConfig",
-                        "description": "Printer configuration settings"
-                    },
-                    "quote_config": {
-                        "$ref": "#/components/schemas/QuoteConfig",
-                        "description": "Quote configuration settings"
-                    }
-                },
-                "type": "object",
-                "title": "ProfileConfig",
-                "description": "Configuration for user profiles"
-            },
-            "QuoteConfig": {
-                "properties": {
-                    "currency": {
-                        "type": "string",
-                        "title": "Currency",
-                        "description": "Currency for the quote",
-                        "default": "USD"
-                    },
-                    "cost_per_hour": {
-                        "type": "number",
-                        "title": "Cost Per Hour",
-                        "description": "Cost per hour of printing",
-                        "default": 2.5
-                    },
-                    "cost_per_gram": {
-                        "type": "number",
-                        "title": "Cost Per Gram",
-                        "description": "Cost per gram of filament used",
-                        "default": 0.02
-                    },
-                    "base_price": {
-                        "type": "number",
-                        "title": "Base Price",
-                        "description": "Base price for the print job",
-                        "default": 5
-                    }
-                },
-                "type": "object",
-                "title": "QuoteConfig",
-                "description": "Configuration for instant quote"
-            },
-            "QuoteResponse": {
-                "properties": {
-                    "status": {
-                        "type": "string",
-                        "title": "Status"
-                    },
-                    "timestamp": {
-                        "type": "string",
-                        "title": "Timestamp"
-                    },
-                    "user_id": {
-                        "type": "string",
-                        "title": "User Id"
-                    },
-                    "stl_file_path": {
-                        "type": "string",
-                        "title": "Stl File Path"
-                    },
-                    "total_price": {
-                        "type": "number",
-                        "title": "Total Price"
-                    },
-                    "currency": {
-                        "type": "string",
-                        "title": "Currency"
-                    },
-                    "estimated_time": {
-                        "type": "string",
-                        "title": "Estimated Time"
-                    },
-                    "filament_weight": {
-                        "type": "number",
-                        "title": "Filament Weight"
-                    },
-                    "filament_cost": {
-                        "type": "number",
-                        "title": "Filament Cost"
-                    },
-                    "estimated_time_seconds": {
-                        "type": "integer",
-                        "title": "Estimated Time Seconds"
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "status",
-                    "timestamp",
-                    "user_id",
-                    "stl_file_path",
-                    "total_price",
-                    "currency",
-                    "estimated_time",
-                    "filament_weight",
-                    "filament_cost",
-                    "estimated_time_seconds"
-                ],
-                "title": "QuoteResponse",
-                "description": "**Response schema:**\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    stl_file_path (str): The file path to the STL file in cloud storage (will need this for future requests).\n\n    total_price (float): The total price for the print job.\n\n    currency (str): The currency for the quote.\n\n    estimated_time (str): The estimated print time.\n\n    filament_weight (float): The weight of filament used in grams.\n\n    filament_cost (float): The cost of filament used.\n\n    estimated_time_seconds (int): The estimated print time in seconds."
-            },
-            "STLResponse": {
-                "properties": {
-                    "file_id": {
-                        "type": "string",
-                        "title": "File Id"
-                    },
-                    "stl_file_path": {
-                        "type": "string",
-                        "title": "Stl File Path"
-                    },
-                    "status": {
-                        "type": "string",
-                        "title": "Status"
-                    },
-                    "timestamp": {
-                        "type": "string",
-                        "title": "Timestamp"
-                    },
-                    "user_id": {
-                        "type": "string",
-                        "title": "User Id"
-                    },
-                    "file_name": {
-                        "type": "string",
-                        "title": "File Name"
-                    },
-                    "file_size": {
-                        "type": "number",
-                        "title": "File Size"
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "file_id",
-                    "stl_file_path",
-                    "status",
-                    "timestamp",
-                    "user_id",
-                    "file_name",
-                    "file_size"
-                ],
-                "title": "STLResponse",
-                "description": "**Response schema:**\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    file_name (str): The name of the STL file.\n\n    file_size (float): The size of the STL file in megabytes (MB).\n\n    file_id (str): The unique identifier of the STL file in cloud storage."
-            },
-            "TokenResponse": {
-                "properties": {
-                    "token_type": {
-                        "type": "string",
-                        "title": "Token Type"
-                    },
-                    "access_token": {
-                        "type": "string",
-                        "title": "Access Token"
-                    },
-                    "token_duration": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Token Duration"
-                    },
-                    "creation_date": {
-                        "type": "string",
-                        "title": "Creation Date"
-                    },
-                    "expiration_date": {
-                        "anyOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Expiration Date"
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "token_type",
-                    "access_token",
-                    "token_duration",
-                    "creation_date",
-                    "expiration_date"
-                ],
-                "title": "TokenResponse",
-                "description": "**Response schema:**\n\n    token_type (str): The type of the token (e.g., \"Bearer\").\n\n    access_token (str): The API access token string.\n\n    token_duration (int): Duration in days for which the token is valid.\n\n    creation_date (str): The creation date and time of the token in ISO 8601 format.\n\n    expiration_date (str): The expiration date and time of the token in ISO 8601 format."
-            },
-            "ValidationError": {
-                "properties": {
-                    "loc": {
-                        "items": {
-                            "anyOf": [
-                                {
-                                    "type": "string"
-                                },
-                                {
-                                    "type": "integer"
-                                }
-                            ]
-                        },
-                        "type": "array",
-                        "title": "Location"
-                    },
-                    "msg": {
-                        "type": "string",
-                        "title": "Message"
-                    },
-                    "type": {
-                        "type": "string",
-                        "title": "Error Type"
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "loc",
-                    "msg",
-                    "type"
-                ],
-                "title": "ValidationError"
-            }
-        },
-        "securitySchemes": {
-            "HTTPBearer": {
-                "type": "http",
-                "scheme": "bearer"
-            }
-        }
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Cloud Slicer API",
+    "description": "This API provides secure, cloud-based 3D printing services, including user authentication, STL file upload and management, instant quoting, printability checks, and slicing operations. Authenticated users can manage their 3D models, receive automated price quotes, and verify if their designs fit specific printer dimensions—all through a modern, token-based REST interface.",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.cloudslicer3d.com",
+      "description": "Production server"
     }
+  ],
+  "paths": {
+    "/v1/user": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Get User Info",
+        "description": "Get information for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can gernerate a token from the Cloud Slicer website in your account settings.\nReturns account information for the authenticated user.",
+        "operationId": "get_user_info_v1_user_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountInfoResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/user/uploads": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Get User Uploads",
+        "description": "Get all uploaded files for the authenticated user, sorted by latest first. Requires a valid API token.",
+        "operationId": "get_user_uploads_v1_user_uploads_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/UploadRecordResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Get User Uploads V1 User Uploads Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/printability/{file_id}": {
+      "post": {
+        "tags": [
+          "Part Info"
+        ],
+        "summary": "Check Model Printability",
+        "description": "Check if an STL model fits on the print bed given the dimensions.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can gernerate a token from the Cloud Slicer website in your account settings.\nAccepts the STL file ID and printer bed dimensions (mm) as query parameters.\nReturns printability status and model/printer dimensions.",
+        "operationId": "check_model_printability_v1_printability__file_id__post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the STL file (this can be found in the upload response)",
+              "title": "File Id"
+            },
+            "description": "ID for the STL file (this can be found in the upload response)"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BedDimensions",
+                "default": {
+                  "x": 210,
+                  "y": 210,
+                  "z": 250
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrintabilityResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/file/upload-id": {
+      "get": {
+        "tags": [
+          "Quote"
+        ],
+        "summary": "Get Upload Id",
+        "description": "Generate an upload ID for uploading an STL file to the database.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nReturns an upload id that can be used with the /file/public/{upload_id} endpoint\nto upload files without authentication. The upload id expires after 1 hour.\n\nWorkflow:\n1. Call this endpoint to get an upload_id\n2. Use the upload_id with POST /file/public/{upload_id} to upload the file",
+        "operationId": "get_upload_id_v1_file_upload_id_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileUploadLink"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/file/public/{upload_id}": {
+      "post": {
+        "tags": [
+          "Quote"
+        ],
+        "summary": "Upload Stl Public",
+        "description": "Upload an STL file using a temporary upload ID (no authentication required).\n\nThis endpoint allows anonymous uploads using a temporary upload ID obtained\nfrom the /upload endpoint. The upload ID is single-use and expires after 1 hour.",
+        "operationId": "upload_stl_public_v1_file_public__upload_id__post",
+        "parameters": [
+          {
+            "name": "upload_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Temporary upload ID obtained from /file/upload-id endpoint",
+              "title": "Upload Id"
+            },
+            "description": "Temporary upload ID obtained from /file/upload-id endpoint"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_stl_public_v1_file_public__upload_id__post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/STLResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/file": {
+      "post": {
+        "tags": [
+          "Quote"
+        ],
+        "summary": "Upload Stl",
+        "description": "Upload an STL file to the database for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts an STL file upload. The file must have a .stl extension.\nReturns details about the uploaded file, including its ID and storage path.",
+        "operationId": "upload_stl_v1_file_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_stl_v1_file_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/STLResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/file/{file_id}": {
+      "get": {
+        "tags": [
+          "Quote"
+        ],
+        "summary": "Download Stl",
+        "description": "Download an uploaded STL file for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the STL file ID as a query parameter.\nReturns the STL file as a download if the user is authorized and the file exists.",
+        "operationId": "download_stl_v1_file__file_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the STL file to download",
+              "title": "File Id"
+            },
+            "description": "ID for the STL file to download"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Quote"
+        ],
+        "summary": "Delete Stl",
+        "description": "Deletes an uploaded STL file. **NOTE: This will also delete the quotes associated with this file**\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the STL file ID as a query parameter.\nReturns a success message and the path of the removed file if deletion is successful.",
+        "operationId": "delete_stl_v1_file__file_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the STL file to delete",
+              "title": "File Id"
+            },
+            "description": "ID for the STL file to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSTLResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/file/quote/{file_id}": {
+      "post": {
+        "tags": [
+          "Quote"
+        ],
+        "summary": "Quote Model",
+        "description": "Slice an uploaded STL file and generate a price quote for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the STL file ID as a query parameter and printer/quote configuration as JSON body.\nReturns a quote with price, estimated print time, and filament usage if the part fits the printer.",
+        "operationId": "quote_model_v1_file_quote__file_id__post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the STL file (this can be found in the upload response)",
+              "title": "File Id"
+            },
+            "description": "ID for the STL file (this can be found in the upload response)"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileConfig",
+                "default": {
+                  "printer_config": {
+                    "bed_size_x": 210,
+                    "bed_size_y": 210,
+                    "bed_size_z": 250,
+                    "print_speed": 100,
+                    "first_layer_speed": 50,
+                    "nozzle_diameter": 0.4,
+                    "layer_height": 0.2,
+                    "perimeters": 3,
+                    "top_solid_layers": 3,
+                    "bottom_solid_layers": 3,
+                    "fill_density": 20,
+                    "support_material": false,
+                    "color": "white",
+                    "filament_type": "PLA",
+                    "temperature": 210,
+                    "bed_temperature": 60
+                  },
+                  "quote_config": {
+                    "currency": "USD",
+                    "cost_per_hour": 2.5,
+                    "cost_per_gram": 0.02,
+                    "base_price": 5
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccountInfoResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "stripe_id": {
+            "type": "string",
+            "title": "Stripe Id"
+          },
+          "plan": {
+            "type": "string",
+            "title": "Plan"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "user_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Name"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "data_usage": {
+            "$ref": "#/components/schemas/DataUsageResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "stripe_id",
+          "plan",
+          "email",
+          "created_at",
+          "data_usage"
+        ],
+        "title": "AccountInfoResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user.\n\n    stripe_id (str): The Stripe customer ID associated with the user.\n\n    plan (str): The subscription plan of the user.\n\n    email (str): The email address of the user.\n\n    user_name (str): The username of the user.\n\n    created_at (str): ISO 8601 timestamp of when the account was created."
+      },
+      "BedDimensions": {
+        "properties": {
+          "x": {
+            "type": "number",
+            "title": "X",
+            "default": 210
+          },
+          "y": {
+            "type": "number",
+            "title": "Y",
+            "default": 210
+          },
+          "z": {
+            "type": "number",
+            "title": "Z",
+            "default": 250
+          }
+        },
+        "type": "object",
+        "title": "BedDimensions",
+        "description": "**Schema for printer bed dimensions:**\n\n    x (float): The X (width) dimension of the printer bed in millimeters. Default is 210mm.\n\n    y (float): The Y (depth) dimension of the printer bed in millimeters. Default is 210mm.\n\n    z (float): The Z (height) dimension of the printer bed in millimeters. Default is 250mm."
+      },
+      "Body_upload_stl_public_v1_file_public__upload_id__post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File",
+            "description": "STL file to upload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_stl_public_v1_file_public__upload_id__post"
+      },
+      "Body_upload_stl_v1_file_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_stl_v1_file_post"
+      },
+      "DataUsageResponse": {
+        "properties": {
+          "quotes_used": {
+            "type": "integer",
+            "title": "Quotes Used"
+          },
+          "quotes_limit": {
+            "type": "integer",
+            "title": "Quotes Limit"
+          },
+          "storage_used": {
+            "type": "number",
+            "title": "Storage Used"
+          },
+          "storage_limit": {
+            "type": "number",
+            "title": "Storage Limit"
+          },
+          "stl_files": {
+            "type": "integer",
+            "title": "Stl Files"
+          },
+          "days_till_reset": {
+            "type": "integer",
+            "title": "Days Till Reset"
+          },
+          "reset_date": {
+            "type": "string",
+            "title": "Reset Date"
+          },
+          "last_updated": {
+            "type": "string",
+            "title": "Last Updated"
+          }
+        },
+        "type": "object",
+        "required": [
+          "quotes_used",
+          "quotes_limit",
+          "storage_used",
+          "storage_limit",
+          "stl_files",
+          "days_till_reset",
+          "reset_date",
+          "last_updated"
+        ],
+        "title": "DataUsageResponse",
+        "description": "**Response schema:**\n\n    quotes_used (int): The number of quotes used by the user.\n\n    quotes_limit (int): The maximum number of quotes allowed for the user.\n\n    storage_used (float): The amount of storage used by the user in megabytes (MB).\n\n    storage_limit (float): The maximum storage limit for the user in megabytes (MB).\n\n    stl_files (int): The number of STL files uploaded by the user.\n\n    days_till_reset (int): The number of days until the next reset of usage limits.\n\n    reset_date (str): The date when the usage limits will reset in ISO 8601 format.\n\n    last_updated (str): The timestamp of the last update to the usage data in ISO 8601 format."
+      },
+      "DeleteSTLResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "file_id": {
+            "type": "string",
+            "title": "File Id"
+          },
+          "removed_file_path": {
+            "type": "string",
+            "title": "Removed File Path"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "status",
+          "timestamp",
+          "file_id",
+          "removed_file_path"
+        ],
+        "title": "DeleteSTLResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated.\n\n    removed_file_path (str): The file path to the STL file that was removed from cloud storage."
+      },
+      "FileUploadLink": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "upload_id": {
+            "type": "string",
+            "title": "Upload Id"
+          },
+          "file_id": {
+            "type": "string",
+            "title": "File Id"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "upload_id",
+          "file_id",
+          "timestamp"
+        ],
+        "title": "FileUploadLink",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    upload_id (str): The unique identifier of for the upload session.\n\n    file_id (str): The unique identifier of the uploaded STL file.\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "PrintabilityResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "stl_file_path": {
+            "type": "string",
+            "title": "Stl File Path"
+          },
+          "fits_printer": {
+            "type": "boolean",
+            "title": "Fits Printer"
+          },
+          "model_dimensions": {
+            "$ref": "#/components/schemas/XYZDimensions"
+          },
+          "printer_dimensions": {
+            "$ref": "#/components/schemas/XYZDimensions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "stl_file_path",
+          "fits_printer",
+          "model_dimensions",
+          "printer_dimensions"
+        ],
+        "title": "PrintabilityResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    stl_file_path (str): The file path to the STL file in cloud storage.\n\n    fits_printer (bool): Whether the model fits within the printer's build volume.\n\n    model_dimensions (dict): Dimensions of the model in mm (x, y, z).\n\n    printer_dimensions (dict): Dimensions of the printer's build volume in mm (x, y, z)."
+      },
+      "PrinterConfig": {
+        "properties": {
+          "bed_size_x": {
+            "type": "integer",
+            "title": "Bed Size X",
+            "description": "X dimension of the print bed in mm",
+            "default": 210
+          },
+          "bed_size_y": {
+            "type": "integer",
+            "title": "Bed Size Y",
+            "description": "Y dimension of the print bed in mm",
+            "default": 210
+          },
+          "bed_size_z": {
+            "type": "integer",
+            "title": "Bed Size Z",
+            "description": "Z dimension of the print bed in mm",
+            "default": 250
+          },
+          "print_speed": {
+            "type": "integer",
+            "title": "Print Speed",
+            "description": "Default print speed in mm/s",
+            "default": 100
+          },
+          "first_layer_speed": {
+            "type": "integer",
+            "title": "First Layer Speed",
+            "description": "First layer speed in mm/s",
+            "default": 50
+          },
+          "nozzle_diameter": {
+            "type": "number",
+            "title": "Nozzle Diameter",
+            "description": "Nozzle diameter in mm",
+            "default": 0.4
+          },
+          "layer_height": {
+            "type": "number",
+            "title": "Layer Height",
+            "description": "Layer height in mm",
+            "default": 0.2
+          },
+          "perimeters": {
+            "type": "integer",
+            "title": "Perimeters",
+            "description": "Number of perimeters to print",
+            "default": 3
+          },
+          "top_solid_layers": {
+            "type": "integer",
+            "title": "Top Solid Layers",
+            "description": "Number of top layers",
+            "default": 3
+          },
+          "bottom_solid_layers": {
+            "type": "integer",
+            "title": "Bottom Solid Layers",
+            "description": "Number of bottom layers",
+            "default": 3
+          },
+          "fill_density": {
+            "type": "integer",
+            "maximum": 100,
+            "minimum": 0,
+            "title": "Fill Density",
+            "description": "Infill density percentage (0-100)",
+            "default": 20
+          },
+          "support_material": {
+            "type": "boolean",
+            "title": "Support Material",
+            "description": "Whether or not to generate the supports",
+            "default": false
+          },
+          "color": {
+            "type": "string",
+            "title": "Color",
+            "description": "Color of the filament",
+            "default": "white"
+          },
+          "filament_type": {
+            "type": "string",
+            "title": "Filament Type",
+            "description": "Type of filament to print with (PLA, ABS, PETG)",
+            "default": "PLA"
+          },
+          "temperature": {
+            "type": "integer",
+            "title": "Temperature",
+            "description": "Filament temperature in Celsius",
+            "default": 210
+          },
+          "bed_temperature": {
+            "type": "integer",
+            "title": "Bed Temperature",
+            "description": "Bed temperature in Celsius",
+            "default": 60
+          }
+        },
+        "type": "object",
+        "title": "PrinterConfig"
+      },
+      "ProfileConfig": {
+        "properties": {
+          "printer_config": {
+            "$ref": "#/components/schemas/PrinterConfig",
+            "description": "Printer configuration settings"
+          },
+          "quote_config": {
+            "$ref": "#/components/schemas/QuoteConfig",
+            "description": "Quote configuration settings"
+          }
+        },
+        "type": "object",
+        "title": "ProfileConfig",
+        "description": "**Input schema:**\n\n    printer_config (PrinterConfig): Printer configuration settings.\n\n    quote_config (QuoteConfig): Quote configuration settings."
+      },
+      "QuoteConfig": {
+        "properties": {
+          "currency": {
+            "type": "string",
+            "title": "Currency",
+            "description": "Currency for the quote",
+            "default": "USD"
+          },
+          "cost_per_hour": {
+            "type": "number",
+            "title": "Cost Per Hour",
+            "description": "Cost per hour of printing",
+            "default": 2.5
+          },
+          "cost_per_gram": {
+            "type": "number",
+            "title": "Cost Per Gram",
+            "description": "Cost per gram of filament used",
+            "default": 0.02
+          },
+          "base_price": {
+            "type": "number",
+            "title": "Base Price",
+            "description": "Base price for the print job",
+            "default": 5
+          }
+        },
+        "type": "object",
+        "title": "QuoteConfig"
+      },
+      "QuoteResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "quote_duration": {
+            "type": "number",
+            "title": "Quote Duration"
+          },
+          "stl_file_path": {
+            "type": "string",
+            "title": "Stl File Path"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency"
+          },
+          "estimated_time": {
+            "type": "string",
+            "title": "Estimated Time"
+          },
+          "estimated_time_seconds": {
+            "type": "integer",
+            "title": "Estimated Time Seconds"
+          },
+          "filament_weight": {
+            "type": "number",
+            "title": "Filament Weight"
+          },
+          "filament_cost": {
+            "type": "number",
+            "title": "Filament Cost"
+          },
+          "total_price": {
+            "type": "number",
+            "title": "Total Price"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "status",
+          "timestamp",
+          "quote_duration",
+          "stl_file_path",
+          "currency",
+          "estimated_time",
+          "estimated_time_seconds",
+          "filament_weight",
+          "filament_cost",
+          "total_price"
+        ],
+        "title": "QuoteResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    quote_duration (float): The duration of the quote in seconds.\n\n    stl_file_path (str): The file path to the STL file in cloud storage (will need this for future requests).\n\n    currency (str): The currency for the quote.\n\n    estimated_time (str): The estimated print time.\n\n    estimated_time_seconds (int): The estimated print time in seconds.\n\n    filament_weight (float): The weight of filament used in grams.\n\n    filament_cost (float): The cost of filament used.\n\n    total_price (float): The total price for the print job."
+      },
+      "STLResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "file_id": {
+            "type": "string",
+            "title": "File Id"
+          },
+          "stl_file_path": {
+            "type": "string",
+            "title": "Stl File Path"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "file_name": {
+            "type": "string",
+            "title": "File Name"
+          },
+          "file_size": {
+            "type": "number",
+            "title": "File Size"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "file_id",
+          "stl_file_path",
+          "status",
+          "timestamp",
+          "file_name",
+          "file_size"
+        ],
+        "title": "STLResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    file_id (str): The unique identifier of the uploaded STL file.\n\n    stl_file_path (str): The file path to the uploaded STL file in cloud storage.\n\n    status (str): The status of the upload (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded.\n\n    file_name (str): The name of the uploaded STL file.\n\n    file_size (float): The size of the uploaded STL file in megabytes (MB)."
+      },
+      "UploadRecordResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "file_id": {
+            "type": "string",
+            "title": "File Id"
+          },
+          "stl_file_path": {
+            "type": "string",
+            "title": "Stl File Path"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "file_name": {
+            "type": "string",
+            "title": "File Name"
+          },
+          "file_size": {
+            "type": "number",
+            "title": "File Size"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "file_id",
+          "stl_file_path",
+          "status",
+          "timestamp",
+          "file_name",
+          "file_size"
+        ],
+        "title": "UploadRecordResponse",
+        "description": "**Response schema:**\n\n    id (str): The unique identifier of the upload record.\n\n    file_id (str): The unique identifier of the STL file in cloud storage.\n\n    stl_file_path (str): The file path to the STL file in cloud storage.\n\n    status (str): The status of the upload (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded.\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    file_name (str): The name of the STL file.\n\n    file_size (float): The size of the STL file in megabytes (MB)."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "XYZDimensions": {
+        "properties": {
+          "x": {
+            "type": "number",
+            "title": "X"
+          },
+          "y": {
+            "type": "number",
+            "title": "Y"
+          },
+          "z": {
+            "type": "number",
+            "title": "Z"
+          }
+        },
+        "type": "object",
+        "required": [
+          "x",
+          "y",
+          "z"
+        ],
+        "title": "XYZDimensions",
+        "description": "**Schema for XYZ dimensions:**\n\n    x (float): The X dimension in mm.\n\n    y (float): The Y dimension in mm.\n\n    z (float): The Z dimension in mm."
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Enter your Cloud Slicer API token. You can generate one from your account settings on the Cloud Slicer website."
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Account",
+      "description": "User account management operations, including user info retrieval. Requires Cloud Slicer Token"
+    },
+    {
+      "name": "Part Info",
+      "description": "Operations related to 3D model information, including printability checks. Requires Cloud Slicer Token"
+    },
+    {
+      "name": "Quote",
+      "description": "Operations for generating quotes based on uploaded STL files. Requires Cloud Slicer Token"
+    }
+  ]
 }

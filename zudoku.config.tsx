@@ -1,38 +1,51 @@
-import type { ZudokuConfig } from "zudoku";
-import { Home } from "./src/home";
+import type { ZudokuConfig, ApiIdentity, ZudokuPlugin } from "zudoku";
+
+const apiIdentityPlugin: ZudokuPlugin = {
+  getIdentities: async () => {
+    return [
+      {
+        label: "Cloud Slicer User",
+        id: "test-user",
+        authorizeRequest: (request: any) => {
+          request.headers.set("Authorization", "Bearer token goes here");
+          return request;
+        },
+      },
+    ] as ApiIdentity[];
+  },
+};
 
 const config: ZudokuConfig = {
-  basePath: "/cloud-slicer-docs",
-  page: {
+  site: {
     logo: {
-      src: { 
-        light: "/logo-light.svg", 
-        dark: "/logo-dark.svg" 
-      },
-      alt: "Cloud Slicer",
-      width: '50px',
+      src: { light: "/logo-light.svg", dark: "/logo-dark.svg" },
+      alt: "Cloud Slicer Docs",
+      width: "250px",
     },
     banner: {
-      message: 
-        <div className="text-center">
-          Welcome to the Cloud Slicer BETA docs! ✨
-        </div>,
-      color: "note", // "note" | "tip" | "info" | "caution" | "danger" or custom
-      dismissible: true
-    }
+      message: (
+        <div className="flex justify-center items-center gap-2">
+          Welcome to the Cloud Slicer's BETA Documentation! ⏳
+        </div>
+      ),
+      color: "#b366ff",
+      dismissible: true,
+    },
   },
-  topNavigation: [
-    { id: "docs", label: "Documentation" },
-    { id: "api", label: "API Reference" },
-  ],
-  sidebar: {
-    docs: [
-      {
-        type: "category",
-        label: "Overview",
-        items: ["docs/introduction", "docs/example"],
-      },
-    ],
+  theme: {
+    registryUrl: "https://tweakcn.com/r/themes/cmfllb5zf000804jscv6e1fuc",
+    fonts: {
+      sans: "Inter",
+      serif: "Merriweather",
+      mono: "JetBrains Mono",
+    },
+    customCss: `
+      /* Make external links open in new tab */
+      a[href^="https://api.cloudslicer3d.com"] {
+        target: _blank;
+        rel: noopener noreferrer;
+      }
+    `,
   },
   search: {
     type: "pagefind",
@@ -46,62 +59,46 @@ const config: ZudokuConfig = {
       termSaturation: 1.2,
     },
   },
-  apis: {
-    type: "file",
-    input: "./apis/openapi.json",
-    navigationId: "api",
-  },
-  docs: {
-    files: "/pages/**/*.mdx",
-  },
-  // Used to display the home page
-  customPages: [
-    { path: "/", element: <Home /> },
-  ],
-  theme: {
-    light: {
-      background: "oklch(100% 0 none)",
-      foreground: "oklch(12.9% 0.027 262)",
-      card: "oklch(100% 0 none)",
-      cardForeground: "oklch(12.9% 0.027 262)",
-      popover: "oklch(100% 0 none)",
-      popoverForeground: "oklch(12.9% 0.027 262)",
-      primary: "#E039D3",
-      primaryForeground: "oklch(98.4% 0.002 248)",
-      secondary: "#F9D5F6",
-      secondaryForeground: "#6A1966",
-      muted: "oklch(96.7% 0.003 265)",
-      mutedForeground: "oklch(55.1% 0.023 264)",
-      accent: "oklch(96.7% 0.003 265)",
-      accentForeground: "oklch(21% 0.032 265)",
-      destructive: "oklch(63.7% 0.208 25.3)",
-      destructiveForeground: "oklch(98.4% 0.002 248)",
-      border: "oklch(92.8% 0.006 265)",
-      input: "oklch(92.8% 0.006 265)",
-      ring: "#E039D3"
+  navigation: [
+    {
+      type: "category",
+      label: "Documentation",
+      icon: "book",
+      items: [
+        {
+          type: "link",
+          label: "Quick Start",
+          icon: "rocket",
+          to: "/quick-start",
+        },
+        {
+          type: "category",
+          label: "Getting Started",
+          icon: "sparkles",
+          items: ["/introduction"],
+        },
+        {
+          type: "link",
+          icon: "code",
+          badge: {
+            label: "New",
+            color: "indigo",
+          },
+          label: "API Playground",
+          to: "https://api.cloudslicer3d.com/docs",
+        },
+      ],
     },
-    dark: {
-      background: "oklch(12.9% 0.027 262)",
-      foreground: "oklch(98.4% 0.002 248)",
-      card: "oklch(12.9% 0.027 262)",
-      cardForeground: "oklch(98.4% 0.002 248)",
-      popover: "oklch(12.9% 0.027 262)",
-      popoverForeground: "oklch(98.4% 0.002 248)",
-      primary: "#E039D3",
-      primaryForeground: "oklch(98.4% 0.002 248)",
-      secondary: "#6A1966",
-      secondaryForeground: "oklch(98.4% 0.002 248)",
-      muted: "oklch(27.8% 0.03 257)",
-      mutedForeground: "oklch(71.4% 0.019 261)",
-      accent: "oklch(27.8% 0.03 257)",
-      accentForeground: "oklch(98.4% 0.002 248)",
-      destructive: "oklch(39.6% 0.133 25.7)",
-      destructiveForeground: "oklch(98.4% 0.002 248)",
-      border: "oklch(27.8% 0.03 257)",
-      input: "oklch(27.8% 0.03 257)",
-      ring: "#E039D3"
-    }
-  }
+  ],
+  plugins: [apiIdentityPlugin],
+  redirects: [{ from: "/", to: "/introduction" }],
+  apis: [
+    {
+      type: "file",
+      input: "./apis/openapi.json",
+      path: "/api",
+    },
+  ],
 };
 
 export default config;
