@@ -31,11 +31,20 @@ jobs:
       - run: npm ci
       - run: npm run build
 
+      - name: List dist folder contents
+        run: |
+          echo "Listing dist folder:"
+          ls -la ./dist
+          if [ -d "./dist/cloud-slicer-docs" ]; then
+            echo "Listing dist/cloud-slicer-docs folder:"
+            ls -la ./dist/cloud-slicer-docs
+          fi
+
       - uses: actions/configure-pages@v4
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: ./dist/cloud-slicer-docs
 
       - id: deployment
         uses: actions/deploy-pages@v4
