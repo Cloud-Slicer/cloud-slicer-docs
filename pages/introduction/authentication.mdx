@@ -37,7 +37,7 @@ When you authenticate, Cloud Slicer checks the signature and the claims (like ex
 
 ## Example: Using Your Token
 
-Here’s how you might use your token with `curl`:
+Here is how you might use your token with `curl`:
 
 ```bash
 curl -H "Authorization: Bearer YOUR_TOKEN_HERE" https://api.cloudslicer3d.com/v1/user
@@ -45,6 +45,6 @@ curl -H "Authorization: Bearer YOUR_TOKEN_HERE" https://api.cloudslicer3d.com/v1
 
 Or in the API playground, paste your token into the authorization modal (lock icon) to authenticate your session.
 
-:::note
+:::warning
 **Keep your token secret!** Treat it like a password—never share it or expose it in public code repositories.
 :::

@@ -18,7 +18,7 @@ const apiIdentityPlugin: ZudokuPlugin = {
 const config: ZudokuConfig = {
   // Comment out basePath for now to fix dev issues
   // Will need to enable for GitHub Pages deployment
-  basePath: "/cloud-slicer-docs",
+  // basePath: "/cloud-slicer-docs",
   site: {
     logo: {
       src: { light: "/logo-light.svg", dark: "/logo-dark.svg" },
@@ -42,13 +42,6 @@ const config: ZudokuConfig = {
       serif: "Merriweather",
       mono: "JetBrains Mono",
     },
-    customCss: `
-      /* Make external links open in new tab */
-      a[href^="https://api.cloudslicer3d.com"] {
-        target: _blank;
-        rel: noopener noreferrer;
-      }
-    `,
   },
   search: {
     type: "pagefind",
@@ -108,7 +101,7 @@ const config: ZudokuConfig = {
     },
   ],
   plugins: [apiIdentityPlugin],
-  redirects: [{ from: "/", to: "/introduction" }],
+  redirects: [{ from: "/", to: "/introduction/overview" }],
   apis: [
     {
       type: "file",
