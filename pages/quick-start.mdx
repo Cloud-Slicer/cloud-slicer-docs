@@ -25,7 +25,13 @@ Get up and running with the Cloud Slicer API in under 5 minutes! Follow these st
    5. **Configure** your token:
    - Give it a **descriptive name** (e.g., "My First Token")
    - Set the **expiration** in days (leave blank for no expiration)
-        ![Quickstart step 5: Create new token](/images/quickstart-1.png)
+      <img 
+         src="/images/quickstart-1.png" 
+         alt="Cloud Slicer Banner" 
+         width="800" 
+         height="400"
+         className='rounded-lg shadow-lg border border-gray-400 dark:border-white-200'
+      />
 
    6. **Copy** the generated token immediately and store it securely
 
@@ -39,7 +45,13 @@ Get up and running with the Cloud Slicer API in under 5 minutes! Follow these st
    2. **Click** the `lock icon` in the top right corner
    3. **Paste** your JWT token from Step 2 into the authorization field
    4. **Click** `Authorize`
-        ![Quickstart step 4: Create new token](/images/quickstart-2.png)
+      <img 
+         src="/images/quickstart-2.png" 
+         alt="Cloud Slicer Banner" 
+         width="800" 
+         height="400"
+         className='rounded-lg shadow-lg border border-gray-400 dark:border-white-200'
+      />
 
    🎉 **Congratulations!** You're now authenticated and ready to explore the Cloud Slicer API.
 
@@ -48,15 +60,15 @@ Get up and running with the Cloud Slicer API in under 5 minutes! Follow these st
    Ready to test it out? Try uploading your first STL file:
 
    1. **Find** the `POST /v1/file` endpoint in the API documentation
-   2. **Expand** the tabe to reveal the POST request details
+   2. **Expand** the tab to reveal the POST request details
    3. **Upload** an STL file using the `choose file` button to open up your file explorer
    4. **Execute** the request POST request
 
    The response will include a **file ID** that you can use for:
 
-   - 📏 **Checking dimensions** and printability
-   - 💰 **Generating quotes** for 3D printing
-   - 📁 **Managing** the file to save on your cloud storage usage
+   - **Checking dimensions** and printability
+   - **Generating quotes** for automated instant pricing estimates
+   - **Managing** the uploaded file to save on your cloud storage
 
    :::tip
     The `file_id` acts as your key to manage and reference your uploaded files in subsequent API calls.  It is the unique identifier by which all other API calls stem from.
@@ -77,4 +89,3 @@ All API endpoints require authentication with your Bearer token. Make sure to in
 :::
 
 Need help? Check out our [API Playground](https://api.cloudslicer3d.com/docs) for detailed documentation on all available endpoints.
-

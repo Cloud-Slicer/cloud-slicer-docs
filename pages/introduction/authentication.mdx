@@ -11,7 +11,7 @@ Cloud Slicer uses **JWT (JSON Web Token) Bearer authentication** to secure all A
 2. **Generate an API token** (JWT) from your dashboard under the "Tokens" tab.
 3. **Include the token** in the `Authorization` header of every API request:
 
-   ```http
+   ```bash
    Authorization: Bearer YOUR_TOKEN_HERE
    ```
 
@@ -29,7 +29,7 @@ A JWT consists of three parts:
 
 A JWT looks like this:
 
-```
+```bash
 <base64url-encoded header>.<base64url-encoded payload>.<base64url-encoded signature>
 ```
 
@@ -43,7 +43,7 @@ Here is how you might use your token with `curl`:
 curl -H "Authorization: Bearer YOUR_TOKEN_HERE" https://api.cloudslicer3d.com/v1/user
 ```
 
-Or in the API playground, paste your token into the authorization modal (lock icon) to authenticate your session.
+Or in the [API playground](https://api.cloudslicer3d.com/docs), paste your token into the authorization modal (lock icon) to authenticate your session.  See how you can get started with our **API Playground** in the [Quickstart Guide](/quick-start#authenticate-with-the-api).
 
 :::warning
 **Keep your token secret!** Treat it like a password—never share it or expose it in public code repositories.
