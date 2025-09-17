@@ -78,7 +78,7 @@ const config: ZudokuConfig = {
           type: "category",
           label: "Introduction",
           icon: "book-marked",
-          link: "/introduction/introduction",
+          link: "/introduction/overview",
           items: [
             {
               type: "link",
