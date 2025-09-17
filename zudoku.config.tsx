@@ -16,9 +16,6 @@ const apiIdentityPlugin: ZudokuPlugin = {
 };
 
 const config: ZudokuConfig = {
-  // Comment out basePath for now to fix dev issues
-  // Will need to enable for GitHub Pages deployment
-  // basePath: "/cloud-slicer-docs",
   site: {
     logo: {
       src: { light: "/logo-light.svg", dark: "/logo-dark.svg" },
@@ -114,7 +111,7 @@ const config: ZudokuConfig = {
     description:
       "The official documentation for Cloud Slicer's API and services.  These docs cover everything from getting started to advanced usage of Cloud Slicer's powerful 3D printing software tools.",
     logo: "/logo-light.svg",
-    favicon: "/favicon.ico",
+    favicon: "/images/favicon.ico",
     applicationName: "Cloud Slicer Docs",
     referrer: "no-referrer",
     keywords: [
