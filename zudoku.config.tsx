@@ -1,17 +1,16 @@
-import type { ZudokuConfig, ApiIdentity, ZudokuPlugin } from "zudoku";
+import type { ZudokuConfig, ZudokuPlugin } from "zudoku";
 
-const apiIdentityPlugin: ZudokuPlugin = {
-  getIdentities: async () => {
-    return [
-      {
-        label: "Cloud Slicer User",
-        id: "test-user",
-        authorizeRequest: (request: any) => {
-          request.headers.set("Authorization", "Bearer token goes here");
-          return request;
-        },
-      },
-    ] as ApiIdentity[];
+const posthogPlugin: ZudokuPlugin = {
+  getHead: () => {
+    return (
+      <script>
+        {/* Make sure to use the public API key for PostHog, this can be exposed to the client side */}
+        {`
+          !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);var n=t;return function(){n.apply(t,arguments)}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+          posthog.init('phc_doSsmLWBGzV8KLLn6yVOhPnxOnl3DAdXh4Z7u0VQ9g7', {api_host: 'https://us.i.posthog.com'});
+        `}
+      </script>
+    );
   },
 };
 
@@ -97,7 +96,7 @@ const config: ZudokuConfig = {
       ],
     },
   ],
-  plugins: [apiIdentityPlugin],
+  plugins: [posthogPlugin],
   redirects: [{ from: "/", to: "/introduction/overview" }],
   apis: [
     {
