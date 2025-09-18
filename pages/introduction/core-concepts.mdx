@@ -13,27 +13,35 @@ All API endpoints require authentication using a Bearer JWT token. You generate 
 **Reminder:** Keep your API tokens secure. Never share them publicly or commit them to version control.
 :::
 
-## 2. User & Account Management
+## 2. Account Management
 
 Manage your account and uploads through dedicated endpoints:
-- **Get user info:** Retrieve your account details
-- **List uploads:** See all files you've uploaded to your account
+- `GET /user` Retrieve your account details
+- `GET /user/uploads` List all of the files you've uploaded to your account. These are listed from newest to oldest.
 
-## 3. File Management
-
-Upload, download, and delete STL files to Cloud Slicer:
-- **Upload:** `POST /v1/file` — Add new STL files
-- **Download:** `GET /v1/file/{file_id}` — Retrieve your files
-- **Delete:** `DELETE /v1/file/{file_id}` — Remove files you no longer need
-
-## 4. Part Info
+## 3. Part Info
 
 Check if your models are printable and get part dimensions:
-- **Printability:** Get measurements comparisons in order to check that the part will fit in the printer before your generate a quote.
+- `POST /printability/{file_id}` Gets measurements of the uploaded file in order to check that the part will fit in the printer before your generate a quote.
 
 :::tip
 If you are familiar with Three JS, you can calculate this with Javascript on the client side of your web app, bypassing the need to use this endpoint.  This is provided as an alternative to give you more options.
 :::
+
+## 4. Quote Operations
+
+Upload, download, and delete STL files to Cloud Slicer:
+- **Upload ID:** `GET /file/upload-id` - Get an **upload_id** to upload a new STL file with the `public upload` route.
+- **Public Upload:** `POST /file/public/{upload-id}` - You will use this on your client side to upload the file directly to our storage.
+    :::tip
+    Using the `Public Upload` route lets you avoid having to route large files through your backend server.  This route uses the **upload_id** you generated earlier to securely upload an STL file and prevent any CORS errors with the Cloud Slicer API.
+    :::
+- **Upload:** `POST /file` — Upload a new STL file *(this should only be done from the server side to prevent exposing your token, see above)*
+- **Download:** `GET /file/{file_id}` — Retrieve a file per its **file_id**
+- **Delete:** `DELETE /file/{file_id}` — Remove a file you no longer need per its **file_id**
+- **Quote:** `POST /file/quote/{file_id}` — Generate an instant quote for a given STL file with a printer profile per its **file_id**.
+
+---
 
 ## 5. Printer & Quote profiles
 
@@ -48,15 +56,5 @@ Slice STL files with a POST request to the `/file` route to generate the G-code 
 ## 7. RESTful, Versioned API
 
 - All endpoints are versioned (e.g., `/v1/`)
-- Uses standard HTTP verbs: `GET`, `POST`, `DELETE`
-- Expects and returns JSON
+- Uses standard HTTP protocols: `GET`, `POST`, `DELETE`, `PUT`
 - Follows OpenAPI standards for schema and documentation
-
-
-## Summary
-
-By understanding these core concepts, you'll be able to:
-- Authenticate securely
-- Manage your files and account
-- Automate quoting and slicing
-- Integrate Cloud Slicer into your 3D printing workflow with confidence
