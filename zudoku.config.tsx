@@ -1,4 +1,7 @@
 import type { ZudokuConfig, ZudokuPlugin } from "zudoku";
+import { Button } from "zudoku/ui/Button.js";
+import { FaDiscord } from "react-icons/fa";
+import { BiLogoGithub } from "react-icons/bi";
 
 const posthogPlugin: ZudokuPlugin = {
   getHead: () => {
@@ -16,6 +19,7 @@ const posthogPlugin: ZudokuPlugin = {
 
 const config: ZudokuConfig = {
   site: {
+    title: "Cloud Slicer Documentation",
     logo: {
       src: { light: "/logo-light.svg", dark: "/logo-dark.svg" },
       alt: "Cloud Slicer Docs",
@@ -105,6 +109,34 @@ const config: ZudokuConfig = {
       path: "/api",
     },
   ],
+  docs: {
+    defaultOptions: {
+      suggestEdit: {
+        url: "https://github.com/Cloud-Slicer/cloud-slicer-docs",
+        text: "Edit this page",
+      },
+    },
+  },
+  slots: {
+    "head-navigation-end": () => (
+      <div className="flex items-center gap-1">
+        <Button variant="ghost" size="icon" asChild>
+          <a
+            href="https://github.com/Cloud-Slicer/cloud-slicer-docs"
+            target="_blank"
+          >
+            <BiLogoGithub className="w-5 h-5" />
+          </a>
+        </Button>
+        <Button variant="ghost" size="icon" asChild>
+          <a href="https://discord.gg/CVmtSMVmVs" target="_blank">
+            <FaDiscord className="w-5 h-5" />
+          </a>
+        </Button>
+        <div className="h-8 mr-2 border-l border-[0.5px] border-white-400 dark:border-gray-500" />
+      </div>
+    ),
+  },
   metadata: {
     title: "Cloud Slicer Docs",
     description:
