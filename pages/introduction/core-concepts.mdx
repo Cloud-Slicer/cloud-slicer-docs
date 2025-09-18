@@ -32,7 +32,7 @@ If you are familiar with Three JS, you can calculate this with Javascript on the
 
 Upload, download, and delete STL files to Cloud Slicer:
 - **Upload ID:** `GET /file/upload-id` - Get an **upload_id** to upload a new STL file with the `public upload` route.
-- **Public Upload:** `POST /file/public/{upload-id}` - You will use this on your client side to upload the file directly to our storage.
+- **Public Upload:** `POST /file/public/{upload-id}` - This route does **NOT** require authentication. Use this on your client side to upload the file directly to our storage.
     :::tip
     Using the `Public Upload` route lets you avoid having to route large files through your backend server.  This route uses the **upload_id** you generated earlier to securely upload an STL file and prevent any CORS errors with the Cloud Slicer API.
     :::
