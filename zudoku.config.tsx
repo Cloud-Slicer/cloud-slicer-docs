@@ -36,7 +36,7 @@ const config: ZudokuConfig = {
     },
   },
   theme: {
-    registryUrl: "https://tweakcn.com/r/themes/violet-bloom.json",
+    registryUrl: "https://tweakcn.com/r/themes/cmiiaqs7p000f04l75mnnd0dz",
     fonts: {
       sans: "Inter",
       serif: "Merriweather",
