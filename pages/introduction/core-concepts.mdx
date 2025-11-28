@@ -5,7 +5,7 @@ description: "Understand the foundational ideas behind the Cloud Slicer API."
 
 This page introduces the foundational ideas and patterns that power the platform. Understanding these concepts will help you get the most out of the API and build robust integrations for 3D printing workflows.
 
-## 1. Authentication & Security
+## Authentication & Security
 
 All API endpoints require authentication using a Bearer JWT token. You generate tokens from your Cloud Slicer dashboard and include them in the `Authorization` header of every request.
 
@@ -13,47 +13,59 @@ All API endpoints require authentication using a Bearer JWT token. You generate 
 **Reminder:** Keep your API tokens secure. Never share them publicly or commit them to version control.
 :::
 
-## 2. Account Management
+<Stepper>
+## API Structure
 
-Manage your account and uploads through dedicated endpoints:
-- `GET /user` Retrieve your account details
-- `GET /user/uploads` List all of the files you've uploaded to your account. These are listed from newest to oldest.
+    1. ## Account Management
 
-## 3. Part Info
+        Manage your account and uploads through dedicated endpoints:
+        - `GET /user` Retrieve your account details
+        - `GET /user/uploads` List all of the files you've uploaded to your account. These are listed from newest to oldest.
 
-Check if your models are printable and get part dimensions:
-- `POST /printability/{file_id}` Gets measurements of the uploaded file in order to check that the part will fit in the printer before your generate a quote.
+    2. ## Part Info
 
-:::tip
-If you are familiar with Three JS, you can calculate this with Javascript on the client side of your web app, bypassing the need to use this endpoint.  This is provided as an alternative to give you more options.
-:::
+        Check if your models are printable and get part dimensions:
+        - `POST /printability/{file_id}` Gets measurements of the uploaded file in order to check that the part will fit in the printer before your generate a quote.
 
-## 4. Quote Operations
+        :::tip
+        If you are familiar with Three JS, you can calculate this with Javascript on the client side of your web app, bypassing the need to use this endpoint.  This is provided as an alternative to give you more options.
+        :::
 
-Upload, download, and delete STL files to Cloud Slicer:
-- **Upload ID:** `GET /file/upload-id` - Get an **upload_id** to upload a new STL file with the `public upload` route.
-- **Public Upload:** `POST /file/public/{upload-id}` - This route does **NOT** require authentication. Use this on your client side to upload the file directly to our storage.
-    :::tip
-    Using the `Public Upload` route lets you avoid having to route large files through your backend server.  This route uses the **upload_id** you generated earlier to securely upload an STL file and prevent any CORS errors with the Cloud Slicer API.
-    :::
-- **Upload:** `POST /file` — Upload a new STL file *(this should only be done from the server side to prevent exposing your token, see above)*
-- **Download:** `GET /file/{file_id}` — Retrieve a file per its **file_id**
-- **Delete:** `DELETE /file/{file_id}` — Remove a file you no longer need per its **file_id**
-- **Quote:** `POST /file/quote/{file_id}` — Generate an instant quote for a given STL file with a printer profile per its **file_id**.
+    3. ## File Operations
+
+        Upload, download, and delete STL files to Cloud Slicer:
+        - **Create Upload ID:** `GET /file/upload-id` - Get an **upload_id** to upload a new STL file with the `public upload` route.
+        - **Public Upload File:** `POST /file/public/{upload_id}` - This route does **NOT** require authentication. Use this on your client side to upload the file directly to our storage.
+            :::tip
+            Using the `Public Upload` route lets you avoid having to route large files through your backend server.  This route uses the **upload_id** you generated earlier to securely upload an STL file and prevent any CORS errors with the Cloud Slicer API.
+            :::
+        - **Upload File:** `POST /file` — Upload a new STL file *(this should only be done from the server side to prevent exposing your token, see above)*
+        - **Download File:** `GET /file/{file_id}` — Retrieve a file per its **file_id**
+        - **Delete:** `DELETE /file/{file_id}` — Remove a file you no longer need per its **file_id**
+
+    4. ## Quote Operations
+
+        Create, retrieve, delete, download quotes for your 3D prints:
+        - **Quote File:** `POST /quote/{file_id}` - Create an instant quote on an uploaded file given its **file_id**.  Returns a **quote_id**.
+        - **Get Quote Record:** `GET /quote/{quote_id}` - Retrieve a quote record given its **quote_id** you received when creating the quote on the `/quote/{file_id}` route.
+        - **Delete Quote:** `DELETE /quote/{quote_id}` — Delete a quote record along with its G-code file per its **quote_id**
+        - **Download .gcode:** `GET /quote/gcode/{quote_id}` — Download the generated G-code file for the quote per its **quote_id**
+
+</Stepper>
 
 ---
 
-## 5. Printer & Quote profiles
+## Printer & Quote profiles
 
 Generating instant quotes for your 3D prints:
 - `printer_config` This allows you to configure a profile that matches your printer so you can dial in your instant quote accuracy for print time and material usage.
 - `quote_config` This allows you to create a custom pricig profile to match your business needs.  You can set your own material costs, hourly rates, base cost (think of this as a minumum spend), and your currency.
 
-## 6. Slicing & G-code Generation
+## Slicing & G-code Generation
 
-Slice STL files with a POST request to the `/file` route to generate the G-code for your .stl file based off of the `printer_config` you have provided.  Using G-code as the source of truth allows you to get the most accurate cost and material usage estimates possible.
+Each quote request generates G-code for your .stl, .3mf, or .obja file based off of the `printer_config` you have provided.  Using G-code as the source of truth allows you to get the most accurate cost and material usage estimates possible.
 
-## 7. RESTful, Versioned API
+## RESTful, Versioned API
 
 - All endpoints are versioned (e.g., `/v1/`)
 - Uses standard HTTP protocols: `GET`, `POST`, `DELETE`, `PUT`

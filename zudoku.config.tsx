@@ -1,6 +1,6 @@
 import type { ZudokuConfig, ZudokuPlugin } from "zudoku";
 import { Button } from "zudoku/ui/Button.js";
-import { FaDiscord } from "react-icons/fa";
+import { FaDiscord, FaHome } from "react-icons/fa";
 import { BiLogoGithub } from "react-icons/bi";
 
 const posthogPlugin: ZudokuPlugin = {
@@ -28,7 +28,7 @@ const config: ZudokuConfig = {
     banner: {
       message: (
         <div className="flex justify-center items-center gap-2">
-          Welcome to the Cloud Slicer's BETA Documentation! ⏳
+          Welcome to the Cloud Slicer's BETA Documentation! 🧪
         </div>
       ),
       color: "#b366ff",
@@ -36,7 +36,7 @@ const config: ZudokuConfig = {
     },
   },
   theme: {
-    registryUrl: "https://tweakcn.com/r/themes/cmfn1g81u000004l12zk01rut",
+    registryUrl: "https://tweakcn.com/r/themes/violet-bloom.json",
     fonts: {
       sans: "Inter",
       serif: "Merriweather",
@@ -125,15 +125,20 @@ const config: ZudokuConfig = {
             href="https://github.com/Cloud-Slicer/cloud-slicer-docs"
             target="_blank"
           >
-            <BiLogoGithub className="w-5 h-5" />
+            <BiLogoGithub className="size-5" />
           </a>
         </Button>
         <Button variant="ghost" size="icon" asChild>
           <a href="https://discord.gg/CVmtSMVmVs" target="_blank">
-            <FaDiscord className="w-5 h-5" />
+            <FaDiscord className="size-5" />
           </a>
         </Button>
         <div className="h-8 mr-2 border-l border-[0.5px] border-white-400 dark:border-gray-500" />
+        <Button variant="ghost" size="icon" asChild>
+          <a href="https://cloudslicer3d.com" target="_blank">
+            <FaHome className="size-5" />
+          </a>
+        </Button>
       </div>
     ),
   },

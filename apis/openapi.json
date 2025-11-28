@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Cloud Slicer API",
-    "description": "This API provides secure, cloud-based 3D printing services, including user authentication, STL file upload and management, instant quoting, printability checks, and slicing operations. Authenticated users can manage their 3D models, receive automated price quotes, and verify if their designs fit specific printer dimensions—all through a modern, token-based REST interface.",
+    "description": "This API provides secure, cloud-based 3D printing services, including user authentication, 3D file upload and management, instant quoting, printability checks, and slicing operations. Authenticated users can manage their 3D models, receive automated price quotes, and verify if their designs fit specific printer dimensions—all through a modern, token-based REST interface.",
     "version": "0.1.0"
   },
   "servers": [
@@ -26,7 +26,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AccountInfoResponse"
+                  "$ref": "#/components/schemas/PublicAccountInfoResponse"
                 }
               }
             }
@@ -76,7 +76,7 @@
           "Part Info"
         ],
         "summary": "Check Model Printability",
-        "description": "Check if an STL model fits on the print bed given the dimensions.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can gernerate a token from the Cloud Slicer website in your account settings.\nAccepts the STL file ID and printer bed dimensions (mm) as query parameters.\nReturns printability status and model/printer dimensions.",
+        "description": "Check if a model fits on the print bed given the dimensions.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can gernerate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID and printer bed dimensions (mm) as query parameters.\nReturns printability status and model/printer dimensions.",
         "operationId": "check_model_printability_v1_printability__file_id__post",
         "security": [
           {
@@ -90,10 +90,10 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the STL file (this can be found in the upload response)",
+              "description": "ID for the 3D model file (this can be found in the upload response)",
               "title": "File Id"
             },
-            "description": "ID for the STL file (this can be found in the upload response)"
+            "description": "ID for the 3D model file (this can be found in the upload response)"
           }
         ],
         "requestBody": {
@@ -102,9 +102,9 @@
               "schema": {
                 "$ref": "#/components/schemas/BedDimensions",
                 "default": {
-                  "x": 210,
-                  "y": 210,
-                  "z": 250
+                  "x": 210.0,
+                  "y": 210.0,
+                  "z": 250.0
                 }
               }
             }
@@ -137,10 +137,10 @@
     "/v1/file/upload-id": {
       "get": {
         "tags": [
-          "Quote"
+          "File"
         ],
         "summary": "Get Upload Id",
-        "description": "Generate an upload ID for uploading an STL file to the database.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nReturns an upload id that can be used with the /file/public/{upload_id} endpoint\nto upload files without authentication. The upload id expires after 1 hour.\n\nWorkflow:\n1. Call this endpoint to get an upload_id\n2. Use the upload_id with POST /file/public/{upload_id} to upload the file",
+        "description": "Generate an upload ID for uploading a file to the database.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nReturns an upload id that can be used with the /file/public/{upload_id} endpoint\nto upload files without authentication. The upload id expires after 1 hour.\n\nWorkflow:\n1. Call this endpoint to get an upload_id\n2. Use the upload_id with POST /file/public/{upload_id} to upload the file",
         "operationId": "get_upload_id_v1_file_upload_id_get",
         "responses": {
           "200": {
@@ -164,10 +164,10 @@
     "/v1/file/public/{upload_id}": {
       "post": {
         "tags": [
-          "Quote"
+          "File"
         ],
         "summary": "Upload Stl Public",
-        "description": "Upload an STL file using a temporary upload ID (no authentication required).\n\nThis endpoint allows anonymous uploads using a temporary upload ID obtained\nfrom the /upload endpoint. The upload ID is single-use and expires after 1 hour.",
+        "description": "Upload a file using a temporary upload ID (no authentication required).\n\nThis endpoint allows anonymous uploads using a temporary upload ID obtained\nfrom the /upload endpoint. The upload ID is single-use and expires after 1 hour.",
         "operationId": "upload_stl_public_v1_file_public__upload_id__post",
         "parameters": [
           {
@@ -198,7 +198,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/STLResponse"
+                  "$ref": "#/components/schemas/FileUploadResponse"
                 }
               }
             }
@@ -219,10 +219,10 @@
     "/v1/file": {
       "post": {
         "tags": [
-          "Quote"
+          "File"
         ],
         "summary": "Upload Stl",
-        "description": "Upload an STL file to the database for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts an STL file upload. The file must have a .stl extension.\nReturns details about the uploaded file, including its ID and storage path.",
+        "description": "Upload a file to the database for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nThe upload must be an .obj, .3mf, or .stl file.\nReturns details about the uploaded file, including its ID and storage path.",
         "operationId": "upload_stl_v1_file_post",
         "requestBody": {
           "content": {
@@ -240,7 +240,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/STLResponse"
+                  "$ref": "#/components/schemas/FileUploadResponse"
                 }
               }
             }
@@ -266,11 +266,11 @@
     "/v1/file/{file_id}": {
       "get": {
         "tags": [
-          "Quote"
+          "File"
         ],
-        "summary": "Download Stl",
-        "description": "Download an uploaded STL file for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the STL file ID as a query parameter.\nReturns the STL file as a download if the user is authorized and the file exists.",
-        "operationId": "download_stl_v1_file__file_id__get",
+        "summary": "Download File",
+        "description": "Download an uploaded file for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns the file as a download if the user is authorized and the file exists.",
+        "operationId": "download_file_v1_file__file_id__get",
         "security": [
           {
             "HTTPBearer": []
@@ -307,10 +307,10 @@
       },
       "delete": {
         "tags": [
-          "Quote"
+          "File"
         ],
         "summary": "Delete Stl",
-        "description": "Deletes an uploaded STL file. **NOTE: This will also delete the quotes associated with this file**\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the STL file ID as a query parameter.\nReturns a success message and the path of the removed file if deletion is successful.",
+        "description": "Deletes an uploaded file. **NOTE: This will also delete the quotes associated with this file**\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns a deleted message and the path of the removed file if deletion is successful.",
         "operationId": "delete_stl_v1_file__file_id__delete",
         "security": [
           {
@@ -336,7 +336,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeleteSTLResponse"
+                  "$ref": "#/components/schemas/DeleteFileResponse"
                 }
               }
             }
@@ -357,10 +357,10 @@
     "/v1/file/quote/{file_id}": {
       "post": {
         "tags": [
-          "Quote"
+          "File"
         ],
         "summary": "Quote Model",
-        "description": "Slice an uploaded STL file and generate a price quote for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the STL file ID as a query parameter and printer/quote configuration as JSON body.\nReturns a quote with price, estimated print time, and filament usage if the part fits the printer.",
+        "description": "**Depreciated: switch to /quote/{file_id} route instead** Slice an uploaded file and generate an instant quote.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the uploaded file ID as a query parameter and printer/quote configuration as JSON body.\nReturns a quote with price, estimated print time, and filament usage if the part fits the printer.",
         "operationId": "quote_model_v1_file_quote__file_id__post",
         "security": [
           {
@@ -374,10 +374,10 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the STL file (this can be found in the upload response)",
+              "description": "ID for the uploaded file (this can be found in the upload response)",
               "title": "File Id"
             },
-            "description": "ID for the STL file (this can be found in the upload response)"
+            "description": "ID for the uploaded file (this can be found in the upload response)"
           }
         ],
         "requestBody": {
@@ -408,7 +408,7 @@
                     "currency": "USD",
                     "cost_per_hour": 2.5,
                     "cost_per_gram": 0.02,
-                    "base_price": 5
+                    "base_price": 5.0
                   }
                 }
               }
@@ -438,59 +438,236 @@
           }
         }
       }
+    },
+    "/v1/quote/{file_id}": {
+      "post": {
+        "tags": [
+          "Quote"
+        ],
+        "summary": "Quote Model",
+        "description": "Slice an uploaded file and generate an instant quote.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the uploaded file ID as a query parameter and printer/quote configuration as JSON body.\nReturns a quote with price, estimated print time, and filament usage if the part fits the printer.",
+        "operationId": "quote_model_v1_quote__file_id__post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the uploaded file (this can be found in the upload response)",
+              "title": "File Id"
+            },
+            "description": "ID for the uploaded file (this can be found in the upload response)"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileConfig",
+                "default": {
+                  "printer_config": {
+                    "bed_size_x": 210,
+                    "bed_size_y": 210,
+                    "bed_size_z": 250,
+                    "print_speed": 100,
+                    "first_layer_speed": 50,
+                    "nozzle_diameter": 0.4,
+                    "layer_height": 0.2,
+                    "perimeters": 3,
+                    "top_solid_layers": 3,
+                    "bottom_solid_layers": 3,
+                    "fill_density": 20,
+                    "support_material": false,
+                    "color": "white",
+                    "filament_type": "PLA",
+                    "temperature": 210,
+                    "bed_temperature": 60
+                  },
+                  "quote_config": {
+                    "currency": "USD",
+                    "cost_per_hour": 2.5,
+                    "cost_per_gram": 0.02,
+                    "base_price": 5.0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/quote/{quote_id}": {
+      "get": {
+        "tags": [
+          "Quote"
+        ],
+        "summary": "Get Quote Record",
+        "description": "Retrieve a quote record by its ID.\n\nRequires a valid API token in the Authorization header (Bearer scheme).",
+        "operationId": "get_quote_record_v1_quote__quote_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "quote_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the uploaded file (this can be found in the upload response)",
+              "title": "Quote Id"
+            },
+            "description": "ID for the uploaded file (this can be found in the upload response)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteDetailsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Quote"
+        ],
+        "summary": "Delete Quote",
+        "description": "Deletes the quote record and the associated .gcode file for the given Quote ID.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns a success message and the path of the removed file if deletion is successful.",
+        "operationId": "delete_quote_v1_quote__quote_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "quote_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the quote to delete",
+              "title": "Quote Id"
+            },
+            "description": "ID for the quote to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteQuoteResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/quote/gcode/{quote_id}": {
+      "get": {
+        "tags": [
+          "Quote"
+        ],
+        "summary": "Download Quote Gcode",
+        "description": "Retrieve the .gcode file for the quote that matches **quote_id**.\n\nRequires a valid API token in the Authorization header (Bearer scheme).",
+        "operationId": "download_quote_gcode_v1_quote_gcode__quote_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "quote_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the generated quote (this can be found in the quote response)",
+              "title": "Quote Id"
+            },
+            "description": "ID for the generated quote (this can be found in the quote response)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
-      "AccountInfoResponse": {
-        "properties": {
-          "user_id": {
-            "type": "string",
-            "title": "User Id"
-          },
-          "stripe_id": {
-            "type": "string",
-            "title": "Stripe Id"
-          },
-          "plan": {
-            "type": "string",
-            "title": "Plan"
-          },
-          "email": {
-            "type": "string",
-            "title": "Email"
-          },
-          "user_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "User Name"
-          },
-          "created_at": {
-            "type": "string",
-            "title": "Created At"
-          },
-          "data_usage": {
-            "$ref": "#/components/schemas/DataUsageResponse"
-          }
-        },
-        "type": "object",
-        "required": [
-          "user_id",
-          "stripe_id",
-          "plan",
-          "email",
-          "created_at",
-          "data_usage"
-        ],
-        "title": "AccountInfoResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user.\n\n    stripe_id (str): The Stripe customer ID associated with the user.\n\n    plan (str): The subscription plan of the user.\n\n    email (str): The email address of the user.\n\n    user_name (str): The username of the user.\n\n    created_at (str): ISO 8601 timestamp of when the account was created."
-      },
       "BedDimensions": {
         "properties": {
           "x": {
@@ -519,7 +696,7 @@
             "type": "string",
             "format": "binary",
             "title": "File",
-            "description": "STL file to upload"
+            "description": "File to upload"
           }
         },
         "type": "object",
@@ -560,9 +737,9 @@
             "type": "number",
             "title": "Storage Limit"
           },
-          "stl_files": {
+          "files": {
             "type": "integer",
-            "title": "Stl Files"
+            "title": "Files"
           },
           "days_till_reset": {
             "type": "integer",
@@ -583,15 +760,15 @@
           "quotes_limit",
           "storage_used",
           "storage_limit",
-          "stl_files",
+          "files",
           "days_till_reset",
           "reset_date",
           "last_updated"
         ],
         "title": "DataUsageResponse",
-        "description": "**Response schema:**\n\n    quotes_used (int): The number of quotes used by the user.\n\n    quotes_limit (int): The maximum number of quotes allowed for the user.\n\n    storage_used (float): The amount of storage used by the user in megabytes (MB).\n\n    storage_limit (float): The maximum storage limit for the user in megabytes (MB).\n\n    stl_files (int): The number of STL files uploaded by the user.\n\n    days_till_reset (int): The number of days until the next reset of usage limits.\n\n    reset_date (str): The date when the usage limits will reset in ISO 8601 format.\n\n    last_updated (str): The timestamp of the last update to the usage data in ISO 8601 format."
+        "description": "**Response schema:**\n\n    quotes_used (int): The number of quotes used by the user.\n\n    quotes_limit (int): The maximum number of quotes allowed for the user.\n\n    storage_used (float): The amount of storage used by the user in megabytes (MB).\n\n    storage_limit (float): The maximum storage limit for the user in megabytes (MB).\n\n    files (int): The number of files uploaded by the user.\n\n    days_till_reset (int): The number of days until the next reset of usage limits.\n\n    reset_date (str): The date when the usage limits will reset in ISO 8601 format.\n\n    last_updated (str): The timestamp of the last update to the usage data in ISO 8601 format."
       },
-      "DeleteSTLResponse": {
+      "DeleteFileResponse": {
         "properties": {
           "user_id": {
             "type": "string",
@@ -622,8 +799,42 @@
           "file_id",
           "removed_file_path"
         ],
-        "title": "DeleteSTLResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated.\n\n    removed_file_path (str): The file path to the STL file that was removed from cloud storage."
+        "title": "DeleteFileResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated.\n\n    removed_file_path (str): The file path to the upload that was removed from cloud storage."
+      },
+      "DeleteQuoteResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "quote_id": {
+            "type": "string",
+            "title": "Quote Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "removed_gcode_path": {
+            "type": "string",
+            "title": "Removed Gcode Path"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "quote_id",
+          "status",
+          "timestamp",
+          "removed_gcode_path"
+        ],
+        "title": "DeleteQuoteResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    quote_id (str): The unique identifier of the quote in cloud storage.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated.\n\n    removed_gcode_path (str): The file path to the upload that was removed from cloud storage."
       },
       "FileUploadLink": {
         "properties": {
@@ -652,7 +863,51 @@
           "timestamp"
         ],
         "title": "FileUploadLink",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    upload_id (str): The unique identifier of for the upload session.\n\n    file_id (str): The unique identifier of the uploaded STL file.\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded."
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    upload_id (str): The unique identifier of for the upload session.\n\n    file_id (str): The unique identifier of the uploaded file.\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded."
+      },
+      "FileUploadResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "file_id": {
+            "type": "string",
+            "title": "File Id"
+          },
+          "file_path": {
+            "type": "string",
+            "title": "File Path"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "file_name": {
+            "type": "string",
+            "title": "File Name"
+          },
+          "file_size": {
+            "type": "number",
+            "title": "File Size"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "file_id",
+          "file_path",
+          "status",
+          "timestamp",
+          "file_name",
+          "file_size"
+        ],
+        "title": "FileUploadResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    file_id (str): The unique identifier of the uploaded file.\n\n    file_path (str): The file path to the uploaded file in cloud storage.\n\n    status (str): The status of the upload (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded.\n\n    file_name (str): The name of the uploaded file.\n\n    file_size (float): The size of the uploaded file in megabytes (MB)."
       },
       "HTTPValidationError": {
         "properties": {
@@ -673,9 +928,9 @@
             "type": "string",
             "title": "User Id"
           },
-          "stl_file_path": {
+          "file_path": {
             "type": "string",
-            "title": "Stl File Path"
+            "title": "File Path"
           },
           "fits_printer": {
             "type": "boolean",
@@ -691,13 +946,13 @@
         "type": "object",
         "required": [
           "user_id",
-          "stl_file_path",
+          "file_path",
           "fits_printer",
           "model_dimensions",
           "printer_dimensions"
         ],
         "title": "PrintabilityResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    stl_file_path (str): The file path to the STL file in cloud storage.\n\n    fits_printer (bool): Whether the model fits within the printer's build volume.\n\n    model_dimensions (dict): Dimensions of the model in mm (x, y, z).\n\n    printer_dimensions (dict): Dimensions of the printer's build volume in mm (x, y, z)."
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    file_path (str): The file path to the 3D model file in cloud storage.\n\n    fits_printer (bool): Whether the model fits within the printer's build volume.\n\n    model_dimensions (dict): Dimensions of the model in mm (x, y, z).\n\n    printer_dimensions (dict): Dimensions of the printer's build volume in mm (x, y, z)."
       },
       "PrinterConfig": {
         "properties": {
@@ -763,8 +1018,8 @@
           },
           "fill_density": {
             "type": "integer",
-            "maximum": 100,
-            "minimum": 0,
+            "maximum": 100.0,
+            "minimum": 0.0,
             "title": "Fill Density",
             "description": "Infill density percentage (0-100)",
             "default": 20
@@ -818,6 +1073,45 @@
         "title": "ProfileConfig",
         "description": "**Input schema:**\n\n    printer_config (PrinterConfig): Printer configuration settings.\n\n    quote_config (QuoteConfig): Quote configuration settings."
       },
+      "PublicAccountInfoResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "user_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Name"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "data_usage": {
+            "$ref": "#/components/schemas/DataUsageResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "email",
+          "created_at",
+          "data_usage"
+        ],
+        "title": "PublicAccountInfoResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user.\n\n    email (str): The email address of the user.\n\n    user_name (str): The username of the user.\n\n    created_at (str): ISO 8601 timestamp of when the account was created."
+      },
       "QuoteConfig": {
         "properties": {
           "currency": {
@@ -842,14 +1136,18 @@
             "type": "number",
             "title": "Base Price",
             "description": "Base price for the print job",
-            "default": 5
+            "default": 5.0
           }
         },
         "type": "object",
         "title": "QuoteConfig"
       },
-      "QuoteResponse": {
+      "QuoteDetailsResponse": {
         "properties": {
+          "quote_id": {
+            "type": "string",
+            "title": "Quote Id"
+          },
           "user_id": {
             "type": "string",
             "title": "User Id"
@@ -866,13 +1164,126 @@
             "type": "number",
             "title": "Quote Duration"
           },
-          "stl_file_path": {
+          "file_path": {
             "type": "string",
-            "title": "Stl File Path"
+            "title": "File Path"
           },
-          "currency": {
+          "gcode_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gcode Path"
+          },
+          "gcode_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gcode Name"
+          },
+          "gcode_file_size": {
+            "type": "number",
+            "title": "Gcode File Size"
+          },
+          "estimated_time": {
             "type": "string",
-            "title": "Currency"
+            "title": "Estimated Time"
+          },
+          "estimated_time_seconds": {
+            "type": "integer",
+            "title": "Estimated Time Seconds"
+          },
+          "filament_weight": {
+            "type": "number",
+            "title": "Filament Weight"
+          },
+          "filament_cost": {
+            "type": "number",
+            "title": "Filament Cost"
+          },
+          "total_price": {
+            "type": "number",
+            "title": "Total Price"
+          },
+          "quote_config": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Quote Config"
+          },
+          "printer_config": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Printer Config"
+          }
+        },
+        "type": "object",
+        "required": [
+          "quote_id",
+          "user_id",
+          "status",
+          "timestamp",
+          "quote_duration",
+          "file_path",
+          "gcode_path",
+          "gcode_name",
+          "gcode_file_size",
+          "estimated_time",
+          "estimated_time_seconds",
+          "filament_weight",
+          "filament_cost",
+          "total_price",
+          "quote_config",
+          "printer_config"
+        ],
+        "title": "QuoteDetailsResponse",
+        "description": "**Response schema:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    quote_duration (float): The duration of the quote in seconds.\n\n    file_path (str): The file path to the file in cloud storage (will need this for future requests).\n\n    gcode_path (str): The file path to the generated G-code file in cloud storage.\n\n    gcode_name (str): The name of the generated G-code file.\n\n    gcode_file_size (float): The size of the generated G-code file in megabytes (MB).\n\n    estimated_time (str): The estimated print time.\n\n    estimated_time_seconds (int): The estimated print time in seconds.\n\n    filament_weight (float): The weight of filament used in grams.\n\n    filament_cost (float): The cost of filament used.\n\n    total_price (float): The total price for the print job."
+      },
+      "QuoteResponse": {
+        "properties": {
+          "quote_id": {
+            "type": "string",
+            "title": "Quote Id"
+          },
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "quote_duration": {
+            "type": "number",
+            "title": "Quote Duration"
+          },
+          "file_path": {
+            "type": "string",
+            "title": "File Path"
+          },
+          "gcode_path": {
+            "type": "string",
+            "title": "Gcode Path"
+          },
+          "gcode_name": {
+            "type": "string",
+            "title": "Gcode Name"
+          },
+          "gcode_file_size": {
+            "type": "number",
+            "title": "Gcode File Size"
           },
           "estimated_time": {
             "type": "string",
@@ -897,12 +1308,15 @@
         },
         "type": "object",
         "required": [
+          "quote_id",
           "user_id",
           "status",
           "timestamp",
           "quote_duration",
-          "stl_file_path",
-          "currency",
+          "file_path",
+          "gcode_path",
+          "gcode_name",
+          "gcode_file_size",
           "estimated_time",
           "estimated_time_seconds",
           "filament_weight",
@@ -910,51 +1324,7 @@
           "total_price"
         ],
         "title": "QuoteResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    quote_duration (float): The duration of the quote in seconds.\n\n    stl_file_path (str): The file path to the STL file in cloud storage (will need this for future requests).\n\n    currency (str): The currency for the quote.\n\n    estimated_time (str): The estimated print time.\n\n    estimated_time_seconds (int): The estimated print time in seconds.\n\n    filament_weight (float): The weight of filament used in grams.\n\n    filament_cost (float): The cost of filament used.\n\n    total_price (float): The total price for the print job."
-      },
-      "STLResponse": {
-        "properties": {
-          "user_id": {
-            "type": "string",
-            "title": "User Id"
-          },
-          "file_id": {
-            "type": "string",
-            "title": "File Id"
-          },
-          "stl_file_path": {
-            "type": "string",
-            "title": "Stl File Path"
-          },
-          "status": {
-            "type": "string",
-            "title": "Status"
-          },
-          "timestamp": {
-            "type": "string",
-            "title": "Timestamp"
-          },
-          "file_name": {
-            "type": "string",
-            "title": "File Name"
-          },
-          "file_size": {
-            "type": "number",
-            "title": "File Size"
-          }
-        },
-        "type": "object",
-        "required": [
-          "user_id",
-          "file_id",
-          "stl_file_path",
-          "status",
-          "timestamp",
-          "file_name",
-          "file_size"
-        ],
-        "title": "STLResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    file_id (str): The unique identifier of the uploaded STL file.\n\n    stl_file_path (str): The file path to the uploaded STL file in cloud storage.\n\n    status (str): The status of the upload (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded.\n\n    file_name (str): The name of the uploaded STL file.\n\n    file_size (float): The size of the uploaded STL file in megabytes (MB)."
+        "description": "**Response schema:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    quote_duration (float): The duration of the quote in seconds.\n\n    file_path (str): The file path to the file in cloud storage (will need this for future requests).\n\n    gcode_path (str): The file path to the generated G-code file in cloud storage.\n\n    gcode_name (str): The name of the generated G-code file.\n\n    gcode_file_size (float): The size of the generated G-code file in megabytes (MB).\n\n    estimated_time (str): The estimated print time.\n\n    estimated_time_seconds (int): The estimated print time in seconds.\n\n    filament_weight (float): The weight of filament used in grams.\n\n    filament_cost (float): The cost of filament used.\n\n    total_price (float): The total price for the print job."
       },
       "UploadRecordResponse": {
         "properties": {
@@ -966,9 +1336,9 @@
             "type": "string",
             "title": "File Id"
           },
-          "stl_file_path": {
+          "file_path": {
             "type": "string",
-            "title": "Stl File Path"
+            "title": "File Path"
           },
           "status": {
             "type": "string",
@@ -991,14 +1361,14 @@
         "required": [
           "user_id",
           "file_id",
-          "stl_file_path",
+          "file_path",
           "status",
           "timestamp",
           "file_name",
           "file_size"
         ],
         "title": "UploadRecordResponse",
-        "description": "**Response schema:**\n\n    id (str): The unique identifier of the upload record.\n\n    file_id (str): The unique identifier of the STL file in cloud storage.\n\n    stl_file_path (str): The file path to the STL file in cloud storage.\n\n    status (str): The status of the upload (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded.\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    file_name (str): The name of the STL file.\n\n    file_size (float): The size of the STL file in megabytes (MB)."
+        "description": "**Response schema:**\n\n    id (str): The unique identifier of the upload record.\n\n    file_id (str): The unique identifier of the file in cloud storage.\n\n    file_path (str): The file path to the file in cloud storage.\n\n    status (str): The status of the upload (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded.\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    file_name (str): The name of the file.\n\n    file_size (float): The size of the file in megabytes (MB)."
       },
       "ValidationError": {
         "properties": {
@@ -1061,8 +1431,7 @@
     "securitySchemes": {
       "HTTPBearer": {
         "type": "http",
-        "scheme": "bearer",
-        "description": "Enter your Cloud Slicer API token. You can generate one from your account settings on the Cloud Slicer website."
+        "scheme": "bearer"
       }
     }
   },
@@ -1076,8 +1445,12 @@
       "description": "Operations related to 3D model information, including printability checks. Requires Cloud Slicer Token"
     },
     {
+      "name": "File",
+      "description": "Operations for uploading and managing .stl, .obj, and .3mf files. Requires Cloud Slicer Token"
+    },
+    {
       "name": "Quote",
-      "description": "Operations for generating quotes based on uploaded STL files. Requires Cloud Slicer Token"
+      "description": "Operations for generating quotes and retrieving quote details. Requires Cloud Slicer Token"
     }
   ]
 }
