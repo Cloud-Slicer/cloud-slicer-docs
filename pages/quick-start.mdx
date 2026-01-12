@@ -2,8 +2,18 @@
 title: "Quickstart Guide 🚀"
 description: "Get started with Cloud Slicer API in just a few simple steps"
 ---
+### TLDR Highlevel steps:
+- Create your Cloud Slicer account
+- **[In the Dashboard](https://www.cloudslicer3d.com/dashboard)**:
+   1. Generate an [API token](https://www.cloudslicer3d.com/dashboard/tokens) 
+   2. Create a [filament config](https://www.cloudslicer3d.com/dashboard/filaments/new) profile
+   3. Create your [printer config](https://www.cloudslicer3d.com/dashboard/printers/new) profile
+- **[In the API Playground](https://api.cloudslicer3d.com/docs)**:
+   1. Authenticate with the API in our [Swagger Docs playground](https://api.cloudslicer3d.com/docs)
+   2. Make your first API call to ```/v1/file``` to upload a file
+   3. Make an API call to ```/v1/quote/{file-id}``` using your `file_id`, `printer_id`, and `filament_id` to get a quote for your uploaded file
 
-Get up and running with the Cloud Slicer API in under 5 minutes! Follow these steps to create your account, generate an API token, and start making your first API calls.
+----
 
 <Stepper>
 1. ## Create Your Account ##
@@ -13,7 +23,7 @@ Get up and running with the Cloud Slicer API in under 5 minutes! Follow these st
     3. **Check your email** and click the confirmation link to fully activate your account
 
     :::caution
-    Make sure to confirm your email address or your account will not be fully activated and you will not be able to access the API!
+    **Important:** Make sure to confirm your email address or your account will not be fully activated and you will not be able to access the API!
     :::
 
 2. ## Generate Your API Token ##
@@ -24,9 +34,9 @@ Get up and running with the Cloud Slicer API in under 5 minutes! Follow these st
    4. **Create** a new token by clicking the `New Token` button
    5. **Configure** your token:
    - Give it a **descriptive name** (e.g., "My First Token")
-   - Set the **expiration** in days (leave blank for no expiration)
+   - Set the **expiration** in days OR leave blank for no expiration
       <img 
-         src="/images/quickstart-1.png" 
+         src="/videos/create-token.gif" 
          alt="Cloud Slicer Banner" 
          width="800" 
          height="400"
@@ -36,56 +46,95 @@ Get up and running with the Cloud Slicer API in under 5 minutes! Follow these st
    6. **Copy** the generated token immediately and store it securely
 
    :::caution
-   You will only see the token once! Make sure to copy and save it in a secure location before closing the popup.
+   **Important:** You will only see the token once! Make sure to copy and save it in a secure location before closing the popup.
    :::
 
-3. ## Authenticate with the API ##
+3. ## Create a Printer Config ##
+
+   1. **Click** on the `Printers` tab in the left sidebar
+   2. **Click** the `+` icon in the top right corner
+   3. **Configure** your printer settings to match what you currently have in your local slicer application
+   4. **Save** the printer configuration
+      <img 
+         src="/videos/create-printer-config.gif"
+         alt="Creating a printer config"
+         width="800" 
+         height="400"
+         className='rounded-lg shadow-lg border border-gray-300 dark:border-white-200'
+      />
+
+   :::note
+   **Note**: Keep track of your `printer_id` as you will use this in your API calls.
+   :::
+
+4. ## Create a Filament Config ##
+
+   1. **Click** on the `Filaments` tab in the left sidebar
+   2. **Click** the `+` icon in the top right corner
+   3. **Configure** your filament profile to match what you will use for printing
+   4. **Save** the filament configuration
+      <img 
+         src="/videos/create-filament-config.gif"
+         alt="Creating a filament config"
+         width="800" 
+         height="400"
+         className='rounded-lg shadow-lg border border-gray-300 dark:border-white-200'
+      />
+   
+   :::note
+   **Note**: Hold on to your `filament_id` as you will use this in your API calls.
+   :::
+
+5. ## Authenticate with the API ##
 
    1. **Navigate** to the API playground at [api.cloudslicer3d.com/docs](https://api.cloudslicer3d.com/docs)
    2. **Click** the `lock icon` in the top right corner
    3. **Paste** your JWT token from Step 2 into the authorization field
    4. **Click** `Authorize`
       <img 
-         src="/images/quickstart-2.png" 
+         src="/images/authenticate.png" 
          alt="Cloud Slicer Banner" 
          width="800" 
          height="400"
          className='rounded-lg shadow-lg border border-gray-400 dark:border-white-200'
       />
 
-   🎉 **Congratulations!** You're now authenticated and ready to explore the Cloud Slicer API.
+   **You're now authenticated and ready to explore the Cloud Slicer API.**
 
-4. ## Make Your First API Call ##
+6. ## Make Your First Set of API Calls ##
 
-   Ready to test it out? Try uploading your first STL file:
+   **Upload your first STL file:**
 
    1. **Find** the `POST /v1/file` endpoint in the API documentation
    2. **Expand** the tab to reveal the POST request details
    3. **Upload** an STL file using the `choose file` button to open up your file explorer
-   4. **Execute** the request POST request
+   4. **Execute** the request
+   5. **Copy** the `file_id` from the response
 
-   The response will include a **file ID** that you can use for:
+   **Create your first quote:**
 
-   - **Checking dimensions** and printability
-   - **Generating quotes** for automated instant pricing estimates
-   - **Managing** the uploaded file to save on your cloud storage
-
-   :::tip
-    The `file_id` acts as your key to manage and reference your uploaded files in subsequent API calls.  It is the unique identifier by which all other API calls stem from.
-   :::
-
+   1. **Find** the `POST /v1/quote/{file-id}` endpoint in the API documentation
+   2. **Expand** the tab to reveal the POST request details
+   3. **Add Details**:
+      - Fil in the path parameter with the `file_id` from the previous upload step
+      - Fill in both the `printer_id` and `filament_id` fields in the request body with the IDs created in Steps 3 and 4
+      - Fill in the print settings for your quote
+   4. **Execute** the request
+   5. **Copy** the file_id from the response
+   
+   <img 
+         src="/images/quote_activity.png" 
+         alt="Cloud Slicer Banner" 
+         width="800" 
+         height="400"
+         className='rounded-lg shadow-lg border border-gray-400 dark:border-white-200'
+      />
+   ***You will now see activity in your dashboard since you have uploaded a file and generated a quote***
 </Stepper>
-
-## What's Next?
-
-Now that you're set up, explore these key features:
-
-- **Part Info** - Check if your models are printable
-- **Quote** - Get instant pricing for your prints
-- **Account management** - Manage your uploads and account info
+---
 
 :::info
-All API endpoints require authentication with your Bearer token. Make sure to include it in your requests!
+**Reminder:** All API endpoints require authentication with your Bearer token. Make sure to include it in your requests!
 :::
 
 Need help? Check out our [API Playground](https://api.cloudslicer3d.com/docs) for detailed documentation on all available endpoints.

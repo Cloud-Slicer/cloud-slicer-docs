@@ -75,6 +75,12 @@ const config: ZudokuConfig = {
           items: [
             {
               type: "link",
+              label: "Overview",
+              icon: "book-open",
+              to: "/introduction/overview",
+            },
+            {
+              type: "link",
               label: "Core Concepts",
               icon: "shapes",
               to: "/introduction/core-concepts",
@@ -84,6 +90,20 @@ const config: ZudokuConfig = {
               label: "Authentication",
               icon: "lock",
               to: "/introduction/authentication",
+            },
+          ],
+        },
+        {
+          type: "category",
+          label: "Troubleshooting",
+          icon: "hammer",
+          link: "/troubleshooting/cors-issues",
+          items: [
+            {
+              type: "link",
+              label: "CORS Errors",
+              icon: "lock",
+              to: "/troubleshooting/cors-issues",
             },
           ],
         },
@@ -110,6 +130,8 @@ const config: ZudokuConfig = {
     },
   ],
   docs: {
+    files: "/pages/**/*.{md,mdx}",
+    publishMarkdown: true,
     defaultOptions: {
       suggestEdit: {
         url: "https://github.com/Cloud-Slicer/cloud-slicer-docs",
