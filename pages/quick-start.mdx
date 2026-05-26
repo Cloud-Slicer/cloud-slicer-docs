@@ -129,6 +129,19 @@ description: "Get started with Cloud Slicer API in just a few simple steps"
       - Fill in the path parameter with the `file_id` from the previous upload step
       - Fill in both the `printer_id` and `filament_id` fields in the request body with the IDs created in Steps 3 and 4
       - Optionally tweak the `pricing_config` and `print_settings` — both fall back to sensible defaults if omitted
+
+   <img 
+      src="/videos/payload-builder.gif" 
+      alt="Cloud Slicer Banner" 
+      width="800" 
+      height="400"
+      className='rounded-lg shadow-lg border border-gray-400 dark:border-white-200'
+   />
+
+   :::tip
+   You can use the [payload builder](https://www.cloudslicer3d.com/dashboard/payload-builder) to help you in constructing your request payload as shown above. 👆
+   :::
+
    4. **Execute** the request — you'll get back a `202 Accepted` with a `quote_id`
    5. **Copy** the `quote_id` from the response
 
@@ -140,7 +153,7 @@ description: "Get started with Cloud Slicer API in just a few simple steps"
    4. Once `status` is `"success"`, the response includes `pricing`, `time`, and `files.gcode_path` — download the g-code with `GET /v1/quote/gcode/{quote_id}`
 
    :::note
-   For a step-by-step code walkthrough (Python and TypeScript) of this same flow, see [Creating Quotes](/guides/creating-quotes).
+   For a step-by-step code walkthrough of this same flow, see [Creating Quotes](/guides/creating-quotes).
    :::
 
    <img 
