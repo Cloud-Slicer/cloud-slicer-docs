@@ -77,7 +77,7 @@ We welcome contributions to improve the documentation! If you find errors, uncle
 
 ## Learn More
 
-- [Cloud Slicer API](https://api.cloudslicer3d.com/docs) - API playground and interactive documentation
+- [Cloud Slicer API](https://docs.cloudslicer3d.com/api) - API playground and interactive documentation
 - [Cloud Slicer Website](https://www.cloudslicer3d.com) - Main product website
 - [Zudoku Documentation](https://zudoku.dev/docs) - Learn about the documentation framework
 - [GitHub Discussions](https://github.com/zuplo/zudoku/discussions) - Zudoku community support

@@ -62,34 +62,54 @@ const config: ZudokuConfig = {
       icon: "book",
       items: [
         {
-          type: "link",
+          type: "doc",
           label: "Quick Start",
           icon: "rocket",
-          to: "/quick-start",
+          file: "quick-start",
         },
         {
           type: "category",
           label: "Introduction",
           icon: "book-marked",
-          link: "/introduction/overview",
+          link: "introduction/overview",
           items: [
             {
-              type: "link",
+              type: "doc",
               label: "Overview",
               icon: "book-open",
-              to: "/introduction/overview",
+              file: "introduction/overview",
             },
             {
-              type: "link",
+              type: "doc",
               label: "Core Concepts",
               icon: "shapes",
-              to: "/introduction/core-concepts",
+              file: "introduction/core-concepts",
             },
             {
-              type: "link",
+              type: "doc",
               label: "Authentication",
               icon: "lock",
-              to: "/introduction/authentication",
+              file: "introduction/authentication",
+            },
+          ],
+        },
+        {
+          type: "category",
+          label: "Guides",
+          icon: "book-open-text",
+          link: "guides/managing-files",
+          items: [
+            {
+              type: "doc",
+              label: "Managing Files",
+              icon: "file",
+              file: "guides/managing-files",
+            },
+            {
+              type: "doc",
+              label: "Creating Quotes",
+              icon: "receipt",
+              file: "guides/creating-quotes",
             },
           ],
         },
@@ -97,13 +117,13 @@ const config: ZudokuConfig = {
           type: "category",
           label: "Troubleshooting",
           icon: "hammer",
-          link: "/troubleshooting/cors-issues",
+          link: "troubleshooting/cors-issues",
           items: [
             {
-              type: "link",
+              type: "doc",
               label: "CORS Errors",
               icon: "lock",
-              to: "/troubleshooting/cors-issues",
+              file: "troubleshooting/cors-issues",
             },
           ],
         },
@@ -111,11 +131,35 @@ const config: ZudokuConfig = {
           type: "link",
           icon: "code",
           badge: {
+            label: "new",
+            color: "green",
+          },
+          label: "API Playground",
+          to: "/api",
+        },
+        {
+          type: "link",
+          icon: "file-text",
+          label: "Swagger Docs (Legacy)",
+          to: "https://api.cloudslicer3d.com/docs",
+          target: "_blank",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "API Docs",
+      icon: "code",
+      items: [
+        {
+          type: "link",
+          icon: "play",
+          badge: {
             label: "New",
             color: "indigo",
           },
           label: "API Playground",
-          to: "https://api.cloudslicer3d.com/docs",
+          to: "/api",
         },
       ],
     },
@@ -127,12 +171,16 @@ const config: ZudokuConfig = {
       type: "file",
       input: "./apis/openapi.json",
       path: "/api",
+      options: {
+        disableSecurity: false,
+      },
     },
   ],
   docs: {
     files: "/pages/**/*.{md,mdx}",
     publishMarkdown: true,
     defaultOptions: {
+      copyPage: true,
       suggestEdit: {
         url: "https://github.com/Cloud-Slicer/cloud-slicer-docs",
         text: "Edit this page",

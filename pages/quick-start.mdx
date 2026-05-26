@@ -8,10 +8,11 @@ description: "Get started with Cloud Slicer API in just a few simple steps"
    1. Generate an [API token](https://www.cloudslicer3d.com/dashboard/tokens) 
    2. Create a [filament config](https://www.cloudslicer3d.com/dashboard/filaments/new) profile
    3. Create your [printer config](https://www.cloudslicer3d.com/dashboard/printers/new) profile
-- **[In the API Playground](https://api.cloudslicer3d.com/docs)**:
-   1. Authenticate with the API in our [Swagger Docs playground](https://api.cloudslicer3d.com/docs)
+- **[In the API Playground](https://docs.cloudslicer3d.com/api)**:
+   1. Authenticate with the API in our [API Playground](https://docs.cloudslicer3d.com/api)
    2. Make your first API call to ```/v1/file``` to upload a file
-   3. Make an API call to ```/v1/quote/{file-id}``` using your `file_id`, `printer_id`, and `filament_id` to get a quote for your uploaded file
+   3. Queue a quote with ```POST /v1/quote/queue/{file_id}``` using your `printer_id` and `filament_id`
+   4. Poll ```GET /v1/quote/{quote_id}``` until `status` is `success`, then read the pricing info from the response
 
 ----
 
@@ -87,7 +88,7 @@ description: "Get started with Cloud Slicer API in just a few simple steps"
 
 5. ## Authenticate with the API ##
 
-   1. **Navigate** to the API playground at [api.cloudslicer3d.com/docs](https://api.cloudslicer3d.com/docs)
+   1. **Navigate** to the API playground at [docs.cloudslicer3d.com/api](https://docs.cloudslicer3d.com/api)
    2. **Click** the `lock icon` in the top right corner
    3. **Paste** your JWT token from Step 2 into the authorization field
    4. **Click** `Authorize`
@@ -111,17 +112,30 @@ description: "Get started with Cloud Slicer API in just a few simple steps"
    4. **Execute** the request
    5. **Copy** the `file_id` from the response
 
-   **Create your first quote:**
+   **Queue your first quote:**
 
-   1. **Find** the `POST /v1/quote/{file-id}` endpoint in the API documentation
+   Slicing can take anywhere from a few seconds to a couple of minutes, so quotes are async — you queue a job, then poll until it's ready.
+
+   1. **Find** the `POST /v1/quote/queue/{file_id}` endpoint in the API documentation
    2. **Expand** the tab to reveal the POST request details
    3. **Add Details**:
-      - Fil in the path parameter with the `file_id` from the previous upload step
+      - Fill in the path parameter with the `file_id` from the previous upload step
       - Fill in both the `printer_id` and `filament_id` fields in the request body with the IDs created in Steps 3 and 4
-      - Fill in the print settings for your quote
-   4. **Execute** the request
-   5. **Copy** the file_id from the response
-   
+      - Optionally tweak the `pricing_config` and `print_settings` — both fall back to sensible defaults if omitted
+   4. **Execute** the request — you'll get back a `202 Accepted` with a `quote_id`
+   5. **Copy** the `quote_id` from the response
+
+   **Poll until it's ready:**
+
+   1. **Find** the `GET /v1/quote/{quote_id}` endpoint
+   2. **Paste** the `quote_id` into the path parameter and **Execute**
+   3. **Re-run** every couple of seconds — `status` starts at `"pending"` and ends at `"success"` or `"failed"`
+   4. Once `status` is `"success"`, the response includes `pricing`, `time`, and `files.gcode_path` — download the g-code with `GET /v1/quote/gcode/{quote_id}`
+
+   :::note
+   For a step-by-step code walkthrough (Python and TypeScript) of this same flow, see [Creating Quotes](/guides/creating-quotes).
+   :::
+
    <img 
          src="/images/quote_activity.png" 
          alt="Cloud Slicer Banner" 
@@ -137,4 +151,4 @@ description: "Get started with Cloud Slicer API in just a few simple steps"
 **Reminder:** All API endpoints require authentication with your Bearer token. Make sure to include it in your requests!
 :::
 
-Need help? Check out our [API Playground](https://api.cloudslicer3d.com/docs) for detailed documentation on all available endpoints.
+Need help? Check out our [API Playground](https://docs.cloudslicer3d.com/api) for detailed documentation on all available endpoints.

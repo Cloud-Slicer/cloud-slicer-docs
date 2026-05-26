@@ -1,0 +1,214 @@
+---
+title: "Managing Files"
+description: "Upload, list, download, and delete 3D model files via the Cloud Slicer API"
+---
+
+This guide covers the file lifecycle: how you upload a 3D model, find files you've uploaded before, pull one back down, or delete it. Every request needs your API token from the [Quick Start](/quick-start) in the `Authorization: Bearer ...` header.
+
+## Supported formats
+
+You can upload `.stl`, `.obj`, `.3mf`, `.amf`, `.step`, and `.stp` files, up to **200 MB** each. Filenames cannot contain `\ / { } ^ % [ ] " < > ~ # | & $ @ = ; : + ? , ' ( ) !`.
+
+## Upload a file
+
+`POST /v1/file` accepts a single `multipart/form-data` field named `file`. The response gives you the `file_id` you'll plug into every quote request.
+
+<CodeTabs>
+
+```python
+import requests
+
+API_TOKEN = "YOUR_API_TOKEN"
+BASE_URL = "https://api.cloudslicer3d.com/v1"
+
+with open("3dbenchy.stl", "rb") as f:
+    response = requests.post(
+        f"{BASE_URL}/file",
+        headers={"Authorization": f"Bearer {API_TOKEN}"},
+        files={"file": f},
+    )
+
+response.raise_for_status()
+result = response.json()
+print(result["file_id"])
+```
+
+```typescript
+const API_TOKEN = "YOUR_API_TOKEN";
+const BASE_URL = "https://api.cloudslicer3d.com/v1";
+
+const form = new FormData();
+form.append("file", await fetch("/3dbenchy.stl").then((r) => r.blob()), "3dbenchy.stl");
+
+const response = await fetch(`${BASE_URL}/file`, {
+  method: "POST",
+  headers: { Authorization: `Bearer ${API_TOKEN}` },
+  body: form,
+});
+
+if (!response.ok) throw new Error(await response.text());
+const result = await response.json();
+console.log(result.file_id);
+```
+
+</CodeTabs>
+
+You get back `{ file_id, file_name, file_path, file_size, status, timestamp, user_id }`. Hold onto `file_id` — it's required to create a quote.
+
+## List your files
+
+`GET /v1/file` returns every file you've uploaded, newest first.
+
+<CodeTabs>
+
+```python
+import requests
+
+response = requests.get(
+    "https://api.cloudslicer3d.com/v1/file",
+    headers={"Authorization": f"Bearer {API_TOKEN}"},
+)
+response.raise_for_status()
+
+for record in response.json():
+    print(record["file_id"], record["file_name"], record["file_size"], "MB")
+```
+
+```typescript
+const response = await fetch("https://api.cloudslicer3d.com/v1/file", {
+  headers: { Authorization: `Bearer ${API_TOKEN}` },
+});
+
+const files = await response.json();
+for (const f of files) {
+  console.log(f.file_id, f.file_name, f.file_size, "MB");
+}
+```
+
+</CodeTabs>
+
+Each record has the same fields as the upload response, plus an `id` for the upload record itself.
+
+## Download a file
+
+`GET /v1/file/{file_id}` streams the original binary back. Write it to disk or pipe it wherever you need it.
+
+<CodeTabs>
+
+```python
+import requests
+
+file_id = "YOUR_FILE_ID"
+response = requests.get(
+    f"https://api.cloudslicer3d.com/v1/file/{file_id}",
+    headers={"Authorization": f"Bearer {API_TOKEN}"},
+    stream=True,
+)
+response.raise_for_status()
+
+with open("downloaded.stl", "wb") as out:
+    for chunk in response.iter_content(chunk_size=8192):
+        out.write(chunk)
+```
+
+```typescript
+import { writeFile } from "node:fs/promises";
+
+const fileId = "YOUR_FILE_ID";
+const response = await fetch(`https://api.cloudslicer3d.com/v1/file/${fileId}`, {
+  headers: { Authorization: `Bearer ${API_TOKEN}` },
+});
+
+if (!response.ok) throw new Error(await response.text());
+await writeFile("downloaded.stl", Buffer.from(await response.arrayBuffer()));
+```
+
+</CodeTabs>
+
+## Delete a file
+
+`DELETE /v1/file/{file_id}` removes the file from storage.
+
+:::caution
+Deleting a file **cascades** — any quotes generated from it are deleted too. There's no undo.
+:::
+
+<CodeTabs>
+
+```python
+import requests
+
+file_id = "YOUR_FILE_ID"
+response = requests.delete(
+    f"https://api.cloudslicer3d.com/v1/file/{file_id}",
+    headers={"Authorization": f"Bearer {API_TOKEN}"},
+)
+response.raise_for_status()
+print(response.json()["removed_file_path"])
+```
+
+```typescript
+const fileId = "YOUR_FILE_ID";
+const response = await fetch(`https://api.cloudslicer3d.com/v1/file/${fileId}`, {
+  method: "DELETE",
+  headers: { Authorization: `Bearer ${API_TOKEN}` },
+});
+
+if (!response.ok) throw new Error(await response.text());
+console.log((await response.json()).removed_file_path);
+```
+
+</CodeTabs>
+
+## Advanced: pre-signed upload links
+
+When you can't (or don't want to) ship your API token to the uploader — for example, a browser drag-and-drop — generate a one-time upload session instead. `GET /v1/file/upload-id` returns an `upload_id` good for one hour. The uploader then `POST`s the file to `/v1/file/public/{upload_id}` with **no auth header**.
+
+<CodeTabs>
+
+```python
+import requests
+
+# Step 1: get an upload session (server-side, authenticated)
+session = requests.get(
+    "https://api.cloudslicer3d.com/v1/file/upload-id",
+    headers={"Authorization": f"Bearer {API_TOKEN}"},
+).json()
+upload_id = session["upload_id"]
+
+# Step 2: anyone with that upload_id can upload (no token required)
+with open("3dbenchy.stl", "rb") as f:
+    result = requests.post(
+        f"https://api.cloudslicer3d.com/v1/file/public/{upload_id}",
+        files={"file": f},
+    ).json()
+
+print(result["file_id"])
+```
+
+```typescript
+// Step 1: get an upload session (server-side, authenticated)
+const session = await fetch(
+  "https://api.cloudslicer3d.com/v1/file/upload-id",
+  { headers: { Authorization: `Bearer ${API_TOKEN}` } },
+).then((r) => r.json());
+
+// Step 2: anyone with that upload_id can upload (no token required)
+const form = new FormData();
+form.append("file", await fetch("/3dbenchy.stl").then((r) => r.blob()), "3dbenchy.stl");
+
+const result = await fetch(
+  `https://api.cloudslicer3d.com/v1/file/public/${session.upload_id}`,
+  { method: "POST", body: form },
+).then((r) => r.json());
+
+console.log(result.file_id);
+```
+
+</CodeTabs>
+
+:::note
+This is the same two-step flow the Cloud Slicer quote widget uses to accept uploads from anonymous visitors on your site.
+:::
+
+Once you have a `file_id`, head to [Creating Quotes](/guides/creating-quotes).

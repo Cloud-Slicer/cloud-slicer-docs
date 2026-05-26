@@ -1,0 +1,198 @@
+---
+title: "Creating Quotes"
+description: "Queue an async quote, poll until it's ready, and download the resulting g-code"
+---
+
+A quote is a price + print-time estimate for a specific file, printer, and filament combination. Under the hood Cloud Slicer slices your model, which can take anywhere from a few seconds to a couple of minutes — so the API is **async**: you queue a job, then poll until it finishes. This is the same flow the embedded Cloud Slicer widget uses.
+
+## Prerequisites
+
+Before you can quote, you need:
+
+- A **`file_id`** — see [Managing Files](/guides/managing-files).
+- A **`printer_id`** — create one at [dashboard/printers/new](https://www.cloudslicer3d.com/dashboard/printers/new).
+- A **`filament_id`** — create one at [dashboard/filaments/new](https://www.cloudslicer3d.com/dashboard/filaments/new).
+- Your **API token** in the `Authorization: Bearer ...` header.
+
+## Queue a quote
+
+`POST /v1/quote/queue/{file_id}` accepts a JSON body with at minimum `printer_id` and `filament_id`. Everything else (`slicer_model`, `pricing_config`, `print_settings`) is optional and falls back to sensible defaults. The response is `202 Accepted` with a `quote_id` you'll poll on.
+
+<CodeTabs>
+
+```python
+import requests
+
+API_TOKEN = "YOUR_API_TOKEN"
+BASE_URL = "https://api.cloudslicer3d.com/v1"
+
+file_id = "YOUR_FILE_ID"
+response = requests.post(
+    f"{BASE_URL}/quote/queue/{file_id}",
+    headers={"Authorization": f"Bearer {API_TOKEN}"},
+    json={
+        "printer_id": "YOUR_PRINTER_ID",
+        "filament_id": "YOUR_FILAMENT_ID",
+    },
+)
+response.raise_for_status()
+quote_id = response.json()["quote_id"]
+print(quote_id)
+```
+
+```typescript
+const API_TOKEN = "YOUR_API_TOKEN";
+const BASE_URL = "https://api.cloudslicer3d.com/v1";
+
+const fileId = "YOUR_FILE_ID";
+const response = await fetch(`${BASE_URL}/quote/queue/${fileId}`, {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${API_TOKEN}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    printer_id: "YOUR_PRINTER_ID",
+    filament_id: "YOUR_FILAMENT_ID",
+  }),
+});
+
+if (!response.ok) throw new Error(await response.text());
+const { quote_id } = await response.json();
+console.log(quote_id);
+```
+
+</CodeTabs>
+
+:::note
+Want to override defaults? You can also pass `pricing_config` (currency, cost-per-hour, cost-per-gram, base price, electricity) and `print_settings` (layer height, infill, supports, filament color, etc.) in the same body. Both default to Cloud Slicer's reasonable defaults if omitted.
+:::
+
+## Poll until ready
+
+`GET /v1/quote/{quote_id}` returns the quote's current state. The `status` field starts as `"pending"` and ends at `"success"` or `"failed"`. Poll every couple of seconds with a sane timeout.
+
+<CodeTabs>
+
+```python
+import time
+import requests
+
+def wait_for_quote(quote_id, timeout_seconds=300):
+    deadline = time.time() + timeout_seconds
+    while time.time() < deadline:
+        quote = requests.get(
+            f"{BASE_URL}/quote/{quote_id}",
+            headers={"Authorization": f"Bearer {API_TOKEN}"},
+        ).json()
+        if quote["status"] == "success":
+            return quote
+        if quote["status"] == "failed":
+            raise RuntimeError(quote.get("error_message") or "Quote failed")
+        time.sleep(2)
+    raise TimeoutError("Quote did not complete in time")
+
+quote = wait_for_quote(quote_id)
+print(quote["pricing"]["total_price"], quote["time"]["estimated_time"])
+```
+
+```typescript
+async function waitForQuote(quoteId: string, timeoutMs = 300_000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const quote = await fetch(`${BASE_URL}/quote/${quoteId}`, {
+      headers: { Authorization: `Bearer ${API_TOKEN}` },
+    }).then((r) => r.json());
+
+    if (quote.status === "success") return quote;
+    if (quote.status === "failed") {
+      throw new Error(quote.error_message ?? "Quote failed");
+    }
+    await new Promise((r) => setTimeout(r, 2000));
+  }
+  throw new Error("Quote did not complete in time");
+}
+
+const quote = await waitForQuote(quote_id);
+console.log(quote.pricing.total_price, quote.time.estimated_time);
+```
+
+</CodeTabs>
+
+## What you get back
+
+A successful quote response includes:
+
+- **`pricing.total_price`** — the all-in price (number)
+- **`pricing.filament_cost`**, **`pricing.electricity_cost`**, **`pricing.currency`** — cost breakdown
+- **`pricing.filament_weight`** — grams of filament the print will use
+- **`time.estimated_time`** — human-readable (e.g. `"2h 30m"`)
+- **`time.estimated_time_seconds`** — number of seconds, useful for math
+- **`files.gcode_path`**, **`files.gcode_name`** — the generated g-code, ready to download
+- **`configurations.printer_config`**, **`configurations.filament_config`**, **`configurations.print_config`** — the exact configs used so you can reproduce the slice
+
+:::note
+The "fits printer" check the widget shows is computed **client-side** from the model's bounding box vs. your printer's bed — it isn't a field on the quote response.
+:::
+
+## Download the g-code
+
+Once the quote is `"success"`, `GET /v1/quote/gcode/{quote_id}` streams the sliced g-code back to you.
+
+<CodeTabs>
+
+```python
+import requests
+
+response = requests.get(
+    f"{BASE_URL}/quote/gcode/{quote_id}",
+    headers={"Authorization": f"Bearer {API_TOKEN}"},
+    stream=True,
+)
+response.raise_for_status()
+
+with open("output.gcode", "wb") as out:
+    for chunk in response.iter_content(chunk_size=8192):
+        out.write(chunk)
+```
+
+```typescript
+import { writeFile } from "node:fs/promises";
+
+const response = await fetch(`${BASE_URL}/quote/gcode/${quote_id}`, {
+  headers: { Authorization: `Bearer ${API_TOKEN}` },
+});
+
+if (!response.ok) throw new Error(await response.text());
+await writeFile("output.gcode", Buffer.from(await response.arrayBuffer()));
+```
+
+</CodeTabs>
+
+## Clean up a quote
+
+`DELETE /v1/quote/{quote_id}` deletes a quote record and its g-code file. Useful for cleanup after you've fetched what you need.
+
+<CodeTabs>
+
+```python
+import requests
+
+requests.delete(
+    f"{BASE_URL}/quote/{quote_id}",
+    headers={"Authorization": f"Bearer {API_TOKEN}"},
+).raise_for_status()
+```
+
+```typescript
+await fetch(`${BASE_URL}/quote/${quote_id}`, {
+  method: "DELETE",
+  headers: { Authorization: `Bearer ${API_TOKEN}` },
+});
+```
+
+</CodeTabs>
+
+## A note on the synchronous endpoint
+
+You'll also see `POST /v1/quote/{file_id}` in the API reference — that's the **deprecated** synchronous quote endpoint. It blocks until slicing finishes (or the connection times out), which is fragile for any file larger than a benchy. Use the queue + poll flow above unless you have a very specific reason not to.
