@@ -1143,7 +1143,7 @@
           "File"
         ],
         "summary": "Upload File",
-        "description": "Upload a file to the database for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nThe upload must be a .stl, .obj, .3mf, .amf, or .step/.stp file.\nReturns details about the uploaded file, including its ID and storage path.",
+        "description": "Upload a file to the database for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nThe upload must be a .stl, .obj, .3mf, .amf, or .step/.stp file.\nReturns details about the uploaded file, including its ID and storage path.\n\n> **Playground note:** in the **Body** section, open the dropdown and select **Multipart**. Add an entry with the key `file`, then click the value field to attach your 3D model (.stl, .obj, .3mf, .amf, or .step/.stp). Without this, the request will send the raw file bytes and the server will return a `422` validation error.",
         "operationId": "upload_file_v1_file_post",
         "requestBody": {
           "content": {
@@ -1235,7 +1235,7 @@
           "File"
         ],
         "summary": "Upload File Public",
-        "description": "Upload a file using a temporary upload ID (no authentication required).\n\nThis endpoint allows anonymous uploads using a temporary upload ID obtained\nfrom the /upload endpoint. The upload ID is single-use and expires after 1 hour.",
+        "description": "Upload a file using a temporary upload ID (no authentication required).\n\nThis endpoint allows anonymous uploads using a temporary upload ID obtained\nfrom the /upload endpoint. The upload ID is single-use and expires after 1 hour.\n\n> **Playground note:** in the **Body** section, open the dropdown and select **Multipart**. Add an entry with the key `file`, then click the value field to attach your 3D model (.stl, .obj, .3mf, .amf, or .step/.stp). Without this, the request will send the raw file bytes and the server will return a `422` validation error.",
         "operationId": "upload_file_public_v1_file_public__upload_id__post",
         "parameters": [
           {

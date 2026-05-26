@@ -93,7 +93,7 @@ description: "Get started with Cloud Slicer API in just a few simple steps"
    3. **Paste** your JWT token from Step 2 into the authorization field
    4. **Click** `Authorize`
       <img 
-         src="/images/authenticate.png" 
+         src="/videos/api-playground-auth.gif" 
          alt="Cloud Slicer Banner" 
          width="800" 
          height="400"
@@ -111,10 +111,17 @@ description: "Get started with Cloud Slicer API in just a few simple steps"
    3. **Upload** an STL file using the `choose file` button to open up your file explorer
    4. **Execute** the request
    5. **Copy** the `file_id` from the response
+      <img 
+         src="/videos/upload-file.gif" 
+         alt="Cloud Slicer Banner" 
+         width="800" 
+         height="400"
+         className='rounded-lg shadow-lg border border-gray-400 dark:border-white-200'
+      />
 
    **Queue your first quote:**
 
-   Slicing can take anywhere from a few seconds to a couple of minutes, so quotes are async — you queue a job, then poll until it's ready.
+   Slicing can take anywhere from a few seconds to over a minute, so quotes are async. You queue a job, then poll until it's ready.
 
    1. **Find** the `POST /v1/quote/queue/{file_id}` endpoint in the API documentation
    2. **Expand** the tab to reveal the POST request details
