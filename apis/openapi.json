@@ -2553,7 +2553,7 @@
           "Convert Files"
         ],
         "summary": "Convert Bambu To Json",
-        "description": "Convert a Bambu Studio profile archive (.bbscfg) to intermediate JSON format. Upload a .bbscfg file containing filament/, printer/, and process/ directories with Bambu profile JSON files. Returns the converted configuration as JSON.",
+        "description": "Convert a Bambu Studio profile export to intermediate JSON format. Accepts .bbscfg, .bbsflmt, .zip (Printer/Filament/Process preset bundles), or a raw .json preset. Returns only the categories that were present in the upload; each present category is returned as a list of resolved configs.",
         "operationId": "convert_bambu_to_json_v1_convert_bambu_to_json_post",
         "requestBody": {
           "content": {
@@ -2575,7 +2575,7 @@
             }
           },
           "400": {
-            "description": "Invalid archive format or missing required files"
+            "description": "Invalid file format or no recognizable Bambu profiles"
           },
           "401": {
             "description": "Invalid or missing authentication token"
@@ -2868,7 +2868,7 @@
             "type": "string",
             "format": "binary",
             "title": "File",
-            "description": "Bambu Studio profile archive (.bbscfg)"
+            "description": "Bambu Studio profile export (.bbscfg, .bbsflmt, .zip, or .json)"
           }
         },
         "type": "object",
