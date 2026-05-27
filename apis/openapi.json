@@ -18,7 +18,7 @@
           "Account"
         ],
         "summary": "Get User Info",
-        "description": "Get information for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can gernerate a token from the Cloud Slicer website in your account settings.\nReturns account information for the authenticated user.",
+        "description": "Get information for the authenticated user.",
         "operationId": "get_user_info_v1_user_get",
         "responses": {
           "200": {
@@ -54,7 +54,7 @@
           "Printer Config"
         ],
         "summary": "Get Printer Configs",
-        "description": "Get all of the authenticated user's printer configurations. Requires a valid API token.",
+        "description": "Get all of the authenticated user's printer configurations.",
         "operationId": "get_printer_configs_v1_printer_get",
         "responses": {
           "200": {
@@ -89,7 +89,7 @@
           "Printer Config"
         ],
         "summary": "Create Printer Config",
-        "description": "Create a printer configuration including general settings, machine limits, and extruder settings. Requires a valid API token.",
+        "description": "Create a printer configuration including general settings, machine limits, and extruder settings.",
         "operationId": "create_printer_config_v1_printer_post",
         "requestBody": {
           "content": {
@@ -97,6 +97,54 @@
               "schema": {
                 "$ref": "#/components/schemas/PrinterConfig",
                 "description": "Create a printer configuration including general settings, machine limits, and extruder settings."
+              },
+              "examples": {
+                "default": {
+                  "summary": "Prusa MK3S+ Cartesian printer",
+                  "value": {
+                    "general": {
+                      "name": "Workshop MK3S+",
+                      "printer_model": "Prusa MK3S+",
+                      "printer_variant": "0.4",
+                      "printer_structure": "cartesian",
+                      "bed_size_x": 250,
+                      "bed_size_y": 210,
+                      "max_print_z": 210,
+                      "origin": [
+                        0,
+                        0
+                      ],
+                      "z_offset": 0.0,
+                      "gcode_flavor": "marlin",
+                      "use_relative_e_distances": true,
+                      "use_firmware_retraction": false,
+                      "silent_mode": true
+                    },
+                    "machine_limits": {
+                      "max_feedrates": {
+                        "x": 200,
+                        "y": 200,
+                        "z": 12,
+                        "e": 120
+                      },
+                      "max_accelerations": {
+                        "x": 1000,
+                        "y": 1000,
+                        "z": 200,
+                        "e": 5000
+                      }
+                    },
+                    "extruder": {
+                      "nozzle_diameter": 0.4,
+                      "layer_height_min": 0.07,
+                      "layer_height_max": 0.3
+                    },
+                    "retraction": {
+                      "length": 0.8,
+                      "speed": 35
+                    }
+                  }
+                }
               }
             }
           },
@@ -146,7 +194,7 @@
           "Printer Config"
         ],
         "summary": "Get Printer Config",
-        "description": "Get a specific printer configuration for the authenticated user. Requires a valid API token.",
+        "description": "Get a specific printer configuration for the authenticated user.",
         "operationId": "get_printer_config_v1_printer__printer_id__get",
         "security": [
           {
@@ -160,7 +208,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the printer configuration to retrieve.",
               "title": "Printer Id"
             },
             "description": "ID for the printer configuration to retrieve."
@@ -203,7 +250,7 @@
           "Printer Config"
         ],
         "summary": "Update Printer Config",
-        "description": "Update an existing printer configuration for the authenticated user. Requires a valid API token.",
+        "description": "Update an existing printer configuration for the authenticated user.",
         "operationId": "update_printer_config_v1_printer__printer_id__patch",
         "security": [
           {
@@ -217,7 +264,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the printer configuration to update.",
               "title": "Printer Id"
             },
             "description": "ID for the printer configuration to update."
@@ -230,6 +276,21 @@
               "schema": {
                 "$ref": "#/components/schemas/PrinterConfig",
                 "description": "Complete printer configuration including general settings, machine limits, and extruder settings."
+              },
+              "examples": {
+                "default": {
+                  "summary": "Rename printer and tune retraction",
+                  "value": {
+                    "general": {
+                      "name": "Workshop MK3S+ (tuned)",
+                      "silent_mode": true
+                    },
+                    "retraction": {
+                      "length": 1.0,
+                      "speed": 40
+                    }
+                  }
+                }
               }
             }
           }
@@ -274,7 +335,7 @@
           "Printer Config"
         ],
         "summary": "Delete Printer Config",
-        "description": "Delete a specific printer configuration for the authenticated user. Requires a valid API token.",
+        "description": "Delete a specific printer configuration for the authenticated user.",
         "operationId": "delete_printer_config_v1_printer__printer_id__delete",
         "security": [
           {
@@ -288,7 +349,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the printer configuration to delete.",
               "title": "Printer Id"
             },
             "description": "ID for the printer configuration to delete."
@@ -333,7 +393,7 @@
           "Filament Config"
         ],
         "summary": "Get Filament Configs",
-        "description": "Get all of the authenticated user's filament configurations. Requires a valid API token.",
+        "description": "Get all of the authenticated user's filament configurations.",
         "operationId": "get_filament_configs_v1_filament_get",
         "responses": {
           "200": {
@@ -368,7 +428,7 @@
           "Filament Config"
         ],
         "summary": "Create Filament Config",
-        "description": "Create a new filament configuration for the authenticated user. Requires a valid API token.",
+        "description": "Create a new filament configuration for the authenticated user.",
         "operationId": "create_filament_config_v1_filament_post",
         "requestBody": {
           "content": {
@@ -376,6 +436,29 @@
               "schema": {
                 "$ref": "#/components/schemas/FilamentConfig",
                 "description": "Complete filament configuration including material, temperature, cooling, and speed settings."
+              },
+              "examples": {
+                "default": {
+                  "summary": "Generic PLA at 215/60 °C",
+                  "value": {
+                    "filament": {
+                      "name": "Prusament PLA Galaxy Black",
+                      "type": "PLA",
+                      "vendor": "Prusa Polymers",
+                      "color": "#1A1A1A",
+                      "diameter": 1.75,
+                      "density": 1.24,
+                      "cost": 29.99,
+                      "soluble": false
+                    },
+                    "temperature": {
+                      "nozzle_temp": 215,
+                      "first_layer_nozzle_temp": 220,
+                      "bed_temp": 60,
+                      "first_layer_bed_temp": 65
+                    }
+                  }
+                }
               }
             }
           },
@@ -425,7 +508,7 @@
           "Filament Config"
         ],
         "summary": "Get Filament Config",
-        "description": "Get a specific filament configuration for the authenticated user. Requires a valid API token.",
+        "description": "Get a specific filament configuration for the authenticated user.",
         "operationId": "get_filament_config_v1_filament__filament_id__get",
         "security": [
           {
@@ -439,7 +522,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the filament configuration to retrieve.",
               "title": "Filament Id"
             },
             "description": "ID for the filament configuration to retrieve."
@@ -482,7 +564,7 @@
           "Filament Config"
         ],
         "summary": "Update Filament Config",
-        "description": "Update an existing filament configuration for the authenticated user. Requires a valid API token.",
+        "description": "Update an existing filament configuration for the authenticated user.",
         "operationId": "update_filament_config_v1_filament__filament_id__patch",
         "security": [
           {
@@ -496,7 +578,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the filament configuration to update.",
               "title": "Filament Id"
             },
             "description": "ID for the filament configuration to update."
@@ -509,6 +590,20 @@
               "schema": {
                 "$ref": "#/components/schemas/FilamentConfig",
                 "description": "Complete filament configuration including material, temperature, cooling, and speed settings."
+              },
+              "examples": {
+                "default": {
+                  "summary": "Recolor and retune temperatures",
+                  "value": {
+                    "filament": {
+                      "color": "#FF5500"
+                    },
+                    "temperature": {
+                      "nozzle_temp": 210,
+                      "bed_temp": 55
+                    }
+                  }
+                }
               }
             }
           }
@@ -553,7 +648,7 @@
           "Filament Config"
         ],
         "summary": "Delete Filament Config",
-        "description": "Delete a specific filament configuration for the authenticated user. Requires a valid API token.",
+        "description": "Delete a specific filament configuration for the authenticated user.",
         "operationId": "delete_filament_config_v1_filament__filament_id__delete",
         "security": [
           {
@@ -567,7 +662,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the filament configuration to delete.",
               "title": "Filament Id"
             },
             "description": "ID for the filament configuration to delete."
@@ -612,7 +706,7 @@
           "Print Setting"
         ],
         "summary": "Get Print Settings",
-        "description": "Get all of the authenticated user's print setting configurations. Requires a valid API token.",
+        "description": "Get all of the authenticated user's print setting configurations.",
         "operationId": "get_print_settings_v1_print_setting_get",
         "responses": {
           "200": {
@@ -641,7 +735,7 @@
           "Print Setting"
         ],
         "summary": "Create Print Setting",
-        "description": "Create a new print setting configuration for the authenticated user. Requires a valid API token.",
+        "description": "Create a new print setting configuration for the authenticated user.",
         "operationId": "create_print_setting_v1_print_setting_post",
         "requestBody": {
           "content": {
@@ -649,6 +743,29 @@
               "schema": {
                 "$ref": "#/components/schemas/PrintSettings",
                 "description": "Complete print settings configuration including layers, infill, support, and speed settings."
+              },
+              "examples": {
+                "default": {
+                  "summary": "Standard 0.2 mm PLA profile",
+                  "value": {
+                    "name": "Standard 0.2mm PLA",
+                    "filament_color": "#1A1A1A",
+                    "layers_and_perimeters": {
+                      "layer_height": {
+                        "layer_height": 0.2,
+                        "first_layer_height": 0.2,
+                        "top_layers": 5,
+                        "bottom_layers": 3,
+                        "perimeters": 3
+                      }
+                    },
+                    "infill": {
+                      "fill_density": "20%",
+                      "fill_pattern": "gyroid",
+                      "fill_angle": 45
+                    }
+                  }
+                }
               }
             }
           },
@@ -689,7 +806,7 @@
           "Print Setting"
         ],
         "summary": "Get Print Setting",
-        "description": "Get a specific print setting configuration for the authenticated user. Requires a valid API token.",
+        "description": "Get a specific print setting configuration for the authenticated user.",
         "operationId": "get_print_setting_v1_print_setting__print_setting_id__get",
         "security": [
           {
@@ -703,7 +820,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the print setting configuration to retrieve.",
               "title": "Print Setting Id"
             },
             "description": "ID for the print setting configuration to retrieve."
@@ -737,7 +853,7 @@
           "Print Setting"
         ],
         "summary": "Update Print Setting",
-        "description": "Update an existing print setting configuration for the authenticated user. Requires a valid API token.",
+        "description": "Update an existing print setting configuration for the authenticated user.",
         "operationId": "update_print_setting_v1_print_setting__print_setting_id__patch",
         "security": [
           {
@@ -751,7 +867,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the print setting configuration to update.",
               "title": "Print Setting Id"
             },
             "description": "ID for the print setting configuration to update."
@@ -764,6 +879,18 @@
               "schema": {
                 "$ref": "#/components/schemas/PrintSettings",
                 "description": "Complete print settings configuration including layers, infill, support, and speed settings."
+              },
+              "examples": {
+                "default": {
+                  "summary": "Bump infill for high-strength parts",
+                  "value": {
+                    "name": "Standard 0.2mm PLA (high-strength)",
+                    "infill": {
+                      "fill_density": "40%",
+                      "fill_pattern": "gyroid"
+                    }
+                  }
+                }
               }
             }
           }
@@ -796,7 +923,7 @@
           "Print Setting"
         ],
         "summary": "Delete Print Setting",
-        "description": "Delete a specific print setting configuration for the authenticated user. Requires a valid API token.",
+        "description": "Delete a specific print setting configuration for the authenticated user.",
         "operationId": "delete_print_setting_v1_print_setting__print_setting_id__delete",
         "security": [
           {
@@ -810,7 +937,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the print setting configuration to delete.",
               "title": "Print Setting Id"
             },
             "description": "ID for the print setting configuration to delete."
@@ -860,7 +986,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "Order ID to retrieve.",
               "title": "Order Id"
             },
             "description": "Order ID to retrieve."
@@ -917,7 +1042,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "Order ID to update.",
               "title": "Order Id"
             },
             "description": "Order ID to update."
@@ -929,6 +1053,17 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/OrderUpdateRequest"
+              },
+              "examples": {
+                "default": {
+                  "summary": "Move order into production",
+                  "value": {
+                    "status": "in_progress",
+                    "notes": "Started printing on the MK3S+. ETA tomorrow morning.",
+                    "deadline": "2026-06-10",
+                    "priority": "high"
+                  }
+                }
               }
             }
           }
@@ -987,7 +1122,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "Order ID to delete.",
               "title": "Order Id"
             },
             "description": "Order ID to delete."
@@ -1032,7 +1166,7 @@
           "Part Info"
         ],
         "summary": "Check Model Printability",
-        "description": "Check if a model fits on the print bed given the dimensions.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can gernerate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID and printer bed dimensions (mm) as query parameters.\nReturns printability status and model/printer dimensions.",
+        "description": "Check if a model fits on the print bed given the dimensions.",
         "operationId": "check_model_printability_v1_printability__file_id__post",
         "security": [
           {
@@ -1046,7 +1180,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the 3D model file (this can be found in the upload response)",
               "title": "File Id"
             },
             "description": "ID for the 3D model file (this can be found in the upload response)"
@@ -1061,6 +1194,16 @@
                   "x": 210.0,
                   "y": 210.0,
                   "z": 250.0
+                }
+              },
+              "examples": {
+                "default": {
+                  "summary": "250 × 210 × 210 mm build volume (MK3S+)",
+                  "value": {
+                    "x": 250.0,
+                    "y": 210.0,
+                    "z": 210.0
+                  }
                 }
               }
             }
@@ -1108,7 +1251,7 @@
           "File"
         ],
         "summary": "Get User Files",
-        "description": "Get all uploaded files for the authenticated user, sorted by latest first. Requires a valid API token.",
+        "description": "Get all uploaded files for the authenticated user, sorted by latest first.",
         "operationId": "get_user_files_v1_file_get",
         "responses": {
           "200": {
@@ -1143,7 +1286,7 @@
           "File"
         ],
         "summary": "Upload File",
-        "description": "Upload a file to the database for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nThe upload must be a .stl, .obj, .3mf, .amf, or .step/.stp file.\nReturns details about the uploaded file, including its ID and storage path.\n\n> **Playground note:** in the **Body** section, open the dropdown and select **Multipart**. Add an entry with the key `file`, then click the value field to attach your 3D model (.stl, .obj, .3mf, .amf, or .step/.stp). Without this, the request will send the raw file bytes and the server will return a `422` validation error.",
+        "description": "Upload a file to the database for the authenticated user.\n\nThe upload must be a .stl, .obj, .3mf, .amf, or .step/.stp file.\n\n> **Playground note:** in the **Body** section, open the dropdown and select **Multipart**. Add an entry with the key `file`, then click the value field to attach your 3D model (.stl, .obj, .3mf, .amf, or .step/.stp). Without this, the request will send the raw file bytes and the server will return a `422` validation error.",
         "operationId": "upload_file_v1_file_post",
         "requestBody": {
           "content": {
@@ -1202,7 +1345,7 @@
           "File"
         ],
         "summary": "Get Upload Id",
-        "description": "Generate an upload ID for uploading a file to the database.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nReturns an upload id that can be used with the /file/public/{upload_id} endpoint\nto upload files without authentication. The upload id expires after 1 hour.\n\nWorkflow:\n1. Call this endpoint to get an upload_id\n2. Use the upload_id with POST /file/public/{upload_id} to upload the file",
+        "description": "Generate an upload ID for uploading a file to the database.\n\nReturns an upload id that can be used with the /file/public/{upload_id} endpoint to upload files without authentication. The upload id expires after 1 hour.\n\nWorkflow:\n1. Call this endpoint to get an upload_id\n2. Use the upload_id with POST /file/public/{upload_id} to upload the file",
         "operationId": "get_upload_id_v1_file_upload_id_get",
         "responses": {
           "200": {
@@ -1244,7 +1387,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "Temporary upload ID obtained from /file/upload-id endpoint",
               "title": "Upload Id"
             },
             "description": "Temporary upload ID obtained from /file/upload-id endpoint"
@@ -1305,7 +1447,7 @@
           "File"
         ],
         "summary": "Download File",
-        "description": "Download an uploaded file for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns the file as a download if the user is authorized and the file exists.",
+        "description": "Download an uploaded file for the authenticated user.",
         "operationId": "download_file_v1_file__file_id__get",
         "security": [
           {
@@ -1319,7 +1461,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the STL file to download",
               "title": "File Id"
             },
             "description": "ID for the STL file to download"
@@ -1355,7 +1496,7 @@
           "File"
         ],
         "summary": "Delete File",
-        "description": "Deletes an uploaded file. **NOTE: This will also delete the quotes associated with this file**\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns a deleted message and the path of the removed file if deletion is successful.",
+        "description": "Deletes an uploaded file. **NOTE: This will also delete the quotes associated with this file**",
         "operationId": "delete_file_v1_file__file_id__delete",
         "security": [
           {
@@ -1369,7 +1510,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the STL file to delete",
               "title": "File Id"
             },
             "description": "ID for the STL file to delete"
@@ -1414,7 +1554,7 @@
           "Quote"
         ],
         "summary": "Quote Model",
-        "description": "Deprecated: use POST /v1/quote/queue/{file_id} instead.\n\nSlice an uploaded file and generate an instant quote synchronously.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the uploaded file ID as a query parameter and printer/quote configuration as JSON body.\nReturns a quote with price, estimated print time, and filament usage if the part fits the printer.",
+        "description": "Deprecated: use POST /v1/quote/queue/{file_id} instead.\n\nSlice an uploaded file and generate an instant quote synchronously. Returns a quote with price, estimated print time, and filament usage if the part fits the printer.",
         "operationId": "quote_model_v1_quote__file_id__post",
         "deprecated": true,
         "security": [
@@ -1431,8 +1571,7 @@
               "type": "string",
               "description": "ID for the uploaded file (this can be found in the upload response)",
               "title": "File Id"
-            },
-            "description": "ID for the uploaded file (this can be found in the upload response)"
+            }
           }
         ],
         "requestBody": {
@@ -1441,6 +1580,38 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/QuoteConfig"
+              },
+              "examples": {
+                "default": {
+                  "summary": "PLA on MK3S+ with standard PrusaSlicer profile",
+                  "value": {
+                    "printer_id": "prn_b8a1f3c2e4d5",
+                    "filament_id": "fil_2d4e6f8a0b1c",
+                    "slicer_model": "prusa_slicer",
+                    "pricing_config": {
+                      "currency": "USD",
+                      "cost_per_hour": 2.5,
+                      "cost_per_gram": 0.05,
+                      "base_price": 5.0,
+                      "printer_watts": 120.0,
+                      "cost_per_kwh": 0.14
+                    },
+                    "print_settings": {
+                      "name": "Standard 0.2mm PLA",
+                      "layers_and_perimeters": {
+                        "layer_height": {
+                          "layer_height": 0.2,
+                          "first_layer_height": 0.2,
+                          "perimeters": 3
+                        }
+                      },
+                      "infill": {
+                        "fill_density": "20%",
+                        "fill_pattern": "gyroid"
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -1503,8 +1674,7 @@
               "type": "string",
               "description": "ID for the uploaded file",
               "title": "File Id"
-            },
-            "description": "ID for the uploaded file"
+            }
           }
         ],
         "requestBody": {
@@ -1513,6 +1683,272 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/QuoteConfig"
+              },
+              "examples": {
+                "default": {
+                  "summary": "Example Prusa Quote",
+                  "value": {
+                    "printer_id": "printer-id",
+                    "filament_id": "filament-id",
+                    "slicer_model": "prusa_slicer",
+                    "pricing_config": {
+                      "currency": "USD",
+                      "cost_per_hour": 2.5,
+                      "cost_per_gram": 0.02,
+                      "base_price": 5,
+                      "printer_watts": 100,
+                      "cost_per_kwh": 0.12
+                    },
+                    "print_settings": {
+                      "name": "Default Print Settings",
+                      "filament_color": "string",
+                      "layers_and_perimeters": {
+                        "layer_height": {
+                          "layer_height": 0.2,
+                          "first_layer_height": 0.2,
+                          "top_layers": 5,
+                          "bottom_layers": 3,
+                          "perimeters": 3
+                        },
+                        "advanced": {
+                          "detect_thin_walls": false,
+                          "thick_bridges": true,
+                          "seam_position": "nearest",
+                          "perimeter_generator": "classic",
+                          "elefant_foot_compensation": 0.15,
+                          "xy_size_compensation": 0,
+                          "xy_hole_compensation": 0
+                        }
+                      },
+                      "extrusion_width": {
+                        "default": 0.45,
+                        "first_layer": 0.42,
+                        "external_perimeter": 0.4,
+                        "perimeter": 0.45,
+                        "infill": 0.45,
+                        "solid_infill": 0.45,
+                        "top_infill": 0.4,
+                        "support": 0.42
+                      },
+                      "infill": {
+                        "fill_density": "15%",
+                        "fill_pattern": "grid",
+                        "fill_angle": 45,
+                        "infill_anchor": 2.5,
+                        "infill_anchor_max": 15,
+                        "infill_overlap": "25%",
+                        "top_fill_pattern": "monotoniclines",
+                        "ironing_type": "top",
+                        "solid_infill_every_layers": 0,
+                        "combine_infill_every_layers": 0
+                      },
+                      "skirt_and_brim": {
+                        "skirt": {
+                          "loops": 0,
+                          "distance": 2,
+                          "height": 2
+                        },
+                        "brim": {
+                          "type": "no_brim",
+                          "width": 5,
+                          "separation_gap": 0.1
+                        }
+                      },
+                      "support_material": {
+                        "enable": false,
+                        "style": "grid",
+                        "pattern": "rectilinear",
+                        "threshold_angle": 40,
+                        "buildplate_only": false,
+                        "top_z_distance": 0.15,
+                        "xy_distance": 0.5,
+                        "spacing": 2,
+                        "top_interface_layers": 2,
+                        "bottom_interface_layers": 0,
+                        "interface_pattern": "rectilinear",
+                        "interface_spacing": 0,
+                        "dont_support_bridges": false,
+                        "raft_layers": 0,
+                        "raft_first_layer_expansion": 2
+                      },
+                      "speed": {
+                        "perimeters": 300,
+                        "small_perimeters": "50%",
+                        "external_perimeters": 200,
+                        "infill": 270,
+                        "solid_infill": 250,
+                        "top_solid_infill": 200,
+                        "support_material": 150,
+                        "support_material_interface": 80,
+                        "gap_fill": 250,
+                        "ironing": 15,
+                        "travel": 500,
+                        "travel_z": 0,
+                        "first_layer": 50,
+                        "first_layer_infill": 105,
+                        "bridge": 50
+                      },
+                      "acceleration": {
+                        "default": 10000,
+                        "first_layer": 500,
+                        "perimeter": 0,
+                        "external_perimeter": 5000,
+                        "infill": "100%",
+                        "solid_infill": 0,
+                        "top_solid_infill": 2000,
+                        "travel": 10000,
+                        "bridge": 0
+                      },
+                      "overhang": {
+                        "enable_overhang_speed": true,
+                        "speed_0": 0,
+                        "speed_1": 50,
+                        "speed_2": 30,
+                        "speed_3": 10
+                      },
+                      "wipe_tower": {
+                        "enable": false,
+                        "width": 60
+                      },
+                      "output_options": {
+                        "spiral_vase": false,
+                        "print_sequence": "by layer"
+                      }
+                    }
+                  }
+                },
+                "bambu_studio": {
+                  "summary": "Example Bambu Quote",
+                  "value": {
+                    "printer_id": "printer-id",
+                    "filament_id": "filament-id",
+                    "slicer_model": "bambu_studio",
+                    "pricing_config": {
+                      "currency": "USD",
+                      "cost_per_hour": 2.5,
+                      "cost_per_gram": 0.02,
+                      "base_price": 5,
+                      "printer_watts": 100,
+                      "cost_per_kwh": 0.12
+                    },
+                    "print_settings": {
+                      "name": "Default Print Settings",
+                      "filament_color": "string",
+                      "layers_and_perimeters": {
+                        "layer_height": {
+                          "layer_height": 0.2,
+                          "first_layer_height": 0.2,
+                          "top_layers": 5,
+                          "bottom_layers": 3,
+                          "perimeters": 3
+                        },
+                        "advanced": {
+                          "detect_thin_walls": false,
+                          "thick_bridges": true,
+                          "seam_position": "nearest",
+                          "perimeter_generator": "classic",
+                          "elefant_foot_compensation": 0.15,
+                          "xy_size_compensation": 0,
+                          "xy_hole_compensation": 0
+                        }
+                      },
+                      "extrusion_width": {
+                        "default": 0.45,
+                        "first_layer": 0.42,
+                        "external_perimeter": 0.4,
+                        "perimeter": 0.45,
+                        "infill": 0.45,
+                        "solid_infill": 0.45,
+                        "top_infill": 0.4,
+                        "support": 0.42
+                      },
+                      "infill": {
+                        "fill_density": "15%",
+                        "fill_pattern": "grid",
+                        "fill_angle": 45,
+                        "infill_anchor": 2.5,
+                        "infill_anchor_max": 15,
+                        "infill_overlap": "25%",
+                        "top_fill_pattern": "monotoniclines",
+                        "ironing_type": "top",
+                        "solid_infill_every_layers": 0,
+                        "combine_infill_every_layers": 0
+                      },
+                      "skirt_and_brim": {
+                        "skirt": {
+                          "loops": 0,
+                          "distance": 2,
+                          "height": 2
+                        },
+                        "brim": {
+                          "type": "no_brim",
+                          "width": 5,
+                          "separation_gap": 0.1
+                        }
+                      },
+                      "support_material": {
+                        "enable": false,
+                        "style": "grid",
+                        "pattern": "rectilinear",
+                        "threshold_angle": 40,
+                        "buildplate_only": false,
+                        "top_z_distance": 0.15,
+                        "xy_distance": 0.5,
+                        "spacing": 2,
+                        "top_interface_layers": 2,
+                        "bottom_interface_layers": 0,
+                        "interface_pattern": "rectilinear",
+                        "interface_spacing": 0,
+                        "dont_support_bridges": false,
+                        "raft_layers": 0,
+                        "raft_first_layer_expansion": 2
+                      },
+                      "speed": {
+                        "perimeters": 300,
+                        "small_perimeters": "50%",
+                        "external_perimeters": 200,
+                        "infill": 270,
+                        "solid_infill": 250,
+                        "top_solid_infill": 200,
+                        "support_material": 150,
+                        "support_material_interface": 80,
+                        "gap_fill": 250,
+                        "ironing": 15,
+                        "travel": 500,
+                        "travel_z": 0,
+                        "first_layer": 50,
+                        "first_layer_infill": 105,
+                        "bridge": 50
+                      },
+                      "acceleration": {
+                        "default": 10000,
+                        "first_layer": 500,
+                        "perimeter": 0,
+                        "external_perimeter": 5000,
+                        "infill": "100%",
+                        "solid_infill": 0,
+                        "top_solid_infill": 2000,
+                        "travel": 10000,
+                        "bridge": 0
+                      },
+                      "overhang": {
+                        "enable_overhang_speed": true,
+                        "speed_0": 0,
+                        "speed_1": 50,
+                        "speed_2": 30,
+                        "speed_3": 10
+                      },
+                      "wipe_tower": {
+                        "enable": false,
+                        "width": 60
+                      },
+                      "output_options": {
+                        "spiral_vase": false,
+                        "print_sequence": "by layer"
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -1565,7 +2001,7 @@
           "Quote"
         ],
         "summary": "Get Quote Record",
-        "description": "Retrieve a quote record by its ID.\n\nRequires a valid API token in the Authorization header (Bearer scheme).",
+        "description": "Retrieve a quote record by its ID.",
         "operationId": "get_quote_record_v1_quote__quote_id__get",
         "security": [
           {
@@ -1579,10 +2015,9 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the uploaded file (this can be found in the upload response)",
               "title": "Quote Id"
             },
-            "description": "ID for the uploaded file (this can be found in the upload response)"
+            "description": "ID for the quote record (returned by POST /v1/quote/queue/{file_id})"
           }
         ],
         "responses": {
@@ -1622,7 +2057,7 @@
           "Quote"
         ],
         "summary": "Delete Quote",
-        "description": "Deletes the quote record and the associated .gcode file for the given Quote ID.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns a success message and the path of the removed file if deletion is successful.",
+        "description": "Deletes the quote record and the associated .gcode file for the given Quote ID.",
         "operationId": "delete_quote_v1_quote__quote_id__delete",
         "security": [
           {
@@ -1636,7 +2071,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the quote to delete",
               "title": "Quote Id"
             },
             "description": "ID for the quote to delete"
@@ -1681,7 +2115,7 @@
           "Quote"
         ],
         "summary": "Download Quote Gcode",
-        "description": "Retrieve the .gcode file for the quote that matches **quote_id**.\n\nRequires a valid API token in the Authorization header (Bearer scheme).",
+        "description": "Retrieve the .gcode file for the quote that matches `quote_id`.",
         "operationId": "download_quote_gcode_v1_quote_gcode__quote_id__get",
         "security": [
           {
@@ -1695,7 +2129,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "ID for the generated quote (this can be found in the quote response)",
               "title": "Quote Id"
             },
             "description": "ID for the generated quote (this can be found in the quote response)"
@@ -1783,7 +2216,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "Webhook delivery ID to retry.",
               "title": "Webhook Delivery Id"
             },
             "description": "Webhook delivery ID to retry."
@@ -1826,6 +2258,21 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/WebhookEndpointCreateRequest"
+              },
+              "examples": {
+                "default": {
+                  "summary": "Subscribe to all order events",
+                  "value": {
+                    "name": "Order events",
+                    "endpoint_url": "https://example.com/webhooks/cloud-slicer",
+                    "subscribed_events": [
+                      "order.created",
+                      "order.updated",
+                      "order.deleted"
+                    ],
+                    "is_active": true
+                  }
+                }
               }
             }
           },
@@ -1909,7 +2356,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "Webhook endpoint ID to fetch.",
               "title": "Webhook Id"
             },
             "description": "Webhook endpoint ID to fetch."
@@ -1956,7 +2402,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "Webhook endpoint ID to update.",
               "title": "Webhook Id"
             },
             "description": "Webhook endpoint ID to update."
@@ -1968,6 +2413,17 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/WebhookEndpointUpdateRequest"
+              },
+              "examples": {
+                "default": {
+                  "summary": "Disable endpoint and narrow events",
+                  "value": {
+                    "is_active": false,
+                    "subscribed_events": [
+                      "order.deleted"
+                    ]
+                  }
+                }
               }
             }
           }
@@ -2013,7 +2469,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "Webhook endpoint ID to delete.",
               "title": "Webhook Id"
             },
             "description": "Webhook endpoint ID to delete."
@@ -2369,8 +2824,7 @@
           }
         },
         "type": "object",
-        "title": "Advanced",
-        "description": "Advanced layer settings."
+        "title": "Advanced Layer Settings"
       },
       "BedDimensions": {
         "properties": {
@@ -2391,8 +2845,7 @@
           }
         },
         "type": "object",
-        "title": "BedDimensions",
-        "description": "**Schema for printer bed dimensions:**\n\n    x (float): The X (width) dimension of the printer bed in millimeters. Default is 210mm.\n\n    y (float): The Y (depth) dimension of the printer bed in millimeters. Default is 210mm.\n\n    z (float): The Z (height) dimension of the printer bed in millimeters. Default is 250mm."
+        "title": "BedDimensions"
       },
       "Body_convert_bambu_to_ini_v1_convert_bambu_to_ini_post": {
         "properties": {
@@ -2594,8 +3047,7 @@
           "printer_config",
           "filament_config"
         ],
-        "title": "ConfigurationInfo",
-        "description": "**Configuration IDs and full config data:**\n\n    printer_id (str): The unique identifier of the printer configuration used.\n\n    filament_id (str): The unique identifier of the filament configuration used.\n\n    slicer_model (str): The slicer model used for time estimation (e.g., 'prusa_slicer', 'bambu_studio').\n\n    quote_config (dict): The quote configuration parameters.\n\n    print_config (dict): The print configuration data.\n\n    printer_config (dict): The printer settings data.\n\n    filament_config (dict): The filament configuration data."
+        "title": "ConfigurationInfo"
       },
       "CreateFilamentConfigResponse": {
         "properties": {
@@ -2628,8 +3080,7 @@
           "filament_name",
           "timestamp"
         ],
-        "title": "CreateFilamentConfigResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the filament.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    filament_id (str): The unique identifier of the filament.\n\n    filament_name (str): The name of the filament (material type).\n\n    timestamp (str): ISO 8601 timestamp of when the filament configuration was created."
+        "title": "CreateFilamentConfigResponse"
       },
       "CreatePrintSettingResponse": {
         "properties": {
@@ -2662,8 +3113,7 @@
           "print_setting_name",
           "timestamp"
         ],
-        "title": "CreatePrintSettingResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the print setting.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    print_setting_id (str): The unique identifier of the print setting.\n\n    print_setting_name (str): The name of the print setting profile.\n\n    timestamp (str): ISO 8601 timestamp of when the print setting configuration was created."
+        "title": "CreatePrintSettingResponse"
       },
       "CreatePrinterConfigResponse": {
         "properties": {
@@ -2696,8 +3146,7 @@
           "printer_name",
           "timestamp"
         ],
-        "title": "CreatePrinterConfigResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the printer.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    printer_id (str): The unique identifier of the printer.\n\n    printer_name (str): The name of the printer.\n\n    timestamp (str): ISO 8601 timestamp of when the printer configuration was created."
+        "title": "CreatePrinterConfigResponse"
       },
       "DataUsageResponse": {
         "properties": {
@@ -2745,8 +3194,7 @@
           "reset_date",
           "last_updated"
         ],
-        "title": "DataUsageResponse",
-        "description": "**Response schema:**\n\n    quotes_used (int): The number of quotes used by the user.\n\n    quotes_limit (int): The maximum number of quotes allowed for the user.\n\n    storage_used (float): The amount of storage used by the user in megabytes (MB).\n\n    storage_limit (float): The maximum storage limit for the user in megabytes (MB).\n\n    files (int): The number of files uploaded by the user.\n\n    days_till_reset (int): The number of days until the next reset of usage limits.\n\n    reset_date (str): The date when the usage limits will reset in ISO 8601 format.\n\n    last_updated (str): The timestamp of the last update to the usage data in ISO 8601 format."
+        "title": "DataUsageResponse"
       },
       "DeleteFilamentConfigResponse": {
         "properties": {
@@ -2774,8 +3222,7 @@
           "filament_id",
           "timestamp"
         ],
-        "title": "DeleteFilamentConfigResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    filament_id (str): The unique identifier of the filament configuration in cloud storage.\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated."
+        "title": "DeleteFilamentConfigResponse"
       },
       "DeleteFileResponse": {
         "properties": {
@@ -2808,8 +3255,7 @@
           "file_id",
           "removed_file_path"
         ],
-        "title": "DeleteFileResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated.\n\n    removed_file_path (str): The file path to the upload that was removed from cloud storage."
+        "title": "DeleteFileResponse"
       },
       "DeletePrintSettingResponse": {
         "properties": {
@@ -2837,8 +3283,7 @@
           "print_setting_id",
           "timestamp"
         ],
-        "title": "DeletePrintSettingResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    print_setting_id (str): The unique identifier of the print setting configuration in cloud storage.\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated."
+        "title": "DeletePrintSettingResponse"
       },
       "DeletePrinterConfigResponse": {
         "properties": {
@@ -2866,8 +3311,7 @@
           "printer_id",
           "timestamp"
         ],
-        "title": "DeletePrinterConfigResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    printer_id (str): The unique identifier of the printer configuration in cloud storage.\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated."
+        "title": "DeletePrinterConfigResponse"
       },
       "DeleteQuoteResponse": {
         "properties": {
@@ -2900,8 +3344,7 @@
           "timestamp",
           "removed_gcode_path"
         ],
-        "title": "DeleteQuoteResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    quote_id (str): The unique identifier of the quote in cloud storage.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated.\n\n    removed_gcode_path (str): The file path to the upload that was removed from cloud storage."
+        "title": "DeleteQuoteResponse"
       },
       "Extruder": {
         "properties": {
@@ -3143,8 +3586,7 @@
           "filament_name",
           "timestamp"
         ],
-        "title": "FilamentConfigResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the filament.\n\n    filament_id (str): The unique identifier of the filament.\n\n    filament_name (str): The name of the filament (material type).\n\n    timestamp (str): ISO 8601 timestamp of when the filament configuration was created or last updated."
+        "title": "FilamentConfigResponse"
       },
       "FilamentCooling": {
         "properties": {
@@ -3730,8 +4172,7 @@
           "gcode_name",
           "gcode_file_size"
         ],
-        "title": "FileInfo",
-        "description": "**File and G-code details:**\n\n    file_path (str): The file path to the file in cloud storage.\n\n    gcode_path (str): The file path to the generated G-code file in cloud storage.\n\n    gcode_name (str): The name of the generated G-code file.\n\n    gcode_file_size (float): The size of the generated G-code file in megabytes (MB)."
+        "title": "FileInfo"
       },
       "FileUploadLink": {
         "properties": {
@@ -3759,8 +4200,7 @@
           "file_id",
           "timestamp"
         ],
-        "title": "FileUploadLink",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    upload_id (str): The unique identifier of for the upload session.\n\n    file_id (str): The unique identifier of the uploaded file.\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded."
+        "title": "FileUploadLink"
       },
       "FileUploadResponse": {
         "properties": {
@@ -3803,8 +4243,7 @@
           "file_name",
           "file_size"
         ],
-        "title": "FileUploadResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    file_id (str): The unique identifier of the uploaded file.\n\n    file_path (str): The file path to the uploaded file in cloud storage.\n\n    status (str): The status of the upload (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded.\n\n    file_name (str): The name of the uploaded file.\n\n    file_size (float): The size of the uploaded file in megabytes (MB)."
+        "title": "FileUploadResponse"
       },
       "FillPattern": {
         "type": "string",
@@ -5066,8 +5505,7 @@
           "filament_cost",
           "filament_weight"
         ],
-        "title": "PricingBreakdown",
-        "description": "**Detailed pricing information:**\n\n    total_price (float): The total price for the print job.\n\n    filament_cost (float): The cost of filament used.\n\n    cost_per_gram (float): Cost per gram used to compute filament cost.\n\n    filament_weight (float): The weight of filament used in grams.\n\n    cost_per_hour (float): Cost per machine-hour used to compute time-based pricing.\n\n    base_price (float): Flat base price applied to the quote.\n\n    printer_watts (float): Printer power draw in watts used for electricity cost.\n\n    cost_per_kwh (float): Electricity price per kilowatt-hour.\n\n    electricity_cost (float): The cost of electricity for the print job.\n\n    currency (str): The currency used for pricing (default: USD)."
+        "title": "PricingBreakdown"
       },
       "PricingConfig": {
         "properties": {
@@ -5146,8 +5584,7 @@
           "print_setting_name",
           "timestamp"
         ],
-        "title": "PrintSettingResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the print setting.\n\n    print_setting_id (str): The unique identifier of the print setting.\n\n    print_setting_name (str): The name of the print setting profile.\n\n    timestamp (str): ISO 8601 timestamp of when the print setting configuration was created or last updated."
+        "title": "PrintSettingResponse"
       },
       "PrintSettings": {
         "properties": {
@@ -5310,8 +5747,7 @@
           "model_dimensions",
           "printer_dimensions"
         ],
-        "title": "PrintabilityResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    file_path (str): The file path to the 3D model file in cloud storage.\n\n    fits_printer (bool): Whether the model fits within the printer's build volume.\n\n    model_dimensions (dict): Dimensions of the model in mm (x, y, z).\n\n    printer_dimensions (dict): Dimensions of the printer's build volume in mm (x, y, z)."
+        "title": "PrintabilityResponse"
       },
       "PrinterConfig": {
         "properties": {
@@ -5396,8 +5832,7 @@
           "printer_name",
           "timestamp"
         ],
-        "title": "PrinterConfigResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the printer.\n\n    printer_id (str): The unique identifier of the printer.\n\n    printer_name (str): The name of the printer.\n\n    timestamp (str): ISO 8601 timestamp of when the printer configuration was created or last updated."
+        "title": "PrinterConfigResponse"
       },
       "PrinterGeneral": {
         "properties": {
@@ -5772,8 +6207,7 @@
           "created_at",
           "data_usage"
         ],
-        "title": "PublicAccountInfoResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user.\n\n    email (str): The email address of the user.\n\n    plan (str): The subscription plan of the user (`free`, `pro`, or `max`).\n\n    user_name (str): The username of the user.\n\n    created_at (str): ISO 8601 timestamp of when the account was created."
+        "title": "PublicAccountInfoResponse"
       },
       "QuoteConfig": {
         "properties": {
@@ -5871,8 +6305,7 @@
           "pricing",
           "configurations"
         ],
-        "title": "QuoteDetailsResponse",
-        "description": "**Response schema:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    files (FileInfo): File and G-code information.\n\n    time (TimeEstimate): Time estimation details.\n\n    pricing (PricingBreakdown): Detailed pricing breakdown.\n\n    configurations (ConfigurationInfo): Configuration IDs and full config data."
+        "title": "QuoteDetailsResponse"
       },
       "QuoteQueueSubmitResponse": {
         "properties": {
@@ -5978,8 +6411,7 @@
           "time",
           "pricing"
         ],
-        "title": "QuoteResponse",
-        "description": "**Response schema:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    files (FileInfo): File and G-code information.\n\n    time (TimeEstimate): Time estimation details.\n\n    pricing (PricingBreakdown): Detailed pricing breakdown.\n\n    slicer_model (str): The slicer model used for time estimation (e.g., 'prusa_slicer', 'bambu_studio')."
+        "title": "QuoteResponse"
       },
       "SeamPosition": {
         "type": "string",
@@ -6101,8 +6533,7 @@
           "timestamp",
           "data"
         ],
-        "title": "SingleFilamentConfigResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the filament.\n\n    filament_id (str): The unique identifier of the filament.\n\n    filament_name (str): The name of the filament (material type).\n\n    timestamp (str): ISO 8601 timestamp of when the filament configuration was created or last updated.\n\n    data (dict): The configuration data for the filament."
+        "title": "SingleFilamentConfigResponse"
       },
       "SinglePrintSettingResponse": {
         "properties": {
@@ -6136,8 +6567,7 @@
           "timestamp",
           "data"
         ],
-        "title": "SinglePrintSettingResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the print setting.\n\n    print_setting_id (str): The unique identifier of the print setting.\n\n    print_setting_name (str): The name of the print setting profile.\n\n    timestamp (str): ISO 8601 timestamp of when the print setting configuration was created or last updated.\n\n    data (dict): The configuration data for the print setting."
+        "title": "SinglePrintSettingResponse"
       },
       "SinglePrinterConfigResponse": {
         "properties": {
@@ -6171,8 +6601,7 @@
           "timestamp",
           "data"
         ],
-        "title": "SinglePrinterConfigResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the printer.\n\n    printer_id (str): The unique identifier of the printer.\n\n    printer_name (str): The name of the printer.\n\n    timestamp (str): ISO 8601 timestamp of when the printer configuration was created or last updated.\n\n    data (dict): The configuration data for the printer."
+        "title": "SinglePrinterConfigResponse"
       },
       "Skirt": {
         "properties": {
@@ -6717,8 +7146,7 @@
           "estimated_time_seconds",
           "quote_duration"
         ],
-        "title": "TimeEstimate",
-        "description": "**Time estimation details:**\n\n    estimated_time (str): The estimated print time in human-readable format.\n\n    estimated_time_seconds (int): The estimated print time in seconds.\n\n    quote_duration (float): The duration it took to generate the quote in seconds."
+        "title": "TimeEstimate"
       },
       "TopFillPattern": {
         "type": "string",
@@ -6766,8 +7194,7 @@
           "filament_name",
           "timestamp"
         ],
-        "title": "UpdateFilamentConfigResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the filament.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    filament_id (str): The unique identifier of the filament.\n\n    filament_name (str): The updated name of the filament (material type).\n\n    timestamp (str): ISO 8601 timestamp of when the filament configuration was updated."
+        "title": "UpdateFilamentConfigResponse"
       },
       "UpdatePrintSettingResponse": {
         "properties": {
@@ -6800,8 +7227,7 @@
           "print_setting_name",
           "timestamp"
         ],
-        "title": "UpdatePrintSettingResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the print setting.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    print_setting_id (str): The unique identifier of the print setting.\n\n    print_setting_name (str): The updated name of the print setting profile.\n\n    timestamp (str): ISO 8601 timestamp of when the print setting configuration was updated."
+        "title": "UpdatePrintSettingResponse"
       },
       "UpdatePrinterConfigResponse": {
         "properties": {
@@ -6834,8 +7260,7 @@
           "printer_name",
           "timestamp"
         ],
-        "title": "UpdatePrinterConfigResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the printer.\n\n    status (str): The status of the response (e.g., 'updated', 'error').\n\n    printer_id (str): The unique identifier of the printer.\n\n    printer_name (str): The name of the printer.\n\n    timestamp (str): ISO 8601 timestamp of when the printer configuration was updated."
+        "title": "UpdatePrinterConfigResponse"
       },
       "UploadRecordResponse": {
         "properties": {
@@ -6878,8 +7303,7 @@
           "file_name",
           "file_size"
         ],
-        "title": "UploadRecordResponse",
-        "description": "**Response schema:**\n\n    id (str): The unique identifier of the upload record.\n\n    file_id (str): The unique identifier of the file in cloud storage.\n\n    file_path (str): The file path to the file in cloud storage.\n\n    status (str): The status of the upload (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded.\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    file_name (str): The name of the file.\n\n    file_size (float): The size of the file in megabytes (MB)."
+        "title": "UploadRecordResponse"
       },
       "ValidationError": {
         "properties": {
@@ -7273,8 +7697,7 @@
           "y",
           "z"
         ],
-        "title": "XYZDimensions",
-        "description": "**Schema for XYZ dimensions:**\n\n    x (float): The X dimension in mm.\n\n    y (float): The Y dimension in mm.\n\n    z (float): The Z dimension in mm."
+        "title": "XYZDimensions"
       }
     },
     "securitySchemes": {
