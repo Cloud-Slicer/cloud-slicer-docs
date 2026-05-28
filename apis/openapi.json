@@ -100,48 +100,74 @@
               },
               "examples": {
                 "default": {
-                  "summary": "Prusa MK3S+ Cartesian printer",
+                  "summary": "Example Printer",
                   "value": {
                     "general": {
-                      "name": "Workshop MK3S+",
-                      "printer_model": "Prusa MK3S+",
+                      "name": "Default Printer",
+                      "printer_model": "Generic Printer",
                       "printer_variant": "0.4",
-                      "printer_structure": "cartesian",
-                      "bed_size_x": 250,
-                      "bed_size_y": 210,
-                      "max_print_z": 210,
+                      "printer_structure": "corexy",
+                      "bed_size_x": 200,
+                      "bed_size_y": 200,
+                      "max_print_z": 250,
                       "origin": [
                         0,
                         0
                       ],
-                      "z_offset": 0.0,
+                      "z_offset": 0,
                       "gcode_flavor": "marlin",
-                      "use_relative_e_distances": true,
+                      "use_relative_e_distances": false,
                       "use_firmware_retraction": false,
-                      "silent_mode": true
+                      "silent_mode": false
                     },
                     "machine_limits": {
                       "max_feedrates": {
                         "x": 200,
                         "y": 200,
-                        "z": 12,
-                        "e": 120
+                        "z": 5,
+                        "e": 25
                       },
                       "max_accelerations": {
                         "x": 1000,
                         "y": 1000,
-                        "z": 200,
-                        "e": 5000
+                        "z": 100,
+                        "e": 5000,
+                        "extruding": 5000,
+                        "retracting": 5000,
+                        "travel": 9000
+                      },
+                      "max_jerks": {
+                        "x": 8,
+                        "y": 8,
+                        "z": 0.4,
+                        "e": 5
+                      },
+                      "min_feedrates": {
+                        "extruding_rate": 0,
+                        "travel_rate": 0
                       }
                     },
                     "extruder": {
                       "nozzle_diameter": 0.4,
-                      "layer_height_min": 0.07,
+                      "layer_height_min": 0.1,
                       "layer_height_max": 0.3
                     },
                     "retraction": {
                       "length": 0.8,
-                      "speed": 35
+                      "speed": 30,
+                      "deretract_speed": 30,
+                      "lift_z": 0.4,
+                      "lift_above": 0,
+                      "lift_below": 249,
+                      "wipe": true,
+                      "wipe_distance": 2,
+                      "retract_before_wipe": "0%",
+                      "minimum_travel": 1,
+                      "retract_on_layer_change": true
+                    },
+                    "clearance": {
+                      "extruder_clearance_height": 34,
+                      "extruder_clearance_radius": 68
                     }
                   }
                 }
@@ -279,15 +305,74 @@
               },
               "examples": {
                 "default": {
-                  "summary": "Rename printer and tune retraction",
+                  "summary": "Example Printer Patch",
                   "value": {
                     "general": {
-                      "name": "Workshop MK3S+ (tuned)",
-                      "silent_mode": true
+                      "name": "Default Printer",
+                      "printer_model": "Generic Printer",
+                      "printer_variant": "0.4",
+                      "printer_structure": "corexy",
+                      "bed_size_x": 200,
+                      "bed_size_y": 200,
+                      "max_print_z": 250,
+                      "origin": [
+                        0,
+                        0
+                      ],
+                      "z_offset": 0,
+                      "gcode_flavor": "marlin",
+                      "use_relative_e_distances": false,
+                      "use_firmware_retraction": false,
+                      "silent_mode": false
+                    },
+                    "machine_limits": {
+                      "max_feedrates": {
+                        "x": 200,
+                        "y": 200,
+                        "z": 5,
+                        "e": 25
+                      },
+                      "max_accelerations": {
+                        "x": 1000,
+                        "y": 1000,
+                        "z": 100,
+                        "e": 5000,
+                        "extruding": 5000,
+                        "retracting": 5000,
+                        "travel": 9000
+                      },
+                      "max_jerks": {
+                        "x": 8,
+                        "y": 8,
+                        "z": 0.4,
+                        "e": 5
+                      },
+                      "min_feedrates": {
+                        "extruding_rate": 0,
+                        "travel_rate": 0
+                      }
+                    },
+                    "extruder": {
+                      "nozzle_diameter": 0.4,
+                      "layer_height_min": 0.1,
+                      "layer_height_max": 0.3
                     },
                     "retraction": {
-                      "length": 1.0,
-                      "speed": 40
+                      "length": 0.8,
+                      "speed": 30,
+                      "deretract_speed": 30,
+                      "lift_z": 0.4,
+                      "lift_above": 0,
+                      "lift_below": 249,
+                      "wipe": true,
+                      "wipe_distance": 2,
+                      "retract_before_wipe": "0%",
+                      "minimum_travel": 1,
+                      "retract_on_layer_change": true
+                    },
+                    "clearance": {
+                      "extruder_clearance_height": 34,
+                      "extruder_clearance_radius": 68
                     }
                   }
                 }
@@ -439,23 +524,54 @@
               },
               "examples": {
                 "default": {
-                  "summary": "Generic PLA at 215/60 °C",
+                  "summary": "Generic PLA",
                   "value": {
                     "filament": {
-                      "name": "Prusament PLA Galaxy Black",
+                      "name": "Default Filament",
                       "type": "PLA",
-                      "vendor": "Prusa Polymers",
-                      "color": "#1A1A1A",
+                      "vendor": "Generic",
+                      "color": "#FFFFFF",
                       "diameter": 1.75,
+                      "extrusion_multiplier": 1,
                       "density": 1.24,
-                      "cost": 29.99,
+                      "cost": 20,
+                      "spool_weight": 1000,
                       "soluble": false
                     },
                     "temperature": {
-                      "nozzle_temp": 215,
-                      "first_layer_nozzle_temp": 220,
+                      "nozzle_temp": 200,
+                      "first_layer_nozzle_temp": 210,
                       "bed_temp": 60,
                       "first_layer_bed_temp": 65
+                    },
+                    "cooling": {
+                      "enable": true,
+                      "fan_always_on": true,
+                      "fan_speed_min": 20,
+                      "fan_speed_max": 100,
+                      "bridges_fan_speed": 100,
+                      "disable_fan_first_layers": 1,
+                      "full_fan_speed_layer": 0,
+                      "fan_below_layer_time": 100,
+                      "slowdown_below_layer_time": 4,
+                      "min_print_speed": 10,
+                      "overhang_fan_speed": 100,
+                      "overhang_fan_threshold": "50%"
+                    },
+                    "print_speed": {
+                      "max_volumetric_speed": 15
+                    },
+                    "retraction": {
+                      "length": 0.8,
+                      "speed": 30,
+                      "deretract_speed": 30,
+                      "lift_z": 0.4,
+                      "wipe": true,
+                      "retract_before_wipe": "0%",
+                      "retract_restart_extra": 0,
+                      "minimum_travel": 1,
+                      "retract_on_layer_change": true,
+                      "minimal_purge_on_wipe_tower": 15
                     }
                   }
                 }
@@ -593,14 +709,54 @@
               },
               "examples": {
                 "default": {
-                  "summary": "Recolor and retune temperatures",
+                  "summary": "Example Filament Patch",
                   "value": {
                     "filament": {
-                      "color": "#FF5500"
+                      "name": "Default Filament",
+                      "type": "PLA",
+                      "vendor": "Generic",
+                      "color": "#FFFFFF",
+                      "diameter": 1.75,
+                      "extrusion_multiplier": 1,
+                      "density": 1.24,
+                      "cost": 20,
+                      "spool_weight": 1000,
+                      "soluble": false
                     },
                     "temperature": {
-                      "nozzle_temp": 210,
-                      "bed_temp": 55
+                      "nozzle_temp": 200,
+                      "first_layer_nozzle_temp": 210,
+                      "bed_temp": 60,
+                      "first_layer_bed_temp": 65
+                    },
+                    "cooling": {
+                      "enable": true,
+                      "fan_always_on": true,
+                      "fan_speed_min": 20,
+                      "fan_speed_max": 100,
+                      "bridges_fan_speed": 100,
+                      "disable_fan_first_layers": 1,
+                      "full_fan_speed_layer": 0,
+                      "fan_below_layer_time": 100,
+                      "slowdown_below_layer_time": 4,
+                      "min_print_speed": 10,
+                      "overhang_fan_speed": 100,
+                      "overhang_fan_threshold": "50%"
+                    },
+                    "print_speed": {
+                      "max_volumetric_speed": 15
+                    },
+                    "retraction": {
+                      "length": 0.8,
+                      "speed": 30,
+                      "deretract_speed": 30,
+                      "lift_z": 0.4,
+                      "wipe": true,
+                      "retract_before_wipe": "0%",
+                      "retract_restart_extra": 0,
+                      "minimum_travel": 1,
+                      "retract_on_layer_change": true,
+                      "minimal_purge_on_wipe_tower": 15
                     }
                   }
                 }
@@ -748,8 +904,8 @@
                 "default": {
                   "summary": "Standard 0.2 mm PLA profile",
                   "value": {
-                    "name": "Standard 0.2mm PLA",
-                    "filament_color": "#1A1A1A",
+                    "name": "Default Print Settings",
+                    "filament_color": "string",
                     "layers_and_perimeters": {
                       "layer_height": {
                         "layer_height": 0.2,
@@ -757,12 +913,110 @@
                         "top_layers": 5,
                         "bottom_layers": 3,
                         "perimeters": 3
+                      },
+                      "advanced": {
+                        "detect_thin_walls": false,
+                        "thick_bridges": true,
+                        "seam_position": "nearest",
+                        "perimeter_generator": "classic",
+                        "elefant_foot_compensation": 0.15,
+                        "xy_size_compensation": 0,
+                        "xy_hole_compensation": 0
                       }
                     },
+                    "extrusion_width": {
+                      "default": 0.45,
+                      "first_layer": 0.42,
+                      "external_perimeter": 0.4,
+                      "perimeter": 0.45,
+                      "infill": 0.45,
+                      "solid_infill": 0.45,
+                      "top_infill": 0.4,
+                      "support": 0.42
+                    },
                     "infill": {
-                      "fill_density": "20%",
-                      "fill_pattern": "gyroid",
-                      "fill_angle": 45
+                      "fill_density": "15%",
+                      "fill_pattern": "grid",
+                      "fill_angle": 45,
+                      "infill_anchor": 2.5,
+                      "infill_anchor_max": 15,
+                      "infill_overlap": "25%",
+                      "top_fill_pattern": "monotoniclines",
+                      "ironing_type": "top",
+                      "solid_infill_every_layers": 0,
+                      "combine_infill_every_layers": 0
+                    },
+                    "skirt_and_brim": {
+                      "skirt": {
+                        "loops": 0,
+                        "distance": 2,
+                        "height": 2
+                      },
+                      "brim": {
+                        "type": "no_brim",
+                        "width": 5,
+                        "separation_gap": 0.1
+                      }
+                    },
+                    "support_material": {
+                      "enable": false,
+                      "style": "grid",
+                      "pattern": "rectilinear",
+                      "threshold_angle": 40,
+                      "buildplate_only": false,
+                      "top_z_distance": 0.15,
+                      "xy_distance": 0.5,
+                      "spacing": 2,
+                      "top_interface_layers": 2,
+                      "bottom_interface_layers": 0,
+                      "interface_pattern": "rectilinear",
+                      "interface_spacing": 0,
+                      "dont_support_bridges": false,
+                      "raft_layers": 0,
+                      "raft_first_layer_expansion": 2
+                    },
+                    "speed": {
+                      "perimeters": 300,
+                      "small_perimeters": "50%",
+                      "external_perimeters": 200,
+                      "infill": 270,
+                      "solid_infill": 250,
+                      "top_solid_infill": 200,
+                      "support_material": 150,
+                      "support_material_interface": 80,
+                      "gap_fill": 250,
+                      "ironing": 15,
+                      "travel": 500,
+                      "travel_z": 0,
+                      "first_layer": 50,
+                      "first_layer_infill": 105,
+                      "bridge": 50
+                    },
+                    "acceleration": {
+                      "default": 10000,
+                      "first_layer": 500,
+                      "perimeter": 0,
+                      "external_perimeter": 5000,
+                      "infill": "100%",
+                      "solid_infill": 0,
+                      "top_solid_infill": 2000,
+                      "travel": 10000,
+                      "bridge": 0
+                    },
+                    "overhang": {
+                      "enable_overhang_speed": true,
+                      "speed_0": 0,
+                      "speed_1": 50,
+                      "speed_2": 30,
+                      "speed_3": 10
+                    },
+                    "wipe_tower": {
+                      "enable": false,
+                      "width": 60
+                    },
+                    "output_options": {
+                      "spiral_vase": false,
+                      "print_sequence": "by layer"
                     }
                   }
                 }
@@ -884,10 +1138,119 @@
                 "default": {
                   "summary": "Bump infill for high-strength parts",
                   "value": {
-                    "name": "Standard 0.2mm PLA (high-strength)",
+                    "name": "Default Print Settings",
+                    "filament_color": "string",
+                    "layers_and_perimeters": {
+                      "layer_height": {
+                        "layer_height": 0.2,
+                        "first_layer_height": 0.2,
+                        "top_layers": 5,
+                        "bottom_layers": 3,
+                        "perimeters": 3
+                      },
+                      "advanced": {
+                        "detect_thin_walls": false,
+                        "thick_bridges": true,
+                        "seam_position": "nearest",
+                        "perimeter_generator": "classic",
+                        "elefant_foot_compensation": 0.15,
+                        "xy_size_compensation": 0,
+                        "xy_hole_compensation": 0
+                      }
+                    },
+                    "extrusion_width": {
+                      "default": 0.45,
+                      "first_layer": 0.42,
+                      "external_perimeter": 0.4,
+                      "perimeter": 0.45,
+                      "infill": 0.45,
+                      "solid_infill": 0.45,
+                      "top_infill": 0.4,
+                      "support": 0.42
+                    },
                     "infill": {
-                      "fill_density": "40%",
-                      "fill_pattern": "gyroid"
+                      "fill_density": "15%",
+                      "fill_pattern": "grid",
+                      "fill_angle": 45,
+                      "infill_anchor": 2.5,
+                      "infill_anchor_max": 15,
+                      "infill_overlap": "25%",
+                      "top_fill_pattern": "monotoniclines",
+                      "ironing_type": "top",
+                      "solid_infill_every_layers": 0,
+                      "combine_infill_every_layers": 0
+                    },
+                    "skirt_and_brim": {
+                      "skirt": {
+                        "loops": 0,
+                        "distance": 2,
+                        "height": 2
+                      },
+                      "brim": {
+                        "type": "no_brim",
+                        "width": 5,
+                        "separation_gap": 0.1
+                      }
+                    },
+                    "support_material": {
+                      "enable": false,
+                      "style": "grid",
+                      "pattern": "rectilinear",
+                      "threshold_angle": 40,
+                      "buildplate_only": false,
+                      "top_z_distance": 0.15,
+                      "xy_distance": 0.5,
+                      "spacing": 2,
+                      "top_interface_layers": 2,
+                      "bottom_interface_layers": 0,
+                      "interface_pattern": "rectilinear",
+                      "interface_spacing": 0,
+                      "dont_support_bridges": false,
+                      "raft_layers": 0,
+                      "raft_first_layer_expansion": 2
+                    },
+                    "speed": {
+                      "perimeters": 300,
+                      "small_perimeters": "50%",
+                      "external_perimeters": 200,
+                      "infill": 270,
+                      "solid_infill": 250,
+                      "top_solid_infill": 200,
+                      "support_material": 150,
+                      "support_material_interface": 80,
+                      "gap_fill": 250,
+                      "ironing": 15,
+                      "travel": 500,
+                      "travel_z": 0,
+                      "first_layer": 50,
+                      "first_layer_infill": 105,
+                      "bridge": 50
+                    },
+                    "acceleration": {
+                      "default": 10000,
+                      "first_layer": 500,
+                      "perimeter": 0,
+                      "external_perimeter": 5000,
+                      "infill": "100%",
+                      "solid_infill": 0,
+                      "top_solid_infill": 2000,
+                      "travel": 10000,
+                      "bridge": 0
+                    },
+                    "overhang": {
+                      "enable_overhang_speed": true,
+                      "speed_0": 0,
+                      "speed_1": 50,
+                      "speed_2": 30,
+                      "speed_3": 10
+                    },
+                    "wipe_tower": {
+                      "enable": false,
+                      "width": 60
+                    },
+                    "output_options": {
+                      "spiral_vase": false,
+                      "print_sequence": "by layer"
                     }
                   }
                 }
@@ -1198,7 +1561,7 @@
               },
               "examples": {
                 "default": {
-                  "summary": "250 × 210 × 210 mm build volume (MK3S+)",
+                  "summary": "250×210×210 mm build volume",
                   "value": {
                     "x": 250.0,
                     "y": 210.0,
@@ -1251,8 +1614,27 @@
           "File"
         ],
         "summary": "Get User Files",
-        "description": "Get all uploaded files for the authenticated user, sorted by latest first.",
+        "description": "Get uploaded files for the authenticated user, sorted by latest first. Pass an optional `file_id` query parameter to fetch metadata for a single file (returns a list of 0 or 1 items). Requires a valid API token.",
         "operationId": "get_user_files_v1_file_get",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "File Id"
+            },
+            "description": "Optional file ID. When provided, returns only the matching upload record for the authenticated user."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successfully retrieved user files",
@@ -1273,6 +1655,16 @@
           },
           "500": {
             "description": "Internal server error while fetching files"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1345,7 +1737,7 @@
           "File"
         ],
         "summary": "Get Upload Id",
-        "description": "Generate an upload ID for uploading a file to the database.\n\nReturns an upload id that can be used with the /file/public/{upload_id} endpoint to upload files without authentication. The upload id expires after 1 hour.\n\nWorkflow:\n1. Call this endpoint to get an upload_id\n2. Use the upload_id with POST /file/public/{upload_id} to upload the file",
+        "description": "Generate an upload ID for uploading a file to the database.\n\nReturns an upload id that can be used with the /file/public/{upload_id} endpoint to upload files without authentication. The upload id expires after 1 hour.\n\nWorkflow:\n1. Call this endpoint to get an upload_id\n2. Use the upload_id with `POST /file/public/{upload_id}` to upload the file",
         "operationId": "get_upload_id_v1_file_upload_id_get",
         "responses": {
           "200": {
@@ -1583,31 +1975,133 @@
               },
               "examples": {
                 "default": {
-                  "summary": "PLA on MK3S+ with standard PrusaSlicer profile",
+                  "summary": "Example Prusa Quote",
                   "value": {
-                    "printer_id": "prn_b8a1f3c2e4d5",
-                    "filament_id": "fil_2d4e6f8a0b1c",
+                    "printer_id": "printer-id",
+                    "filament_id": "filament-id",
                     "slicer_model": "prusa_slicer",
                     "pricing_config": {
                       "currency": "USD",
                       "cost_per_hour": 2.5,
-                      "cost_per_gram": 0.05,
-                      "base_price": 5.0,
-                      "printer_watts": 120.0,
-                      "cost_per_kwh": 0.14
+                      "cost_per_gram": 0.02,
+                      "base_price": 5,
+                      "printer_watts": 100,
+                      "cost_per_kwh": 0.12
                     },
                     "print_settings": {
-                      "name": "Standard 0.2mm PLA",
+                      "name": "Default Print Settings",
+                      "filament_color": "string",
                       "layers_and_perimeters": {
                         "layer_height": {
                           "layer_height": 0.2,
                           "first_layer_height": 0.2,
+                          "top_layers": 5,
+                          "bottom_layers": 3,
                           "perimeters": 3
+                        },
+                        "advanced": {
+                          "detect_thin_walls": false,
+                          "thick_bridges": true,
+                          "seam_position": "nearest",
+                          "perimeter_generator": "classic",
+                          "elefant_foot_compensation": 0.15,
+                          "xy_size_compensation": 0,
+                          "xy_hole_compensation": 0
                         }
                       },
+                      "extrusion_width": {
+                        "default": 0.45,
+                        "first_layer": 0.42,
+                        "external_perimeter": 0.4,
+                        "perimeter": 0.45,
+                        "infill": 0.45,
+                        "solid_infill": 0.45,
+                        "top_infill": 0.4,
+                        "support": 0.42
+                      },
                       "infill": {
-                        "fill_density": "20%",
-                        "fill_pattern": "gyroid"
+                        "fill_density": "15%",
+                        "fill_pattern": "grid",
+                        "fill_angle": 45,
+                        "infill_anchor": 2.5,
+                        "infill_anchor_max": 15,
+                        "infill_overlap": "25%",
+                        "top_fill_pattern": "monotoniclines",
+                        "ironing_type": "top",
+                        "solid_infill_every_layers": 0,
+                        "combine_infill_every_layers": 0
+                      },
+                      "skirt_and_brim": {
+                        "skirt": {
+                          "loops": 0,
+                          "distance": 2,
+                          "height": 2
+                        },
+                        "brim": {
+                          "type": "no_brim",
+                          "width": 5,
+                          "separation_gap": 0.1
+                        }
+                      },
+                      "support_material": {
+                        "enable": false,
+                        "style": "grid",
+                        "pattern": "rectilinear",
+                        "threshold_angle": 40,
+                        "buildplate_only": false,
+                        "top_z_distance": 0.15,
+                        "xy_distance": 0.5,
+                        "spacing": 2,
+                        "top_interface_layers": 2,
+                        "bottom_interface_layers": 0,
+                        "interface_pattern": "rectilinear",
+                        "interface_spacing": 0,
+                        "dont_support_bridges": false,
+                        "raft_layers": 0,
+                        "raft_first_layer_expansion": 2
+                      },
+                      "speed": {
+                        "perimeters": 300,
+                        "small_perimeters": "50%",
+                        "external_perimeters": 200,
+                        "infill": 270,
+                        "solid_infill": 250,
+                        "top_solid_infill": 200,
+                        "support_material": 150,
+                        "support_material_interface": 80,
+                        "gap_fill": 250,
+                        "ironing": 15,
+                        "travel": 500,
+                        "travel_z": 0,
+                        "first_layer": 50,
+                        "first_layer_infill": 105,
+                        "bridge": 50
+                      },
+                      "acceleration": {
+                        "default": 10000,
+                        "first_layer": 500,
+                        "perimeter": 0,
+                        "external_perimeter": 5000,
+                        "infill": "100%",
+                        "solid_infill": 0,
+                        "top_solid_infill": 2000,
+                        "travel": 10000,
+                        "bridge": 0
+                      },
+                      "overhang": {
+                        "enable_overhang_speed": true,
+                        "speed_0": 0,
+                        "speed_1": 50,
+                        "speed_2": 30,
+                        "speed_3": 10
+                      },
+                      "wipe_tower": {
+                        "enable": false,
+                        "width": 60
+                      },
+                      "output_options": {
+                        "spiral_vase": false,
+                        "print_sequence": "by layer"
                       }
                     }
                   }
@@ -2504,7 +2998,7 @@
           "Convert Files"
         ],
         "summary": "Convert Bambu To Ini",
-        "description": "Convert a Bambu Studio profile archive (.bbscfg) to PrusaSlicer INI format. Upload a .bbscfg file containing filament/, printer/, and process/ directories with Bambu profile JSON files. Returns a downloadable .ini configuration file.",
+        "description": "Convert a Bambu Studio profile archive (.bbscfg) to PrusaSlicer INI format. Upload a .bbscfg file containing filament/, printer/, and process/ directories with Bambu profile JSON files. Returns a downloadable .ini configuration file.\n\n> **Playground note:** in the **Body** section, open the dropdown and select **Multipart**. Add an entry with the key `file`, then click the value field to attach your Bambu Studio profile archive (.bbscfg). Without this, the request will send the raw file bytes and the server will return a `422` validation error.",
         "operationId": "convert_bambu_to_ini_v1_convert_bambu_to_ini_post",
         "requestBody": {
           "content": {
@@ -2520,7 +3014,17 @@
           "200": {
             "description": "Successfully converted profile to INI format",
             "content": {
-              "text/plain": {}
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "Convert Example": {
+                    "summary": "Convert Example",
+                    "value": "# generated by Cloud Slicer\n\n[printer:Bambu Lab X1 Carbon 0.4 nozzle]\nprinter_model = Bambu Lab X1 Carbon\nprinter_variant = 0.4\nnozzle_diameter = 0.4\nmax_print_height = 250\nbed_shape = 0x0,256x0,256x256,0x256\nretract_length = 0.8\nretract_speed = 35\n\n[filament:Bambu PLA Basic @BBL X1C]\nfilament_type = PLA\nfilament_diameter = 1.75\ntemperature = 220\nfirst_layer_temperature = 220\nbed_temperature = 55\nfirst_layer_bed_temperature = 55\nfan_always_on = 1\nmax_fan_speed = 100\nmin_fan_speed = 100\n\n[print:0.20mm Standard @BBL X1C]\nlayer_height = 0.2\nfirst_layer_height = 0.2\nperimeters = 3\ntop_solid_layers = 5\nbottom_solid_layers = 3\nfill_density = 15%\nfill_pattern = grid\nsupport_material = 0\n"
+                  }
+                }
+              }
             }
           },
           "400": {
@@ -2553,7 +3057,7 @@
           "Convert Files"
         ],
         "summary": "Convert Bambu To Json",
-        "description": "Convert a Bambu Studio profile export to intermediate JSON format. Accepts .bbscfg, .bbsflmt, .zip (Printer/Filament/Process preset bundles), or a raw .json preset. Returns only the categories that were present in the upload; each present category is returned as a list of resolved configs.",
+        "description": "Convert a Bambu Studio profile export to intermediate JSON format. Accepts .bbscfg, .bbsflmt, .zip (Printer/Filament/Process preset bundles), or a raw .json preset. Returns only the categories that were present in the upload; each present category is returned as a list of resolved configs.\n\n> **Playground note:** in the **Body** section, open the dropdown and select **Multipart**. Add an entry with the key `file`, then click the value field to attach your Bambu Studio profile export (.bbscfg, .bbsflmt, .zip, or .json). Without this, the request will send the raw file bytes and the server will return a `422` validation error.",
         "operationId": "convert_bambu_to_json_v1_convert_bambu_to_json_post",
         "requestBody": {
           "content": {
@@ -2570,7 +3074,98 @@
             "description": "Successfully converted profile to JSON format",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Convert Example": {
+                    "summary": "Convert Example",
+                    "value": {
+                      "printer_config": [
+                        {
+                          "general": {
+                            "name": "Bambu Lab X1 Carbon 0.4 nozzle",
+                            "printer_model": "Bambu Lab X1 Carbon",
+                            "printer_variant": "0.4",
+                            "nozzle_diameter": 0.4,
+                            "max_print_height": 250
+                          },
+                          "machine_limits": {
+                            "max_print_speed": 500,
+                            "max_travel_speed": 500
+                          },
+                          "extruder": {
+                            "extruder_count": 1,
+                            "single_extruder_multi_material": false
+                          },
+                          "retraction": {
+                            "retract_length": 0.8,
+                            "retract_speed": 35
+                          },
+                          "clearance": {
+                            "extruder_clearance_radius": 65,
+                            "extruder_clearance_height_to_rod": 36
+                          }
+                        }
+                      ],
+                      "filament_config": [
+                        {
+                          "filament": {
+                            "name": "Bambu PLA Basic @BBL X1C",
+                            "filament_type": "PLA",
+                            "filament_diameter": 1.75,
+                            "filament_density": 1.24
+                          },
+                          "temperature": {
+                            "nozzle_temperature": 220,
+                            "first_layer_nozzle_temperature": 220,
+                            "bed_temperature": 55,
+                            "first_layer_bed_temperature": 55
+                          },
+                          "cooling": {
+                            "fan_always_on": true,
+                            "max_fan_speed": 100,
+                            "min_fan_speed": 100
+                          },
+                          "print_speed": {
+                            "max_volumetric_speed": 21
+                          },
+                          "retraction": {
+                            "filament_retract_length": 0.8
+                          }
+                        }
+                      ],
+                      "print_settings": [
+                        {
+                          "layers_and_perimeters": {
+                            "layer_height": {
+                              "layer_height": 0.2,
+                              "first_layer_height": 0.2,
+                              "perimeters": 3,
+                              "top_layers": 5,
+                              "bottom_layers": 3
+                            },
+                            "advanced": {
+                              "seam_position": "nearest",
+                              "perimeter_generator": "classic"
+                            }
+                          },
+                          "infill": {
+                            "fill_density": 15,
+                            "fill_pattern": "grid"
+                          },
+                          "speed": {
+                            "perimeter_speed": 200,
+                            "infill_speed": 270
+                          },
+                          "support_material": {
+                            "support_material": false
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
               }
             }
           },
