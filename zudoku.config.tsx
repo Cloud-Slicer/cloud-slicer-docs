@@ -259,6 +259,12 @@ const config: ZudokuConfig = {
               icon: "lock",
               file: "troubleshooting/cors-issues",
             },
+            {
+              type: "doc",
+              label: "three.js Model Preview",
+              icon: "box",
+              file: "troubleshooting/threejs-model-preview",
+            },
           ],
         },
         {

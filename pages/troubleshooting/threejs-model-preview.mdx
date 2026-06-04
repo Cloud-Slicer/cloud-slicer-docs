@@ -1,0 +1,188 @@
+---
+title: Previewing .3mf, .step & .stp with three.js
+description: Why three.js fails to preview slicer 3MF and STEP/STP files in the browser, and how to add support for them in TypeScript.
+---
+
+If you build your own 3D preview on top of [three.js](https://threejs.org), you'll quickly find that `.stl` and `.obj` "just work" — but `.3mf` files exported from a slicer fail to render, and `.step` / `.stp` files aren't supported at all. This guide explains *why*, starting from three.js fundamentals, then walks through adding browser-side support for all three in TypeScript.
+
+:::note
+This is a client-side rendering concern, not a Cloud Slicer API concern. The Cloud Slicer API already accepts and quotes `.stl`, `.obj`, `.3mf`, `.amf`, `.step`, and `.stp` — see [Managing Files](/guides/managing-files). This page is about drawing a preview in *your own* front-end.
+:::
+
+## three.js in 60 seconds
+
+three.js is a WebGL library for rendering 3D scenes in the browser. Four pieces matter here:
+
+- **Scene** — the container holding everything you draw.
+- **Camera** — the viewpoint (usually a `PerspectiveCamera`).
+- **Renderer** — `WebGLRenderer`, which paints the scene to a `<canvas>`.
+- **Mesh** — a visible object, built from a **`BufferGeometry`** (the triangles: vertex positions + indices) and a **`Material`** (how it looks).
+
+The single most important thing to understand:
+
+:::tip
+**three.js only renders *meshes* — i.e. triangles.** A loader's entire job is to turn a file into a `BufferGeometry`. Whether a format "works" comes down to one question: *does a loader exist that can produce triangles from it?*
+:::
+
+three.js ships extra loaders in `three/examples/jsm/loaders` (re-exported by the popular [`three-stdlib`](https://www.npmjs.com/package/three-stdlib) package):
+
+| Format | Loader | Status |
+| ------ | ------ | ------ |
+| `.stl` | `STLLoader` | ✅ Works |
+| `.obj` | `OBJLoader` | ✅ Works |
+| `.amf` | `AMFLoader` | ✅ Works |
+| `.3mf` | `ThreeMFLoader` | ⚠️ Works for *simple* files, **breaks on slicer files** |
+| `.step` / `.stp` | — | ❌ No loader exists |
+
+The rest of this guide closes the last two rows.
+
+## Why .3mf breaks (the production extension)
+
+A `.3mf` file is a **ZIP archive**. A simple one stores all its geometry inline in `3D/3dmodel.model`. But Bambu Studio, OrcaSlicer, and PrusaSlicer write the **3MF production extension** (`requiredextensions="p"`): the root `3D/3dmodel.model` contains only `<build>` items and `<components>` that *reference* the actual geometry, which lives in **separate parts** like `3D/Objects/object_1.model`, linked by a `p:path` attribute.
+
+```xml
+<!-- 3D/3dmodel.model — root part: no mesh, just a pointer -->
+<object id="2" type="model">
+  <components>
+    <component p:path="/3D/Objects/object_1.model" objectid="1"
+               transform="1 0 0 0 1 0 0 0 1 0 0 0"/>
+  </components>
+</object>
+<build>
+  <item objectid="2" transform="1 0 0 0 -1 0 0 0 -1 128 128 13"/>
+</build>
+```
+
+The stock `ThreeMFLoader` reads every `.model` part into one flat, objectid-keyed map and only resolves build items from the root part — it never follows `p:path` into the external parts. The result is **empty geometry**, and the loader typically throws. Because slicer "project" files are the dominant `.3mf` flavor in 3D printing, the stock loader is effectively unusable for real uploads.
+
+:::caution
+A `.3mf` that renders fine in a quick test (a hand-authored or single-part file) can still fail in production once users upload real slicer exports. **Always test with a file exported from Bambu Studio / OrcaSlicer / PrusaSlicer.**
+:::
+
+### The fix: a production-extension-aware loader
+
+Read the ZIP with [`jszip`](https://www.npmjs.com/package/jszip), parse **every** `*.model` part, then resolve each build item by walking its components *across parts* (using `p:path` to pick the part) while accumulating transforms.
+
+```ts
+import * as THREE from "three";
+import { mergeBufferGeometries } from "three-stdlib";
+import JSZip from "jszip";
+
+export async function load3mfGeometry(buffer: ArrayBuffer): Promise<THREE.BufferGeometry> {
+  const zip = await JSZip.loadAsync(buffer);
+
+  // 1. Parse every *.model part into { objects, build }, keyed by path.
+  // 2. Find the root part via _rels/.rels.
+  // 3. For each <build> <item>, resolve its object — descending through
+  //    <components> across parts (p:path) and multiplying transforms — and
+  //    collect a BufferGeometry per leaf <mesh>.
+  // 4. Merge with mergeBufferGeometries and computeVertexNormals().
+
+  // Full, copy-pasteable implementation is in the downloadable skill below.
+}
+```
+
+The transform handling matters: 3MF stores a 4×3 row-vector affine as 12 numbers. Map it so three.js's column-vector `applyMatrix4` reproduces the spec's `v * M`, and your previews stay dimensionally correct:
+
+```ts
+function parseTransform(transform: string): THREE.Matrix4 {
+  const t = transform.trim().split(/\s+/).map(Number);
+  const m = new THREE.Matrix4();
+  m.set(
+    t[0], t[3], t[6], t[9],
+    t[1], t[4], t[7], t[10],
+    t[2], t[5], t[8], t[11],
+    0, 0, 0, 1,
+  );
+  return m;
+}
+```
+
+## Why .step / .stp need a CAD kernel
+
+STEP and IGES are **parametric boundary representations** (B-rep) — they describe NURBS *surfaces*, not triangles. There is nothing for three.js to draw until those surfaces are **tessellated** into a mesh, and that requires a CAD geometry kernel. This is why three.js has no STEP loader by design.
+
+### The fix: OpenCASCADE in the browser (WASM)
+
+[`occt-import-js`](https://github.com/kovacsv/occt-import-js) is an OpenCASCADE build compiled to WebAssembly. It reads STEP/STP/IGES and returns position/normal/index buffers that map straight onto a `BufferGeometry`.
+
+```ts
+import * as THREE from "three";
+
+let occtPromise: Promise<any> | null = null;
+function getOcct() {
+  // Lazy dynamic import keeps the ~7.6MB WASM out of your main bundle —
+  // it only downloads the first time a STEP file is opened.
+  if (!occtPromise) {
+    occtPromise = import("occt-import-js").then((mod) =>
+      (mod.default ?? mod)({ locateFile: () => "/wasm/occt-import-js.wasm" }),
+    );
+  }
+  return occtPromise;
+}
+
+export async function loadStepGeometry(bytes: Uint8Array): Promise<THREE.BufferGeometry> {
+  const occt = await getOcct();
+  const result = occt.ReadStepFile(bytes, null); // emits true millimeters by default
+  // Build a BufferGeometry from result.meshes[i].attributes.position/normal + index,
+  // then merge. Full implementation in the downloadable skill below.
+}
+```
+
+You'll need to serve the WASM as a static asset (e.g. copy `occt-import-js.wasm` into `public/wasm/` on `postinstall`) and add a one-line ambient module declaration since the package ships no types.
+
+:::caution
+Don't "normalize" STEP units with a bounding-box size heuristic. `occt` already reads the unit declared in the file and emits millimeters — scaling small parts by a guessed factor corrupts their real dimensions.
+:::
+
+## Putting it together: format dispatch
+
+Branch on the file extension. The native formats use the stock loaders; the two hard cases use the helpers above.
+
+```ts
+import { STLLoader, OBJLoader, AMFLoader } from "three-stdlib";
+import { load3mfGeometry } from "./load3mfGeometry";
+import { loadStepGeometry } from "./loadStepGeometry";
+
+async function loadGeometry(file: File): Promise<THREE.BufferGeometry> {
+  const ext = file.name.split(".").pop()?.toLowerCase();
+  const buffer = await file.arrayBuffer();
+
+  if (ext === "stl") return new STLLoader().parse(buffer);
+  if (ext === "obj") return mergeMeshes(new OBJLoader().parse(new TextDecoder().decode(buffer)));
+  if (ext === "amf") return mergeMeshes(new AMFLoader().parse(buffer));
+  if (ext === "3mf") return load3mfGeometry(buffer);
+  if (ext === "step" || ext === "stp") return loadStepGeometry(new Uint8Array(buffer));
+  throw new Error("Unsupported file type");
+}
+```
+
+`OBJLoader` and `AMFLoader` return an `Object3D`/`Group`, so flatten them (`mergeMeshes`) by traversing for `isMesh` children, cloning each `geometry`, applying `mesh.matrixWorld`, and merging with `mergeBufferGeometries`.
+
+:::note
+If you use a server-side-rendered framework (Next.js, Remix, etc.), make sure the 3MF loader runs **client-side only** — it relies on the browser's `DOMParser`. Use a client component or a dynamic import with SSR disabled.
+:::
+
+## Verify
+
+1. Open one file of each type. For `.3mf`, use a file **exported from a slicer** (Bambu Studio / OrcaSlicer / PrusaSlicer), not just a hand-authored one.
+2. Confirm reported dimensions look right for a part of known size.
+3. In DevTools → **Network**, confirm `occt-import-js.wasm` is fetched only when a STEP/STP file is opened — not on initial page load.
+
+## Download: LLM implementation skill
+
+Prefer to hand this to a coding agent? The link below is a self-contained **skill file** (Markdown with full, copy-pasteable TypeScript for both loaders, install steps, wiring, and gotchas). Drop it into an LLM coding tool — e.g. as a [Claude Code skill](https://docs.claude.com/en/docs/claude-code/skills) — and ask it to apply the changes to your viewer.
+
+<a
+  href="/downloads/threejs-model-preview-skill.md"
+  download
+  className="inline-flex items-center gap-2 rounded-lg border border-gray-400 dark:border-white-200 px-4 py-0 font-medium no-underline shadow-sm hover:bg-[var(--accent)] transition-colors"
+>
+  threejs-model-preview-skill.md
+</a>
+
+## Need help?
+
+- Check the [API Reference](/api) for the file and quote endpoints.
+- Visit our [GitHub Issues](https://github.com/Cloud-Slicer/cloud-slicer-docs/issues).
+- Join our [Discord community](https://discord.gg/CVmtSMVmVs) for live support.
