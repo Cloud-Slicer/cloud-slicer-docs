@@ -2992,6 +2992,53 @@
         }
       }
     },
+    "/v1/convert/file-to-stl": {
+      "post": {
+        "tags": [
+          "Convert Files"
+        ],
+        "summary": "Convert File To Stl",
+        "description": "Converts a 3D model file (.3mf, .obj, .step, .stp) to STL format.Upload a supported model file and receive a downloadable .stl file.\n\n> **Playground note:** in the **Body** section, open the dropdown and select **Multipart**. Add an entry with the key `file`, then click the value field to attach your 3D model file (.3mf, .obj, .step, .stp). Without this, the request will send the raw file bytes and the server will return a `422` validation error.",
+        "operationId": "convert_file_to_stl_v1_convert_file_to_stl_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_convert_file_to_stl_v1_convert_file_to_stl_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully converted model to STL",
+            "content": {
+              "application/octet-stream": {}
+            }
+          },
+          "400": {
+            "description": "Invalid file format or filename"
+          },
+          "413": {
+            "description": "File too large"
+          },
+          "500": {
+            "description": "Conversion failed"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/convert/bambu-to-ini": {
       "post": {
         "tags": [
@@ -3471,6 +3518,21 @@
           "file"
         ],
         "title": "Body_convert_bambu_to_json_v1_convert_bambu_to_json_post"
+      },
+      "Body_convert_file_to_stl_v1_convert_file_to_stl_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File",
+            "description": "3D model file (.3mf, .obj, .step, .stp)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_convert_file_to_stl_v1_convert_file_to_stl_post"
       },
       "Body_upload_file_public_v1_file_public__upload_id__post": {
         "properties": {
