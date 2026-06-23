@@ -1888,7 +1888,7 @@
           "File"
         ],
         "summary": "Delete File",
-        "description": "Deletes an uploaded file. **NOTE: This will also delete the quotes associated with this file**",
+        "description": "Deletes an uploaded file and its associated gcode from storage. **The quote record is kept** — its `file_path` and `gcode_path` are cleared (set to null) rather than deleted, so quote and order history is preserved.",
         "operationId": "delete_file_v1_file__file_id__delete",
         "security": [
           {
