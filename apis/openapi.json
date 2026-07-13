@@ -18,7 +18,7 @@
           "Account"
         ],
         "summary": "Get User Info",
-        "description": "Get information for the authenticated user.",
+        "description": "Get information for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can gernerate a token from the Cloud Slicer website in your account settings.\nReturns account information for the authenticated user.",
         "operationId": "get_user_info_v1_user_get",
         "responses": {
           "200": {
@@ -51,10 +51,10 @@
     "/v1/printer": {
       "get": {
         "tags": [
-          "Printer Config"
+          "FDM Printer Config"
         ],
         "summary": "Get Printer Configs",
-        "description": "Get all of the authenticated user's printer configurations.",
+        "description": "Get all of the authenticated user's printer configurations. Requires a valid API token.",
         "operationId": "get_printer_configs_v1_printer_get",
         "responses": {
           "200": {
@@ -86,10 +86,10 @@
       },
       "post": {
         "tags": [
-          "Printer Config"
+          "FDM Printer Config"
         ],
         "summary": "Create Printer Config",
-        "description": "Create a printer configuration including general settings, machine limits, and extruder settings.",
+        "description": "Create a printer configuration including general settings, machine limits, and extruder settings. Requires a valid API token.",
         "operationId": "create_printer_config_v1_printer_post",
         "requestBody": {
           "content": {
@@ -217,10 +217,10 @@
     "/v1/printer/{printer_id}": {
       "get": {
         "tags": [
-          "Printer Config"
+          "FDM Printer Config"
         ],
         "summary": "Get Printer Config",
-        "description": "Get a specific printer configuration for the authenticated user.",
+        "description": "Get a specific printer configuration for the authenticated user. Requires a valid API token.",
         "operationId": "get_printer_config_v1_printer__printer_id__get",
         "security": [
           {
@@ -234,6 +234,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the printer configuration to retrieve.",
               "title": "Printer Id"
             },
             "description": "ID for the printer configuration to retrieve."
@@ -273,10 +274,10 @@
       },
       "patch": {
         "tags": [
-          "Printer Config"
+          "FDM Printer Config"
         ],
         "summary": "Update Printer Config",
-        "description": "Update an existing printer configuration for the authenticated user.",
+        "description": "Update an existing printer configuration for the authenticated user. Requires a valid API token.",
         "operationId": "update_printer_config_v1_printer__printer_id__patch",
         "security": [
           {
@@ -290,6 +291,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the printer configuration to update.",
               "title": "Printer Id"
             },
             "description": "ID for the printer configuration to update."
@@ -417,10 +419,10 @@
       },
       "delete": {
         "tags": [
-          "Printer Config"
+          "FDM Printer Config"
         ],
         "summary": "Delete Printer Config",
-        "description": "Delete a specific printer configuration for the authenticated user.",
+        "description": "Delete a specific printer configuration for the authenticated user. Requires a valid API token.",
         "operationId": "delete_printer_config_v1_printer__printer_id__delete",
         "security": [
           {
@@ -434,6 +436,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the printer configuration to delete.",
               "title": "Printer Id"
             },
             "description": "ID for the printer configuration to delete."
@@ -472,13 +475,305 @@
         }
       }
     },
+    "/v1/sla-printer": {
+      "get": {
+        "tags": [
+          "SLA Printer Config"
+        ],
+        "summary": "Get Sla Printer Configs",
+        "description": "Get all of the authenticated user's SLA printer configurations. Requires a valid API token.",
+        "operationId": "get_sla_printer_configs_v1_sla_printer_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SLAPrinterConfigResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Get Sla Printer Configs V1 Sla Printer Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "SLA Printer Config"
+        ],
+        "summary": "Create Sla Printer Config",
+        "description": "Create an SLA printer configuration including build volume and display geometry. Requires a valid API token.",
+        "operationId": "create_sla_printer_config_v1_sla_printer_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SLAPrinterConfig",
+                "description": "SLA printer configuration."
+              },
+              "examples": {
+                "default": {
+                  "summary": "Example SLA Printer",
+                  "value": {
+                    "general": {
+                      "name": "Default SLA Printer",
+                      "printer_model": "SL1S",
+                      "printer_variant": "default",
+                      "display": {
+                        "width": 127.68,
+                        "height": 80.784,
+                        "pixels_x": 2560,
+                        "pixels_y": 1620,
+                        "orientation": "landscape",
+                        "mirror_x": true,
+                        "mirror_y": false
+                      },
+                      "max_print_height": 150.0,
+                      "gamma_correction": 1.0,
+                      "exposure": {
+                        "min_time": 0.5,
+                        "max_time": 120.0,
+                        "min_initial_time": 1.0,
+                        "max_initial_time": 300.0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSLAPrinterConfigResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/sla-printer/{sla_printer_id}": {
+      "get": {
+        "tags": [
+          "SLA Printer Config"
+        ],
+        "summary": "Get Sla Printer Config",
+        "description": "Get a specific SLA printer configuration for the authenticated user. Requires a valid API token.",
+        "operationId": "get_sla_printer_config_v1_sla_printer__sla_printer_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sla_printer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the SLA printer configuration to retrieve.",
+              "title": "Sla Printer Id"
+            },
+            "description": "ID for the SLA printer configuration to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleSLAPrinterConfigResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "SLA Printer Config"
+        ],
+        "summary": "Update Sla Printer Config",
+        "description": "Update an existing SLA printer configuration for the authenticated user. Requires a valid API token.",
+        "operationId": "update_sla_printer_config_v1_sla_printer__sla_printer_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sla_printer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the SLA printer configuration to update.",
+              "title": "Sla Printer Id"
+            },
+            "description": "ID for the SLA printer configuration to update."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SLAPrinterConfig",
+                "description": "Complete SLA printer configuration."
+              },
+              "examples": {
+                "default": {
+                  "summary": "Example SLA Printer",
+                  "value": {
+                    "general": {
+                      "name": "Default SLA Printer",
+                      "printer_model": "SL1S",
+                      "printer_variant": "default",
+                      "display": {
+                        "width": 127.68,
+                        "height": 80.784,
+                        "pixels_x": 2560,
+                        "pixels_y": 1620,
+                        "orientation": "landscape",
+                        "mirror_x": true,
+                        "mirror_y": false
+                      },
+                      "max_print_height": 150.0,
+                      "gamma_correction": 1.0,
+                      "exposure": {
+                        "min_time": 0.5,
+                        "max_time": 120.0,
+                        "min_initial_time": 1.0,
+                        "max_initial_time": 300.0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateSLAPrinterConfigResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "SLA Printer Config"
+        ],
+        "summary": "Delete Sla Printer Config",
+        "description": "Delete a specific SLA printer configuration for the authenticated user. Requires a valid API token.",
+        "operationId": "delete_sla_printer_config_v1_sla_printer__sla_printer_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sla_printer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the SLA printer configuration to delete.",
+              "title": "Sla Printer Id"
+            },
+            "description": "ID for the SLA printer configuration to delete."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSLAPrinterConfigResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/filament": {
       "get": {
         "tags": [
-          "Filament Config"
+          "FDM Filament Config"
         ],
         "summary": "Get Filament Configs",
-        "description": "Get all of the authenticated user's filament configurations.",
+        "description": "Get all of the authenticated user's filament configurations. Requires a valid API token.",
         "operationId": "get_filament_configs_v1_filament_get",
         "responses": {
           "200": {
@@ -510,10 +805,10 @@
       },
       "post": {
         "tags": [
-          "Filament Config"
+          "FDM Filament Config"
         ],
         "summary": "Create Filament Config",
-        "description": "Create a new filament configuration for the authenticated user.",
+        "description": "Create a new filament configuration for the authenticated user. Requires a valid API token.",
         "operationId": "create_filament_config_v1_filament_post",
         "requestBody": {
           "content": {
@@ -621,10 +916,10 @@
     "/v1/filament/{filament_id}": {
       "get": {
         "tags": [
-          "Filament Config"
+          "FDM Filament Config"
         ],
         "summary": "Get Filament Config",
-        "description": "Get a specific filament configuration for the authenticated user.",
+        "description": "Get a specific filament configuration for the authenticated user. Requires a valid API token.",
         "operationId": "get_filament_config_v1_filament__filament_id__get",
         "security": [
           {
@@ -638,6 +933,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the filament configuration to retrieve.",
               "title": "Filament Id"
             },
             "description": "ID for the filament configuration to retrieve."
@@ -677,10 +973,10 @@
       },
       "patch": {
         "tags": [
-          "Filament Config"
+          "FDM Filament Config"
         ],
         "summary": "Update Filament Config",
-        "description": "Update an existing filament configuration for the authenticated user.",
+        "description": "Update an existing filament configuration for the authenticated user. Requires a valid API token.",
         "operationId": "update_filament_config_v1_filament__filament_id__patch",
         "security": [
           {
@@ -694,6 +990,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the filament configuration to update.",
               "title": "Filament Id"
             },
             "description": "ID for the filament configuration to update."
@@ -801,10 +1098,10 @@
       },
       "delete": {
         "tags": [
-          "Filament Config"
+          "FDM Filament Config"
         ],
         "summary": "Delete Filament Config",
-        "description": "Delete a specific filament configuration for the authenticated user.",
+        "description": "Delete a specific filament configuration for the authenticated user. Requires a valid API token.",
         "operationId": "delete_filament_config_v1_filament__filament_id__delete",
         "security": [
           {
@@ -818,6 +1115,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the filament configuration to delete.",
               "title": "Filament Id"
             },
             "description": "ID for the filament configuration to delete."
@@ -856,13 +1154,291 @@
         }
       }
     },
+    "/v1/sla-resin": {
+      "get": {
+        "tags": [
+          "SLA Resin Config"
+        ],
+        "summary": "Get Resin Configs",
+        "description": "Get all of the authenticated user's resin configurations. Requires a valid API token.",
+        "operationId": "get_resin_configs_v1_sla_resin_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SLAResinConfigResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Get Resin Configs V1 Sla Resin Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "SLA Resin Config"
+        ],
+        "summary": "Create Resin Config",
+        "description": "Create a resin configuration including density, cost, and exposure defaults. Requires a valid API token.",
+        "operationId": "create_resin_config_v1_sla_resin_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SLAResinConfig",
+                "description": "Resin configuration."
+              },
+              "examples": {
+                "default": {
+                  "summary": "Example Resin",
+                  "value": {
+                    "resin": {
+                      "name": "Default Resin",
+                      "type": "Tough",
+                      "vendor": "Generic",
+                      "color": "#808080",
+                      "density": 1.1,
+                      "cost": 0.05,
+                      "bottle_volume": 1000.0
+                    },
+                    "exposure": {
+                      "exposure_time": 2.0,
+                      "initial_exposure_time": 25.0,
+                      "initial_layer_height": 0.05,
+                      "material_type": "Tough"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSLAResinConfigResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/sla-resin/{resin_id}": {
+      "get": {
+        "tags": [
+          "SLA Resin Config"
+        ],
+        "summary": "Get Resin Config",
+        "description": "Get a specific resin configuration for the authenticated user. Requires a valid API token.",
+        "operationId": "get_resin_config_v1_sla_resin__resin_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "resin_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the resin configuration to retrieve.",
+              "title": "Resin Id"
+            },
+            "description": "ID for the resin configuration to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleSLAResinConfigResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "SLA Resin Config"
+        ],
+        "summary": "Update Resin Config",
+        "description": "Update an existing resin configuration for the authenticated user. Requires a valid API token.",
+        "operationId": "update_resin_config_v1_sla_resin__resin_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "resin_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the resin configuration to update.",
+              "title": "Resin Id"
+            },
+            "description": "ID for the resin configuration to update."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SLAResinConfig",
+                "description": "Complete resin configuration."
+              },
+              "examples": {
+                "default": {
+                  "summary": "Example Resin",
+                  "value": {
+                    "resin": {
+                      "name": "Default Resin",
+                      "type": "Tough",
+                      "vendor": "Generic",
+                      "color": "#808080",
+                      "density": 1.1,
+                      "cost": 0.05,
+                      "bottle_volume": 1000.0
+                    },
+                    "exposure": {
+                      "exposure_time": 2.0,
+                      "initial_exposure_time": 25.0,
+                      "initial_layer_height": 0.05,
+                      "material_type": "Tough"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateSLAResinConfigResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "SLA Resin Config"
+        ],
+        "summary": "Delete Resin Config",
+        "description": "Delete a specific resin configuration for the authenticated user. Requires a valid API token.",
+        "operationId": "delete_resin_config_v1_sla_resin__resin_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "resin_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the resin configuration to delete.",
+              "title": "Resin Id"
+            },
+            "description": "ID for the resin configuration to delete."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSLAResinConfigResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/print-setting": {
       "get": {
         "tags": [
-          "Print Setting"
+          "FDM Print Setting"
         ],
         "summary": "Get Print Settings",
-        "description": "Get all of the authenticated user's print setting configurations.",
+        "description": "Get all of the authenticated user's print setting configurations. Requires a valid API token.",
         "operationId": "get_print_settings_v1_print_setting_get",
         "responses": {
           "200": {
@@ -888,10 +1464,10 @@
       },
       "post": {
         "tags": [
-          "Print Setting"
+          "FDM Print Setting"
         ],
         "summary": "Create Print Setting",
-        "description": "Create a new print setting configuration for the authenticated user.",
+        "description": "Create a new print setting configuration for the authenticated user. Requires a valid API token.",
         "operationId": "create_print_setting_v1_print_setting_post",
         "requestBody": {
           "content": {
@@ -1057,10 +1633,10 @@
     "/v1/print-setting/{print_setting_id}": {
       "get": {
         "tags": [
-          "Print Setting"
+          "FDM Print Setting"
         ],
         "summary": "Get Print Setting",
-        "description": "Get a specific print setting configuration for the authenticated user.",
+        "description": "Get a specific print setting configuration for the authenticated user. Requires a valid API token.",
         "operationId": "get_print_setting_v1_print_setting__print_setting_id__get",
         "security": [
           {
@@ -1074,6 +1650,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the print setting configuration to retrieve.",
               "title": "Print Setting Id"
             },
             "description": "ID for the print setting configuration to retrieve."
@@ -1104,10 +1681,10 @@
       },
       "patch": {
         "tags": [
-          "Print Setting"
+          "FDM Print Setting"
         ],
         "summary": "Update Print Setting",
-        "description": "Update an existing print setting configuration for the authenticated user.",
+        "description": "Update an existing print setting configuration for the authenticated user. Requires a valid API token.",
         "operationId": "update_print_setting_v1_print_setting__print_setting_id__patch",
         "security": [
           {
@@ -1121,6 +1698,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the print setting configuration to update.",
               "title": "Print Setting Id"
             },
             "description": "ID for the print setting configuration to update."
@@ -1283,10 +1861,10 @@
       },
       "delete": {
         "tags": [
-          "Print Setting"
+          "FDM Print Setting"
         ],
         "summary": "Delete Print Setting",
-        "description": "Delete a specific print setting configuration for the authenticated user.",
+        "description": "Delete a specific print setting configuration for the authenticated user. Requires a valid API token.",
         "operationId": "delete_print_setting_v1_print_setting__print_setting_id__delete",
         "security": [
           {
@@ -1300,6 +1878,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the print setting configuration to delete.",
               "title": "Print Setting Id"
             },
             "description": "ID for the print setting configuration to delete."
@@ -1329,6 +1908,372 @@
         }
       }
     },
+    "/v1/sla-print-setting": {
+      "get": {
+        "tags": [
+          "SLA Print Setting"
+        ],
+        "summary": "Get Sla Print Settings",
+        "description": "Get all of the authenticated user's SLA print setting configurations. Requires a valid API token.",
+        "operationId": "get_sla_print_settings_v1_sla_print_setting_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SLAPrintSettingResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Get Sla Print Settings V1 Sla Print Setting Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "SLA Print Setting"
+        ],
+        "summary": "Create Sla Print Setting",
+        "description": "Create a new SLA print setting configuration for the authenticated user. Requires a valid API token.",
+        "operationId": "create_sla_print_setting_v1_sla_print_setting_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SLAPrintSettings",
+                "description": "Complete SLA print settings including layer height, supports, and pad settings."
+              },
+              "examples": {
+                "default": {
+                  "summary": "Example SLA Print Settings",
+                  "value": {
+                    "name": "Default SLA Print Settings",
+                    "layer_height": 0.05,
+                    "faded_layers": 8,
+                    "slice_closing_radius": 0.005,
+                    "hollowing_enable": false,
+                    "supports": {
+                      "enable": true,
+                      "head_front_diameter": 0.4,
+                      "head_penetration": 0.4,
+                      "head_width": 3.0,
+                      "pillar_diameter": 1.0,
+                      "pillar_connection_mode": "zigzag",
+                      "base_diameter": 3.0,
+                      "base_height": 1.0,
+                      "object_elevation": 5.0,
+                      "density_at_45": 250,
+                      "density_at_horizontal": 500,
+                      "critical_angle": 45,
+                      "max_bridge_length": 10.0
+                    },
+                    "pad": {
+                      "enable": true,
+                      "wall_thickness": 1.0,
+                      "wall_height": 0.0,
+                      "wall_slope": 45.0,
+                      "edge_radius": 0.5,
+                      "max_merge_distance": 50.0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSLAPrintSettingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/sla-print-setting/{sla_print_setting_id}": {
+      "get": {
+        "tags": [
+          "SLA Print Setting"
+        ],
+        "summary": "Get Sla Print Setting",
+        "description": "Get a specific SLA print setting configuration for the authenticated user. Requires a valid API token.",
+        "operationId": "get_sla_print_setting_v1_sla_print_setting__sla_print_setting_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sla_print_setting_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the SLA print setting configuration to retrieve.",
+              "title": "Sla Print Setting Id"
+            },
+            "description": "ID for the SLA print setting configuration to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleSLAPrintSettingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "SLA Print Setting"
+        ],
+        "summary": "Update Sla Print Setting",
+        "description": "Update an existing SLA print setting configuration for the authenticated user. Requires a valid API token.",
+        "operationId": "update_sla_print_setting_v1_sla_print_setting__sla_print_setting_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sla_print_setting_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the SLA print setting configuration to update.",
+              "title": "Sla Print Setting Id"
+            },
+            "description": "ID for the SLA print setting configuration to update."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SLAPrintSettings",
+                "description": "Complete SLA print settings configuration."
+              },
+              "examples": {
+                "default": {
+                  "summary": "Example SLA Print Settings",
+                  "value": {
+                    "name": "Default SLA Print Settings",
+                    "layer_height": 0.05,
+                    "faded_layers": 8,
+                    "slice_closing_radius": 0.005,
+                    "hollowing_enable": false,
+                    "supports": {
+                      "enable": true,
+                      "head_front_diameter": 0.4,
+                      "head_penetration": 0.4,
+                      "head_width": 3.0,
+                      "pillar_diameter": 1.0,
+                      "pillar_connection_mode": "zigzag",
+                      "base_diameter": 3.0,
+                      "base_height": 1.0,
+                      "object_elevation": 5.0,
+                      "density_at_45": 250,
+                      "density_at_horizontal": 500,
+                      "critical_angle": 45,
+                      "max_bridge_length": 10.0
+                    },
+                    "pad": {
+                      "enable": true,
+                      "wall_thickness": 1.0,
+                      "wall_height": 0.0,
+                      "wall_slope": 45.0,
+                      "edge_radius": 0.5,
+                      "max_merge_distance": 50.0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateSLAPrintSettingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "SLA Print Setting"
+        ],
+        "summary": "Delete Sla Print Setting",
+        "description": "Delete a specific SLA print setting configuration for the authenticated user. Requires a valid API token.",
+        "operationId": "delete_sla_print_setting_v1_sla_print_setting__sla_print_setting_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sla_print_setting_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the SLA print setting configuration to delete.",
+              "title": "Sla Print Setting Id"
+            },
+            "description": "ID for the SLA print setting configuration to delete."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSLAPrintSettingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/order": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Create Order",
+        "description": "Create an order for the authenticated user's widget and persist calculated totals.",
+        "operationId": "create_order_v1_order_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created order",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid order payload"
+          },
+          "401": {
+            "description": "Invalid or missing authentication token"
+          },
+          "403": {
+            "description": "Ordering is disabled for this widget"
+          },
+          "404": {
+            "description": "Widget not found"
+          },
+          "500": {
+            "description": "Internal server error while creating order"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/v1/order/{order_id}": {
       "get": {
         "tags": [
@@ -1349,6 +2294,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "Order ID to retrieve.",
               "title": "Order Id"
             },
             "description": "Order ID to retrieve."
@@ -1405,6 +2351,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "Order ID to update.",
               "title": "Order Id"
             },
             "description": "Order ID to update."
@@ -1485,6 +2432,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "Order ID to delete.",
               "title": "Order Id"
             },
             "description": "Order ID to delete."
@@ -1529,7 +2477,7 @@
           "Part Info"
         ],
         "summary": "Check Model Printability",
-        "description": "Check if a model fits on the print bed given the dimensions.",
+        "description": "Check if a model fits on the print bed given the dimensions.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can gernerate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID and printer bed dimensions (mm) as query parameters.\nReturns printability status and model/printer dimensions.",
         "operationId": "check_model_printability_v1_printability__file_id__post",
         "security": [
           {
@@ -1543,6 +2491,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the 3D model file (this can be found in the upload response)",
               "title": "File Id"
             },
             "description": "ID for the 3D model file (this can be found in the upload response)"
@@ -1616,6 +2565,11 @@
         "summary": "Get User Files",
         "description": "Get uploaded files for the authenticated user, sorted by latest first. Pass an optional `file_id` query parameter to fetch metadata for a single file (returns a list of 0 or 1 items). Requires a valid API token.",
         "operationId": "get_user_files_v1_file_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "file_id",
@@ -1630,6 +2584,7 @@
                   "type": "null"
                 }
               ],
+              "description": "Optional file ID. When provided, returns only the matching upload record for the authenticated user.",
               "title": "File Id"
             },
             "description": "Optional file ID. When provided, returns only the matching upload record for the authenticated user."
@@ -1641,10 +2596,10 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/UploadRecordResponse"
                   },
-                  "type": "array",
                   "title": "Response Get User Files V1 File Get"
                 }
               }
@@ -1666,29 +2621,29 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
+        }
       },
       "post": {
         "tags": [
           "File"
         ],
         "summary": "Upload File",
-        "description": "Upload a file to the database for the authenticated user.\n\nThe upload must be a .stl, .obj, .3mf, .amf, or .step/.stp file.\n\n> **Playground note:** in the **Body** section, open the dropdown and select **Multipart**. Add an entry with the key `file`, then click the value field to attach your 3D model (.stl, .obj, .3mf, .amf, or .step/.stp). Without this, the request will send the raw file bytes and the server will return a `422` validation error.",
+        "description": "Upload a file to the database for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nThe upload must be a .stl, .obj, .3mf, .amf, or .step/.stp file.\nReturns details about the uploaded file, including its ID and storage path.",
         "operationId": "upload_file_v1_file_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "requestBody": {
+          "required": true,
           "content": {
             "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/Body_upload_file_v1_file_post"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -1723,12 +2678,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
+        }
       }
     },
     "/v1/file/upload-id": {
@@ -1737,7 +2687,7 @@
           "File"
         ],
         "summary": "Get Upload Id",
-        "description": "Generate an upload ID for uploading a file to the database.\n\nReturns an upload id that can be used with the /file/public/{upload_id} endpoint to upload files without authentication. The upload id expires after 1 hour.\n\nWorkflow:\n1. Call this endpoint to get an upload_id\n2. Use the upload_id with `POST /file/public/{upload_id}` to upload the file",
+        "description": "Generate an upload ID for uploading a file to the database.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nReturns an upload id that can be used with the /file/public/{upload_id} endpoint\nto upload files without authentication. The upload id expires after 1 hour.\n\nWorkflow:\n1. Call this endpoint to get an upload_id\n2. Use the upload_id with POST /file/public/{upload_id} to upload the file",
         "operationId": "get_upload_id_v1_file_upload_id_get",
         "responses": {
           "200": {
@@ -1770,7 +2720,7 @@
           "File"
         ],
         "summary": "Upload File Public",
-        "description": "Upload a file using a temporary upload ID (no authentication required).\n\nThis endpoint allows anonymous uploads using a temporary upload ID obtained\nfrom the /upload endpoint. The upload ID is single-use and expires after 1 hour.\n\n> **Playground note:** in the **Body** section, open the dropdown and select **Multipart**. Add an entry with the key `file`, then click the value field to attach your 3D model (.stl, .obj, .3mf, .amf, or .step/.stp). Without this, the request will send the raw file bytes and the server will return a `422` validation error.",
+        "description": "Upload a file using a temporary upload ID (no authentication required).\n\nThis endpoint allows anonymous uploads using a temporary upload ID obtained\nfrom the /upload endpoint. The upload ID is single-use and expires after 1 hour.",
         "operationId": "upload_file_public_v1_file_public__upload_id__post",
         "parameters": [
           {
@@ -1779,6 +2729,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "Temporary upload ID obtained from /file/upload-id endpoint",
               "title": "Upload Id"
             },
             "description": "Temporary upload ID obtained from /file/upload-id endpoint"
@@ -1839,7 +2790,7 @@
           "File"
         ],
         "summary": "Download File",
-        "description": "Download an uploaded file for the authenticated user.",
+        "description": "Download an uploaded file for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns the file as a download if the user is authorized and the file exists.",
         "operationId": "download_file_v1_file__file_id__get",
         "security": [
           {
@@ -1853,6 +2804,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the STL file to download",
               "title": "File Id"
             },
             "description": "ID for the STL file to download"
@@ -1888,7 +2840,7 @@
           "File"
         ],
         "summary": "Delete File",
-        "description": "Deletes an uploaded file and its associated gcode from storage. **The quote record is kept** — its `file_path` and `gcode_path` are cleared (set to null) rather than deleted, so quote and order history is preserved.",
+        "description": "Deletes an uploaded file and its associated gcode from storage. **The quote record is\nkept** — its `file_path` and `gcode_path` are cleared (set to null) rather than deleted,\nso quote and order history is preserved.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns a deleted message and the path of the removed file if deletion is successful.",
         "operationId": "delete_file_v1_file__file_id__delete",
         "security": [
           {
@@ -1902,6 +2854,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the STL file to delete",
               "title": "File Id"
             },
             "description": "ID for the STL file to delete"
@@ -1943,10 +2896,10 @@
     "/v1/quote/{file_id}": {
       "post": {
         "tags": [
-          "Quote"
+          "FDM Quote"
         ],
         "summary": "Quote Model",
-        "description": "Deprecated: use POST /v1/quote/queue/{file_id} instead.\n\nSlice an uploaded file and generate an instant quote synchronously. Returns a quote with price, estimated print time, and filament usage if the part fits the printer.",
+        "description": "Deprecated: use POST /v1/quote/queue/{file_id} instead.\n\nSlice an uploaded file and generate an instant quote synchronously.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the uploaded file ID as a query parameter and printer/quote configuration as JSON body.\nReturns a quote with price, estimated print time, and filament usage if the part fits the printer.",
         "operationId": "quote_model_v1_quote__file_id__post",
         "deprecated": true,
         "security": [
@@ -1963,7 +2916,8 @@
               "type": "string",
               "description": "ID for the uploaded file (this can be found in the upload response)",
               "title": "File Id"
-            }
+            },
+            "description": "ID for the uploaded file (this can be found in the upload response)"
           }
         ],
         "requestBody": {
@@ -2149,7 +3103,7 @@
     "/v1/quote/queue/{file_id}": {
       "post": {
         "tags": [
-          "Quote"
+          "FDM Quote"
         ],
         "summary": "Queue Quote Model",
         "description": "Submit a quote job to the async queue.\n\nUse the returned quote_id to poll GET /v1/quote/{quote_id} until the status\ntransitions from pending to success or failed.",
@@ -2168,7 +3122,8 @@
               "type": "string",
               "description": "ID for the uploaded file",
               "title": "File Id"
-            }
+            },
+            "description": "ID for the uploaded file"
           }
         ],
         "requestBody": {
@@ -2492,10 +3447,10 @@
     "/v1/quote/{quote_id}": {
       "get": {
         "tags": [
-          "Quote"
+          "FDM Quote"
         ],
         "summary": "Get Quote Record",
-        "description": "Retrieve a quote record by its ID.",
+        "description": "Retrieve a quote record by its ID.\n\nRequires a valid API token in the Authorization header (Bearer scheme).",
         "operationId": "get_quote_record_v1_quote__quote_id__get",
         "security": [
           {
@@ -2509,9 +3464,10 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the uploaded file (this can be found in the upload response)",
               "title": "Quote Id"
             },
-            "description": "ID for the quote record (returned by POST /v1/quote/queue/{file_id})"
+            "description": "ID for the uploaded file (this can be found in the upload response)"
           }
         ],
         "responses": {
@@ -2548,10 +3504,10 @@
       },
       "delete": {
         "tags": [
-          "Quote"
+          "FDM Quote"
         ],
         "summary": "Delete Quote",
-        "description": "Deletes the quote record and the associated .gcode file for the given Quote ID.",
+        "description": "Deletes the quote record and the associated .gcode file for the given Quote ID.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns a success message and the path of the removed file if deletion is successful.",
         "operationId": "delete_quote_v1_quote__quote_id__delete",
         "security": [
           {
@@ -2565,6 +3521,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the quote to delete",
               "title": "Quote Id"
             },
             "description": "ID for the quote to delete"
@@ -2606,10 +3563,10 @@
     "/v1/quote/gcode/{quote_id}": {
       "get": {
         "tags": [
-          "Quote"
+          "FDM Quote"
         ],
         "summary": "Download Quote Gcode",
-        "description": "Retrieve the .gcode file for the quote that matches `quote_id`.",
+        "description": "Retrieve the .gcode file for the quote that matches **quote_id**.\n\nRequires a valid API token in the Authorization header (Bearer scheme).",
         "operationId": "download_quote_gcode_v1_quote_gcode__quote_id__get",
         "security": [
           {
@@ -2623,6 +3580,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "ID for the generated quote (this can be found in the quote response)",
               "title": "Quote Id"
             },
             "description": "ID for the generated quote (this can be found in the quote response)"
@@ -2640,6 +3598,131 @@
           },
           "500": {
             "description": "Internal server error during download"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/quote/sla/{file_id}": {
+      "post": {
+        "tags": [
+          "SLA Quote"
+        ],
+        "summary": "Queue Sla Quote Model",
+        "description": "Submit an SLA (resin) quote job to the async queue.\n\nPoll GET /v1/quote/{quote_id} until the status transitions from pending to\nsuccess or failed. The quote's pricing block carries resin volume (mL) and\nweight (g) alongside the total price.",
+        "operationId": "queue_sla_quote_model_v1_quote_sla__file_id__post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the uploaded file",
+              "title": "File Id"
+            },
+            "description": "ID for the uploaded file"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SLAQuoteConfig"
+              },
+              "examples": {
+                "default": {
+                  "summary": "Example SLA Quote",
+                  "value": {
+                    "sla_printer_id": "sla-printer-id",
+                    "resin_id": "resin-id",
+                    "pricing_config": {
+                      "currency": "USD",
+                      "cost_per_hour": 2.5,
+                      "cost_per_ml": 0.05,
+                      "base_price": 5.0,
+                      "printer_watts": 100.0,
+                      "cost_per_kwh": 0.12
+                    },
+                    "sla_print_settings": {
+                      "name": "Default SLA Print Settings",
+                      "layer_height": 0.05,
+                      "faded_layers": 8,
+                      "slice_closing_radius": 0.005,
+                      "hollowing_enable": false,
+                      "supports": {
+                        "enable": true,
+                        "head_front_diameter": 0.4,
+                        "head_penetration": 0.4,
+                        "head_width": 3.0,
+                        "pillar_diameter": 1.0,
+                        "pillar_connection_mode": "zigzag",
+                        "base_diameter": 3.0,
+                        "base_height": 1.0,
+                        "object_elevation": 5.0,
+                        "density_at_45": 250,
+                        "density_at_horizontal": 500,
+                        "critical_angle": 45,
+                        "max_bridge_length": 10.0
+                      },
+                      "pad": {
+                        "enable": true,
+                        "wall_thickness": 1.0,
+                        "wall_height": 0.0,
+                        "wall_slope": 45.0,
+                        "edge_radius": 0.5,
+                        "max_merge_distance": 50.0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "SLA quote job queued successfully; poll GET /v1/quote/{quote_id} for updates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteQueueSubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request configuration"
+          },
+          "401": {
+            "description": "Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "File, SLA printer config, or resin config not found"
+          },
+          "429": {
+            "description": "Rate limit exceeded"
+          },
+          "500": {
+            "description": "Internal server error while queueing SLA quote"
+          },
+          "503": {
+            "description": "Modal queue dispatch failed"
           },
           "422": {
             "description": "Validation Error",
@@ -2710,6 +3793,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "Webhook delivery ID to retry.",
               "title": "Webhook Delivery Id"
             },
             "description": "Webhook delivery ID to retry."
@@ -2850,6 +3934,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "Webhook endpoint ID to fetch.",
               "title": "Webhook Id"
             },
             "description": "Webhook endpoint ID to fetch."
@@ -2896,6 +3981,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "Webhook endpoint ID to update.",
               "title": "Webhook Id"
             },
             "description": "Webhook endpoint ID to update."
@@ -2963,6 +4049,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "description": "Webhook endpoint ID to delete.",
               "title": "Webhook Id"
             },
             "description": "Webhook endpoint ID to delete."
@@ -2998,7 +4085,7 @@
           "Convert Files"
         ],
         "summary": "Convert File To Stl",
-        "description": "Converts a 3D model file (.3mf, .obj, .step, .stp) to STL format.Upload a supported model file and receive a downloadable .stl file.\n\n> **Playground note:** in the **Body** section, open the dropdown and select **Multipart**. Add an entry with the key `file`, then click the value field to attach your 3D model file (.3mf, .obj, .step, .stp). Without this, the request will send the raw file bytes and the server will return a `422` validation error.",
+        "description": "Converts a 3D model file (.3mf, .obj, .step, .stp) to STL format.Upload a supported model file and receive a downloadable .stl file.",
         "operationId": "convert_file_to_stl_v1_convert_file_to_stl_post",
         "requestBody": {
           "content": {
@@ -3045,7 +4132,7 @@
           "Convert Files"
         ],
         "summary": "Convert Bambu To Ini",
-        "description": "Convert a Bambu Studio profile archive (.bbscfg) to PrusaSlicer INI format. Upload a .bbscfg file containing filament/, printer/, and process/ directories with Bambu profile JSON files. Returns a downloadable .ini configuration file.\n\n> **Playground note:** in the **Body** section, open the dropdown and select **Multipart**. Add an entry with the key `file`, then click the value field to attach your Bambu Studio profile archive (.bbscfg). Without this, the request will send the raw file bytes and the server will return a `422` validation error.",
+        "description": "Convert a Bambu Studio profile archive (.bbscfg) to PrusaSlicer INI format. Upload a .bbscfg file containing filament/, printer/, and process/ directories with Bambu profile JSON files. Returns a downloadable .ini configuration file.",
         "operationId": "convert_bambu_to_ini_v1_convert_bambu_to_ini_post",
         "requestBody": {
           "content": {
@@ -3061,17 +4148,7 @@
           "200": {
             "description": "Successfully converted profile to INI format",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Convert Example": {
-                    "summary": "Convert Example",
-                    "value": "# generated by Cloud Slicer\n\n[printer:Bambu Lab X1 Carbon 0.4 nozzle]\nprinter_model = Bambu Lab X1 Carbon\nprinter_variant = 0.4\nnozzle_diameter = 0.4\nmax_print_height = 250\nbed_shape = 0x0,256x0,256x256,0x256\nretract_length = 0.8\nretract_speed = 35\n\n[filament:Bambu PLA Basic @BBL X1C]\nfilament_type = PLA\nfilament_diameter = 1.75\ntemperature = 220\nfirst_layer_temperature = 220\nbed_temperature = 55\nfirst_layer_bed_temperature = 55\nfan_always_on = 1\nmax_fan_speed = 100\nmin_fan_speed = 100\n\n[print:0.20mm Standard @BBL X1C]\nlayer_height = 0.2\nfirst_layer_height = 0.2\nperimeters = 3\ntop_solid_layers = 5\nbottom_solid_layers = 3\nfill_density = 15%\nfill_pattern = grid\nsupport_material = 0\n"
-                  }
-                }
-              }
+              "text/plain": {}
             }
           },
           "400": {
@@ -3104,7 +4181,7 @@
           "Convert Files"
         ],
         "summary": "Convert Bambu To Json",
-        "description": "Convert a Bambu Studio profile export to intermediate JSON format. Accepts .bbscfg, .bbsflmt, .zip (Printer/Filament/Process preset bundles), or a raw .json preset. Returns only the categories that were present in the upload; each present category is returned as a list of resolved configs.\n\n> **Playground note:** in the **Body** section, open the dropdown and select **Multipart**. Add an entry with the key `file`, then click the value field to attach your Bambu Studio profile export (.bbscfg, .bbsflmt, .zip, or .json). Without this, the request will send the raw file bytes and the server will return a `422` validation error.",
+        "description": "Convert a Bambu Studio profile export to intermediate JSON format. Accepts .bbscfg, .bbsflmt, .zip (Printer/Filament/Process preset bundles), or a raw .json preset. Returns only the categories that were present in the upload; each present category is returned as a list of resolved configs.",
         "operationId": "convert_bambu_to_json_v1_convert_bambu_to_json_post",
         "requestBody": {
           "content": {
@@ -3121,98 +4198,7 @@
             "description": "Successfully converted profile to JSON format",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object"
-                },
-                "examples": {
-                  "Convert Example": {
-                    "summary": "Convert Example",
-                    "value": {
-                      "printer_config": [
-                        {
-                          "general": {
-                            "name": "Bambu Lab X1 Carbon 0.4 nozzle",
-                            "printer_model": "Bambu Lab X1 Carbon",
-                            "printer_variant": "0.4",
-                            "nozzle_diameter": 0.4,
-                            "max_print_height": 250
-                          },
-                          "machine_limits": {
-                            "max_print_speed": 500,
-                            "max_travel_speed": 500
-                          },
-                          "extruder": {
-                            "extruder_count": 1,
-                            "single_extruder_multi_material": false
-                          },
-                          "retraction": {
-                            "retract_length": 0.8,
-                            "retract_speed": 35
-                          },
-                          "clearance": {
-                            "extruder_clearance_radius": 65,
-                            "extruder_clearance_height_to_rod": 36
-                          }
-                        }
-                      ],
-                      "filament_config": [
-                        {
-                          "filament": {
-                            "name": "Bambu PLA Basic @BBL X1C",
-                            "filament_type": "PLA",
-                            "filament_diameter": 1.75,
-                            "filament_density": 1.24
-                          },
-                          "temperature": {
-                            "nozzle_temperature": 220,
-                            "first_layer_nozzle_temperature": 220,
-                            "bed_temperature": 55,
-                            "first_layer_bed_temperature": 55
-                          },
-                          "cooling": {
-                            "fan_always_on": true,
-                            "max_fan_speed": 100,
-                            "min_fan_speed": 100
-                          },
-                          "print_speed": {
-                            "max_volumetric_speed": 21
-                          },
-                          "retraction": {
-                            "filament_retract_length": 0.8
-                          }
-                        }
-                      ],
-                      "print_settings": [
-                        {
-                          "layers_and_perimeters": {
-                            "layer_height": {
-                              "layer_height": 0.2,
-                              "first_layer_height": 0.2,
-                              "perimeters": 3,
-                              "top_layers": 5,
-                              "bottom_layers": 3
-                            },
-                            "advanced": {
-                              "seam_position": "nearest",
-                              "perimeter_generator": "classic"
-                            }
-                          },
-                          "infill": {
-                            "fill_density": 15,
-                            "fill_pattern": "grid"
-                          },
-                          "speed": {
-                            "perimeter_speed": 200,
-                            "infill_speed": 270
-                          },
-                          "support_material": {
-                            "support_material": false
-                          }
-                        }
-                      ]
-                    }
-                  }
-                }
+                "schema": {}
               }
             }
           },
@@ -3466,7 +4452,8 @@
           }
         },
         "type": "object",
-        "title": "Advanced Layer Settings"
+        "title": "Advanced",
+        "description": "Advanced layer settings."
       },
       "BedDimensions": {
         "properties": {
@@ -3487,7 +4474,8 @@
           }
         },
         "type": "object",
-        "title": "BedDimensions"
+        "title": "BedDimensions",
+        "description": "**Schema for printer bed dimensions:**\n\n    x (float): The X (width) dimension of the printer bed in millimeters. Default is 210mm.\n\n    y (float): The Y (depth) dimension of the printer bed in millimeters. Default is 210mm.\n\n    z (float): The Z (height) dimension of the printer bed in millimeters. Default is 250mm."
       },
       "Body_convert_bambu_to_ini_v1_convert_bambu_to_ini_post": {
         "properties": {
@@ -3704,7 +4692,8 @@
           "printer_config",
           "filament_config"
         ],
-        "title": "ConfigurationInfo"
+        "title": "ConfigurationInfo",
+        "description": "**Configuration IDs and full config data:**\n\n    printer_id (str): The unique identifier of the printer configuration used.\n\n    filament_id (str): The unique identifier of the filament configuration used.\n\n    slicer_model (str): The slicer model used for time estimation (e.g., 'prusa_slicer', 'bambu_studio').\n\n    quote_config (dict): The quote configuration parameters.\n\n    print_config (dict): The print configuration data.\n\n    printer_config (dict): The printer settings data.\n\n    filament_config (dict): The filament configuration data."
       },
       "CreateFilamentConfigResponse": {
         "properties": {
@@ -3737,7 +4726,8 @@
           "filament_name",
           "timestamp"
         ],
-        "title": "CreateFilamentConfigResponse"
+        "title": "CreateFilamentConfigResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the filament.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    filament_id (str): The unique identifier of the filament.\n\n    filament_name (str): The name of the filament (material type).\n\n    timestamp (str): ISO 8601 timestamp of when the filament configuration was created."
       },
       "CreatePrintSettingResponse": {
         "properties": {
@@ -3770,7 +4760,8 @@
           "print_setting_name",
           "timestamp"
         ],
-        "title": "CreatePrintSettingResponse"
+        "title": "CreatePrintSettingResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the print setting.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    print_setting_id (str): The unique identifier of the print setting.\n\n    print_setting_name (str): The name of the print setting profile.\n\n    timestamp (str): ISO 8601 timestamp of when the print setting configuration was created."
       },
       "CreatePrinterConfigResponse": {
         "properties": {
@@ -3803,7 +4794,107 @@
           "printer_name",
           "timestamp"
         ],
-        "title": "CreatePrinterConfigResponse"
+        "title": "CreatePrinterConfigResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the printer.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    printer_id (str): The unique identifier of the printer.\n\n    printer_name (str): The name of the printer.\n\n    timestamp (str): ISO 8601 timestamp of when the printer configuration was created."
+      },
+      "CreateSLAPrintSettingResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "sla_print_setting_id": {
+            "type": "string",
+            "title": "Sla Print Setting Id"
+          },
+          "sla_print_setting_name": {
+            "type": "string",
+            "title": "Sla Print Setting Name"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "status",
+          "sla_print_setting_id",
+          "sla_print_setting_name",
+          "timestamp"
+        ],
+        "title": "CreateSLAPrintSettingResponse"
+      },
+      "CreateSLAPrinterConfigResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "sla_printer_id": {
+            "type": "string",
+            "title": "Sla Printer Id"
+          },
+          "sla_printer_name": {
+            "type": "string",
+            "title": "Sla Printer Name"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "status",
+          "sla_printer_id",
+          "sla_printer_name",
+          "timestamp"
+        ],
+        "title": "CreateSLAPrinterConfigResponse"
+      },
+      "CreateSLAResinConfigResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "resin_id": {
+            "type": "string",
+            "title": "Resin Id"
+          },
+          "resin_name": {
+            "type": "string",
+            "title": "Resin Name"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "status",
+          "resin_id",
+          "resin_name",
+          "timestamp"
+        ],
+        "title": "CreateSLAResinConfigResponse"
       },
       "DataUsageResponse": {
         "properties": {
@@ -3838,6 +4929,11 @@
           "last_updated": {
             "type": "string",
             "title": "Last Updated"
+          },
+          "last_synced": {
+            "type": "string",
+            "title": "Last Synced",
+            "default": ""
           }
         },
         "type": "object",
@@ -3851,7 +4947,8 @@
           "reset_date",
           "last_updated"
         ],
-        "title": "DataUsageResponse"
+        "title": "DataUsageResponse",
+        "description": "**Response schema:**\n\n    quotes_used (int): The number of quotes used by the user.\n\n    quotes_limit (int): The maximum number of quotes allowed for the user.\n\n    storage_used (float): The amount of storage used by the user in megabytes (MB).\n\n    storage_limit (float): The maximum storage limit for the user in megabytes (MB).\n\n    files (int): The number of files uploaded by the user.\n\n    days_till_reset (int): The number of days until the next reset of usage limits.\n\n    reset_date (str): The date when the usage limits will reset in ISO 8601 format.\n\n    last_updated (str): The timestamp of the last change to the usage data in ISO 8601 format.\n\n    last_synced (str): The timestamp of the last reconciliation with the billing provider (Polar/Stripe), used to throttle provider syncs independently of last_updated."
       },
       "DeleteFilamentConfigResponse": {
         "properties": {
@@ -3879,7 +4976,8 @@
           "filament_id",
           "timestamp"
         ],
-        "title": "DeleteFilamentConfigResponse"
+        "title": "DeleteFilamentConfigResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    filament_id (str): The unique identifier of the filament configuration in cloud storage.\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated."
       },
       "DeleteFileResponse": {
         "properties": {
@@ -3912,7 +5010,8 @@
           "file_id",
           "removed_file_path"
         ],
-        "title": "DeleteFileResponse"
+        "title": "DeleteFileResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated.\n\n    removed_file_path (str): The file path to the upload that was removed from cloud storage."
       },
       "DeletePrintSettingResponse": {
         "properties": {
@@ -3940,7 +5039,8 @@
           "print_setting_id",
           "timestamp"
         ],
-        "title": "DeletePrintSettingResponse"
+        "title": "DeletePrintSettingResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    print_setting_id (str): The unique identifier of the print setting configuration in cloud storage.\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated."
       },
       "DeletePrinterConfigResponse": {
         "properties": {
@@ -3968,7 +5068,8 @@
           "printer_id",
           "timestamp"
         ],
-        "title": "DeletePrinterConfigResponse"
+        "title": "DeletePrinterConfigResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    printer_id (str): The unique identifier of the printer configuration in cloud storage.\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated."
       },
       "DeleteQuoteResponse": {
         "properties": {
@@ -4001,7 +5102,92 @@
           "timestamp",
           "removed_gcode_path"
         ],
-        "title": "DeleteQuoteResponse"
+        "title": "DeleteQuoteResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    quote_id (str): The unique identifier of the quote in cloud storage.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the response was generated.\n\n    removed_gcode_path (str): The file path to the upload that was removed from cloud storage."
+      },
+      "DeleteSLAPrintSettingResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "sla_print_setting_id": {
+            "type": "string",
+            "title": "Sla Print Setting Id"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "status",
+          "sla_print_setting_id",
+          "timestamp"
+        ],
+        "title": "DeleteSLAPrintSettingResponse"
+      },
+      "DeleteSLAPrinterConfigResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "sla_printer_id": {
+            "type": "string",
+            "title": "Sla Printer Id"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "status",
+          "sla_printer_id",
+          "timestamp"
+        ],
+        "title": "DeleteSLAPrinterConfigResponse"
+      },
+      "DeleteSLAResinConfigResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "resin_id": {
+            "type": "string",
+            "title": "Resin Id"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "status",
+          "resin_id",
+          "timestamp"
+        ],
+        "title": "DeleteSLAResinConfigResponse"
       },
       "Extruder": {
         "properties": {
@@ -4243,7 +5429,8 @@
           "filament_name",
           "timestamp"
         ],
-        "title": "FilamentConfigResponse"
+        "title": "FilamentConfigResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the filament.\n\n    filament_id (str): The unique identifier of the filament.\n\n    filament_name (str): The name of the filament (material type).\n\n    timestamp (str): ISO 8601 timestamp of when the filament configuration was created or last updated."
       },
       "FilamentCooling": {
         "properties": {
@@ -4829,7 +6016,8 @@
           "gcode_name",
           "gcode_file_size"
         ],
-        "title": "FileInfo"
+        "title": "FileInfo",
+        "description": "**File and G-code details:**\n\n    file_path (str): The file path to the file in cloud storage.\n\n    gcode_path (str): The file path to the generated G-code file in cloud storage.\n\n    gcode_name (str): The name of the generated G-code file.\n\n    gcode_file_size (float): The size of the generated G-code file in megabytes (MB)."
       },
       "FileUploadLink": {
         "properties": {
@@ -4857,7 +6045,8 @@
           "file_id",
           "timestamp"
         ],
-        "title": "FileUploadLink"
+        "title": "FileUploadLink",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    upload_id (str): The unique identifier of for the upload session.\n\n    file_id (str): The unique identifier of the uploaded file.\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded."
       },
       "FileUploadResponse": {
         "properties": {
@@ -4900,7 +6089,8 @@
           "file_name",
           "file_size"
         ],
-        "title": "FileUploadResponse"
+        "title": "FileUploadResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    file_id (str): The unique identifier of the uploaded file.\n\n    file_path (str): The file path to the uploaded file in cloud storage.\n\n    status (str): The status of the upload (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded.\n\n    file_name (str): The name of the uploaded file.\n\n    file_size (float): The size of the uploaded file in megabytes (MB)."
       },
       "FillPattern": {
         "type": "string",
@@ -5480,6 +6670,155 @@
         "title": "MinFeedrates",
         "description": "Minimum feedrate settings."
       },
+      "OrderCreateRequest": {
+        "properties": {
+          "widget_id": {
+            "type": "string",
+            "title": "Widget Id"
+          },
+          "customer_name": {
+            "type": "string",
+            "title": "Customer Name"
+          },
+          "customer_email": {
+            "type": "string",
+            "title": "Customer Email"
+          },
+          "customer_phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Customer Phone"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "shipping_address": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ShippingAddress"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date",
+            "title": "Deadline"
+          },
+          "shipping_selected": {
+            "type": "boolean",
+            "title": "Shipping Selected"
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority"
+          },
+          "discount_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Discount Code"
+          },
+          "discount_amount": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Discount Amount"
+          },
+          "line_items": {
+            "items": {
+              "$ref": "#/components/schemas/OrderLineItem"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Line Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "widget_id",
+          "customer_name",
+          "customer_email",
+          "deadline",
+          "shipping_selected",
+          "line_items"
+        ],
+        "title": "OrderCreateRequest"
+      },
+      "OrderCreateResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "status": {
+            "type": "string",
+            "const": "success",
+            "title": "Status"
+          },
+          "order_id": {
+            "type": "string",
+            "title": "Order Id"
+          },
+          "custom_order_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Custom Order Id"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "status",
+          "order_id",
+          "created_at"
+        ],
+        "title": "OrderCreateResponse"
+      },
       "OrderDeleteResponse": {
         "properties": {
           "user_id": {
@@ -5637,6 +6976,21 @@
               }
             ],
             "title": "Priority Surcharge"
+          },
+          "selected_addons": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Selected Addons"
           },
           "dimensions": {
             "anyOf": [
@@ -6154,6 +7508,44 @@
             "type": "string",
             "title": "Currency",
             "default": "USD"
+          },
+          "technology": {
+            "type": "string",
+            "title": "Technology",
+            "default": "fdm"
+          },
+          "resin_volume_ml": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resin Volume Ml"
+          },
+          "resin_weight_g": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resin Weight G"
+          },
+          "cost_per_ml": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost Per Ml"
           }
         },
         "type": "object",
@@ -6162,7 +7554,8 @@
           "filament_cost",
           "filament_weight"
         ],
-        "title": "PricingBreakdown"
+        "title": "PricingBreakdown",
+        "description": "**Detailed pricing information:**\n\n    total_price (float): The total price for the print job.\n\n    filament_cost (float): The cost of filament used.\n\n    cost_per_gram (float): Cost per gram used to compute filament cost.\n\n    filament_weight (float): The weight of filament used in grams.\n\n    cost_per_hour (float): Cost per machine-hour used to compute time-based pricing.\n\n    base_price (float): Flat base price applied to the quote.\n\n    printer_watts (float): Printer power draw in watts used for electricity cost.\n\n    cost_per_kwh (float): Electricity price per kilowatt-hour.\n\n    electricity_cost (float): The cost of electricity for the print job.\n\n    currency (str): The currency used for pricing (default: USD)."
       },
       "PricingConfig": {
         "properties": {
@@ -6241,7 +7634,8 @@
           "print_setting_name",
           "timestamp"
         ],
-        "title": "PrintSettingResponse"
+        "title": "PrintSettingResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the print setting.\n\n    print_setting_id (str): The unique identifier of the print setting.\n\n    print_setting_name (str): The name of the print setting profile.\n\n    timestamp (str): ISO 8601 timestamp of when the print setting configuration was created or last updated."
       },
       "PrintSettings": {
         "properties": {
@@ -6404,7 +7798,8 @@
           "model_dimensions",
           "printer_dimensions"
         ],
-        "title": "PrintabilityResponse"
+        "title": "PrintabilityResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    file_path (str): The file path to the 3D model file in cloud storage.\n\n    fits_printer (bool): Whether the model fits within the printer's build volume.\n\n    model_dimensions (dict): Dimensions of the model in mm (x, y, z).\n\n    printer_dimensions (dict): Dimensions of the printer's build volume in mm (x, y, z)."
       },
       "PrinterConfig": {
         "properties": {
@@ -6489,7 +7884,8 @@
           "printer_name",
           "timestamp"
         ],
-        "title": "PrinterConfigResponse"
+        "title": "PrinterConfigResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the printer.\n\n    printer_id (str): The unique identifier of the printer.\n\n    printer_name (str): The name of the printer.\n\n    timestamp (str): ISO 8601 timestamp of when the printer configuration was created or last updated."
       },
       "PrinterGeneral": {
         "properties": {
@@ -6864,7 +8260,8 @@
           "created_at",
           "data_usage"
         ],
-        "title": "PublicAccountInfoResponse"
+        "title": "PublicAccountInfoResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user.\n\n    email (str): The email address of the user.\n\n    plan (str): The subscription plan of the user (`free`, `pro`, or `max`).\n\n    user_name (str): The username of the user.\n\n    created_at (str): ISO 8601 timestamp of when the account was created."
       },
       "QuoteConfig": {
         "properties": {
@@ -6962,7 +8359,8 @@
           "pricing",
           "configurations"
         ],
-        "title": "QuoteDetailsResponse"
+        "title": "QuoteDetailsResponse",
+        "description": "**Response schema:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    files (FileInfo): File and G-code information.\n\n    time (TimeEstimate): Time estimation details.\n\n    pricing (PricingBreakdown): Detailed pricing breakdown.\n\n    configurations (ConfigurationInfo): Configuration IDs and full config data."
       },
       "QuoteQueueSubmitResponse": {
         "properties": {
@@ -7068,7 +8466,978 @@
           "time",
           "pricing"
         ],
-        "title": "QuoteResponse"
+        "title": "QuoteResponse",
+        "description": "**Response schema:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    files (FileInfo): File and G-code information.\n\n    time (TimeEstimate): Time estimation details.\n\n    pricing (PricingBreakdown): Detailed pricing breakdown.\n\n    slicer_model (str): The slicer model used for time estimation (e.g., 'prusa_slicer', 'bambu_studio')."
+      },
+      "ResinExposure": {
+        "properties": {
+          "exposure_time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exposure Time",
+            "description": "Normal layer exposure time in seconds",
+            "default": 2.0
+          },
+          "initial_exposure_time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Initial Exposure Time",
+            "description": "Initial (bottom) layer exposure time in seconds",
+            "default": 25.0
+          },
+          "initial_layer_height": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Initial Layer Height",
+            "description": "Initial layer height in mm",
+            "default": 0.05
+          },
+          "material_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResinType"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Material type label written to the slice",
+            "default": "Tough"
+          }
+        },
+        "type": "object",
+        "title": "ResinExposure",
+        "description": "Resin exposure settings. These drive PrusaSlicer's SLA print-time estimate."
+      },
+      "ResinInfo": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "Name for this resin configuration",
+            "default": "Default Resin"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResinType"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Resin material type",
+            "default": "Tough"
+          },
+          "vendor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vendor",
+            "description": "Resin vendor/manufacturer",
+            "default": "Generic"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color",
+            "description": "Resin color in hex format",
+            "default": "#808080"
+          },
+          "density": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Density",
+            "description": "Resin density in g/mL (used to derive grams from mL)",
+            "default": 1.1
+          },
+          "cost": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost",
+            "description": "Resin cost per mL of resin used",
+            "default": 0.05
+          },
+          "bottle_volume": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bottle Volume",
+            "description": "Resin bottle volume in mL",
+            "default": 1000.0
+          }
+        },
+        "type": "object",
+        "title": "ResinInfo",
+        "description": "SLA resin material information."
+      },
+      "ResinType": {
+        "type": "string",
+        "enum": [
+          "Standard",
+          "Tough",
+          "Flexible",
+          "ABS-like",
+          "Transparent",
+          "Dental",
+          "Castable",
+          "Water-washable",
+          "High-temp",
+          "Plant-based"
+        ],
+        "title": "ResinType",
+        "description": "Supported SLA resin material types."
+      },
+      "SLADisplay": {
+        "properties": {
+          "width": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Width",
+            "description": "Build-area width (X) in mm",
+            "default": 127.68
+          },
+          "height": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Height",
+            "description": "Build-area depth (Y) in mm",
+            "default": 80.784
+          },
+          "pixels_x": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pixels X",
+            "description": "LCD horizontal resolution in pixels",
+            "default": 2560
+          },
+          "pixels_y": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pixels Y",
+            "description": "LCD vertical resolution in pixels",
+            "default": 1620
+          },
+          "orientation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Orientation",
+            "description": "Display orientation (landscape/portrait)",
+            "default": "landscape"
+          },
+          "mirror_x": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mirror X",
+            "description": "Mirror the raster horizontally",
+            "default": true
+          },
+          "mirror_y": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mirror Y",
+            "description": "Mirror the raster vertically",
+            "default": false
+          }
+        },
+        "type": "object",
+        "title": "SLADisplay",
+        "description": "MSLA display / build-area geometry.\n\n`width`/`height` are the physical build-area dimensions in mm (they double as\nthe bed footprint for the printability check); `pixels_*` give the LCD\nresolution. Defaults describe an Original Prusa SL1S SPEED (127 x 80 mm,\n2560 x 1620)."
+      },
+      "SLAExposureLimits": {
+        "properties": {
+          "min_time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Time",
+            "description": "Minimum layer exposure time in seconds",
+            "default": 0.5
+          },
+          "max_time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Time",
+            "description": "Maximum layer exposure time in seconds",
+            "default": 120.0
+          },
+          "min_initial_time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Initial Time",
+            "description": "Minimum initial-layer exposure time in seconds",
+            "default": 1.0
+          },
+          "max_initial_time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Initial Time",
+            "description": "Maximum initial-layer exposure time in seconds",
+            "default": 300.0
+          }
+        },
+        "type": "object",
+        "title": "SLAExposureLimits",
+        "description": "Printer exposure-time bounds (seconds)."
+      },
+      "SLAPad": {
+        "properties": {
+          "enable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enable",
+            "description": "Generate a pad",
+            "default": true
+          },
+          "wall_thickness": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wall Thickness",
+            "description": "Pad wall thickness in mm",
+            "default": 1.0
+          },
+          "wall_height": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wall Height",
+            "description": "Pad wall height in mm",
+            "default": 0.0
+          },
+          "wall_slope": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wall Slope",
+            "description": "Pad wall slope in degrees",
+            "default": 45.0
+          },
+          "edge_radius": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Edge Radius",
+            "description": "Pad edge radius in mm",
+            "default": 0.5
+          },
+          "max_merge_distance": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Merge Distance",
+            "description": "Pad max merge distance in mm",
+            "default": 50.0
+          }
+        },
+        "type": "object",
+        "title": "SLAPad",
+        "description": "SLA pad (raft) settings (PrusaSlicer `pad_*`)."
+      },
+      "SLAPricingConfig": {
+        "properties": {
+          "currency": {
+            "type": "string",
+            "title": "Currency",
+            "description": "Currency for the quote",
+            "default": "USD"
+          },
+          "cost_per_hour": {
+            "type": "number",
+            "title": "Cost Per Hour",
+            "description": "Cost per hour of printing",
+            "default": 2.5
+          },
+          "cost_per_ml": {
+            "type": "number",
+            "title": "Cost Per Ml",
+            "description": "Cost per mL of resin used",
+            "default": 0.05
+          },
+          "base_price": {
+            "type": "number",
+            "title": "Base Price",
+            "description": "Base price for the print job",
+            "default": 5.0
+          },
+          "printer_watts": {
+            "type": "number",
+            "title": "Printer Watts",
+            "description": "Printer power consumption in watts",
+            "default": 100.0
+          },
+          "cost_per_kwh": {
+            "type": "number",
+            "title": "Cost Per Kwh",
+            "description": "Electricity cost in $/kWh",
+            "default": 0.12
+          }
+        },
+        "type": "object",
+        "title": "SLAPricingConfig"
+      },
+      "SLAPrintSettingResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "sla_print_setting_id": {
+            "type": "string",
+            "title": "Sla Print Setting Id"
+          },
+          "sla_print_setting_name": {
+            "type": "string",
+            "title": "Sla Print Setting Name"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "sla_print_setting_id",
+          "sla_print_setting_name",
+          "timestamp"
+        ],
+        "title": "SLAPrintSettingResponse"
+      },
+      "SLAPrintSettings": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "Name for this SLA print settings profile",
+            "default": "Default SLA Print Settings"
+          },
+          "layer_height": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Layer Height",
+            "description": "Layer height in mm",
+            "default": 0.05
+          },
+          "faded_layers": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Faded Layers",
+            "description": "Number of faded (transition) layers",
+            "default": 8
+          },
+          "slice_closing_radius": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slice Closing Radius",
+            "description": "Slice closing radius in mm",
+            "default": 0.005
+          },
+          "hollowing_enable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hollowing Enable",
+            "description": "Enable model hollowing",
+            "default": false
+          },
+          "supports": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SLASupports"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pad": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SLAPad"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "SLAPrintSettings",
+        "description": "Complete SLA print-settings configuration."
+      },
+      "SLAPrinterConfig": {
+        "properties": {
+          "general": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SLAPrinterGeneral"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "SLAPrinterConfig",
+        "description": "Complete SLA printer configuration."
+      },
+      "SLAPrinterConfigResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "sla_printer_id": {
+            "type": "string",
+            "title": "Sla Printer Id"
+          },
+          "sla_printer_name": {
+            "type": "string",
+            "title": "Sla Printer Name"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "sla_printer_id",
+          "sla_printer_name",
+          "timestamp"
+        ],
+        "title": "SLAPrinterConfigResponse"
+      },
+      "SLAPrinterGeneral": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "Custom name for this SLA printer configuration",
+            "default": "Default SLA Printer"
+          },
+          "printer_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Printer Model",
+            "description": "SLA printer model name",
+            "default": "SL1S"
+          },
+          "printer_variant": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Printer Variant",
+            "description": "Printer variant",
+            "default": "default"
+          },
+          "display": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SLADisplay"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "max_print_height": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Print Height",
+            "description": "Max build height (Z) in mm",
+            "default": 150.0
+          },
+          "gamma_correction": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gamma Correction",
+            "description": "Display gamma correction",
+            "default": 1.0
+          },
+          "exposure": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SLAExposureLimits"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "SLAPrinterGeneral",
+        "description": "General SLA printer settings (build volume + MSLA display + exposure bounds).\n\nDefaults describe an Original Prusa SL1S SPEED (127 x 80 x 150 mm, 2560 x 1620).\nThe sliced output archive format is fixed by the platform (not user-selectable),\nso it is intentionally not part of this config."
+      },
+      "SLAQuoteConfig": {
+        "properties": {
+          "sla_printer_id": {
+            "type": "string",
+            "title": "Sla Printer Id",
+            "description": "ID of the SLA printer to use for the quote",
+            "default": "sla-printer-id"
+          },
+          "resin_id": {
+            "type": "string",
+            "title": "Resin Id",
+            "description": "ID of the resin to use for the quote",
+            "default": "resin-id"
+          },
+          "pricing_config": {
+            "$ref": "#/components/schemas/SLAPricingConfig",
+            "description": "SLA pricing configuration settings"
+          },
+          "sla_print_settings": {
+            "$ref": "#/components/schemas/SLAPrintSettings",
+            "description": "SLA print settings for this print job"
+          }
+        },
+        "type": "object",
+        "title": "SLAQuoteConfig"
+      },
+      "SLAResinConfig": {
+        "properties": {
+          "resin": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResinInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "exposure": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResinExposure"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "SLAResinConfig",
+        "description": "Complete SLA resin (material) configuration."
+      },
+      "SLAResinConfigResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "resin_id": {
+            "type": "string",
+            "title": "Resin Id"
+          },
+          "resin_name": {
+            "type": "string",
+            "title": "Resin Name"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "resin_id",
+          "resin_name",
+          "timestamp"
+        ],
+        "title": "SLAResinConfigResponse"
+      },
+      "SLASupports": {
+        "properties": {
+          "enable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enable",
+            "description": "Auto-generate supports",
+            "default": true
+          },
+          "head_front_diameter": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Head Front Diameter",
+            "description": "Support head front diameter in mm",
+            "default": 0.4
+          },
+          "head_penetration": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Head Penetration",
+            "description": "Support head penetration in mm",
+            "default": 0.4
+          },
+          "head_width": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Head Width",
+            "description": "Support head width in mm",
+            "default": 3.0
+          },
+          "pillar_diameter": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pillar Diameter",
+            "description": "Support pillar diameter in mm",
+            "default": 1.0
+          },
+          "pillar_connection_mode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pillar Connection Mode",
+            "description": "Support pillar connection mode",
+            "default": "zigzag"
+          },
+          "base_diameter": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Diameter",
+            "description": "Support base diameter in mm",
+            "default": 3.0
+          },
+          "base_height": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Height",
+            "description": "Support base height in mm",
+            "default": 1.0
+          },
+          "object_elevation": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Object Elevation",
+            "description": "Object elevation above the pad in mm",
+            "default": 5.0
+          },
+          "density_at_45": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Density At 45",
+            "description": "Support density at 45 degrees",
+            "default": 250
+          },
+          "density_at_horizontal": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Density At Horizontal",
+            "description": "Support density at horizontal",
+            "default": 500
+          },
+          "critical_angle": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Critical Angle",
+            "description": "Support critical angle in degrees",
+            "default": 45
+          },
+          "max_bridge_length": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Bridge Length",
+            "description": "Maximum support bridge length in mm",
+            "default": 10.0
+          }
+        },
+        "type": "object",
+        "title": "SLASupports",
+        "description": "SLA support-generation settings (PrusaSlicer `support_*`)."
       },
       "SeamPosition": {
         "type": "string",
@@ -7190,7 +9559,8 @@
           "timestamp",
           "data"
         ],
-        "title": "SingleFilamentConfigResponse"
+        "title": "SingleFilamentConfigResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the filament.\n\n    filament_id (str): The unique identifier of the filament.\n\n    filament_name (str): The name of the filament (material type).\n\n    timestamp (str): ISO 8601 timestamp of when the filament configuration was created or last updated.\n\n    data (dict): The configuration data for the filament."
       },
       "SinglePrintSettingResponse": {
         "properties": {
@@ -7224,7 +9594,8 @@
           "timestamp",
           "data"
         ],
-        "title": "SinglePrintSettingResponse"
+        "title": "SinglePrintSettingResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the print setting.\n\n    print_setting_id (str): The unique identifier of the print setting.\n\n    print_setting_name (str): The name of the print setting profile.\n\n    timestamp (str): ISO 8601 timestamp of when the print setting configuration was created or last updated.\n\n    data (dict): The configuration data for the print setting."
       },
       "SinglePrinterConfigResponse": {
         "properties": {
@@ -7258,7 +9629,110 @@
           "timestamp",
           "data"
         ],
-        "title": "SinglePrinterConfigResponse"
+        "title": "SinglePrinterConfigResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the printer.\n\n    printer_id (str): The unique identifier of the printer.\n\n    printer_name (str): The name of the printer.\n\n    timestamp (str): ISO 8601 timestamp of when the printer configuration was created or last updated.\n\n    data (dict): The configuration data for the printer."
+      },
+      "SingleSLAPrintSettingResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "sla_print_setting_id": {
+            "type": "string",
+            "title": "Sla Print Setting Id"
+          },
+          "sla_print_setting_name": {
+            "type": "string",
+            "title": "Sla Print Setting Name"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "data": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "sla_print_setting_id",
+          "sla_print_setting_name",
+          "timestamp",
+          "data"
+        ],
+        "title": "SingleSLAPrintSettingResponse"
+      },
+      "SingleSLAPrinterConfigResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "sla_printer_id": {
+            "type": "string",
+            "title": "Sla Printer Id"
+          },
+          "sla_printer_name": {
+            "type": "string",
+            "title": "Sla Printer Name"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "data": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "sla_printer_id",
+          "sla_printer_name",
+          "timestamp",
+          "data"
+        ],
+        "title": "SingleSLAPrinterConfigResponse"
+      },
+      "SingleSLAResinConfigResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "resin_id": {
+            "type": "string",
+            "title": "Resin Id"
+          },
+          "resin_name": {
+            "type": "string",
+            "title": "Resin Name"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "data": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "resin_id",
+          "resin_name",
+          "timestamp",
+          "data"
+        ],
+        "title": "SingleSLAResinConfigResponse"
       },
       "Skirt": {
         "properties": {
@@ -7803,7 +10277,8 @@
           "estimated_time_seconds",
           "quote_duration"
         ],
-        "title": "TimeEstimate"
+        "title": "TimeEstimate",
+        "description": "**Time estimation details:**\n\n    estimated_time (str): The estimated print time in human-readable format.\n\n    estimated_time_seconds (int): The estimated print time in seconds.\n\n    quote_duration (float): The duration it took to generate the quote in seconds."
       },
       "TopFillPattern": {
         "type": "string",
@@ -7851,7 +10326,8 @@
           "filament_name",
           "timestamp"
         ],
-        "title": "UpdateFilamentConfigResponse"
+        "title": "UpdateFilamentConfigResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the filament.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    filament_id (str): The unique identifier of the filament.\n\n    filament_name (str): The updated name of the filament (material type).\n\n    timestamp (str): ISO 8601 timestamp of when the filament configuration was updated."
       },
       "UpdatePrintSettingResponse": {
         "properties": {
@@ -7884,7 +10360,8 @@
           "print_setting_name",
           "timestamp"
         ],
-        "title": "UpdatePrintSettingResponse"
+        "title": "UpdatePrintSettingResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the print setting.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    print_setting_id (str): The unique identifier of the print setting.\n\n    print_setting_name (str): The updated name of the print setting profile.\n\n    timestamp (str): ISO 8601 timestamp of when the print setting configuration was updated."
       },
       "UpdatePrinterConfigResponse": {
         "properties": {
@@ -7917,7 +10394,107 @@
           "printer_name",
           "timestamp"
         ],
-        "title": "UpdatePrinterConfigResponse"
+        "title": "UpdatePrinterConfigResponse",
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user associated with the printer.\n\n    status (str): The status of the response (e.g., 'updated', 'error').\n\n    printer_id (str): The unique identifier of the printer.\n\n    printer_name (str): The name of the printer.\n\n    timestamp (str): ISO 8601 timestamp of when the printer configuration was updated."
+      },
+      "UpdateSLAPrintSettingResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "sla_print_setting_id": {
+            "type": "string",
+            "title": "Sla Print Setting Id"
+          },
+          "sla_print_setting_name": {
+            "type": "string",
+            "title": "Sla Print Setting Name"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "status",
+          "sla_print_setting_id",
+          "sla_print_setting_name",
+          "timestamp"
+        ],
+        "title": "UpdateSLAPrintSettingResponse"
+      },
+      "UpdateSLAPrinterConfigResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "sla_printer_id": {
+            "type": "string",
+            "title": "Sla Printer Id"
+          },
+          "sla_printer_name": {
+            "type": "string",
+            "title": "Sla Printer Name"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "status",
+          "sla_printer_id",
+          "sla_printer_name",
+          "timestamp"
+        ],
+        "title": "UpdateSLAPrinterConfigResponse"
+      },
+      "UpdateSLAResinConfigResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "resin_id": {
+            "type": "string",
+            "title": "Resin Id"
+          },
+          "resin_name": {
+            "type": "string",
+            "title": "Resin Name"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "status",
+          "resin_id",
+          "resin_name",
+          "timestamp"
+        ],
+        "title": "UpdateSLAResinConfigResponse"
       },
       "UploadRecordResponse": {
         "properties": {
@@ -7960,7 +10537,8 @@
           "file_name",
           "file_size"
         ],
-        "title": "UploadRecordResponse"
+        "title": "UploadRecordResponse",
+        "description": "**Response schema:**\n\n    id (str): The unique identifier of the upload record.\n\n    file_id (str): The unique identifier of the file in cloud storage.\n\n    file_path (str): The file path to the file in cloud storage.\n\n    status (str): The status of the upload (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded.\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    file_name (str): The name of the file.\n\n    file_size (float): The size of the file in megabytes (MB)."
       },
       "ValidationError": {
         "properties": {
@@ -8354,7 +10932,8 @@
           "y",
           "z"
         ],
-        "title": "XYZDimensions"
+        "title": "XYZDimensions",
+        "description": "**Schema for XYZ dimensions:**\n\n    x (float): The X dimension in mm.\n\n    y (float): The Y dimension in mm.\n\n    z (float): The Z dimension in mm."
       }
     },
     "securitySchemes": {
@@ -8370,16 +10949,28 @@
       "description": "User account management operations, including user info retrieval. Requires Cloud Slicer Token"
     },
     {
-      "name": "Printer Config",
-      "description": "Operations for managing printer configurations. Requires Cloud Slicer Token"
+      "name": "FDM Printer Config",
+      "description": "Operations for managing FDM printer configurations. Requires Cloud Slicer Token"
     },
     {
-      "name": "Filament Config",
-      "description": "Operations for managing filament configurations. Requires Cloud Slicer Token"
+      "name": "SLA Printer Config",
+      "description": "Operations for managing SLA (resin) printer configurations. Requires Cloud Slicer Token"
     },
     {
-      "name": "Print Setting",
-      "description": "Operations for managing print setting configurations. Requires Cloud Slicer Token"
+      "name": "FDM Filament Config",
+      "description": "Operations for managing FDM filament configurations. Requires Cloud Slicer Token"
+    },
+    {
+      "name": "SLA Resin Config",
+      "description": "Operations for managing SLA resin (material) configurations. Requires Cloud Slicer Token"
+    },
+    {
+      "name": "FDM Print Setting",
+      "description": "Operations for managing FDM print setting configurations. Requires Cloud Slicer Token"
+    },
+    {
+      "name": "SLA Print Setting",
+      "description": "Operations for managing SLA print setting configurations. Requires Cloud Slicer Token"
     },
     {
       "name": "Orders",
@@ -8394,8 +10985,12 @@
       "description": "Operations for uploading and managing .stl, .obj, .3mf, .amf, and .step files. Requires Cloud Slicer Token"
     },
     {
-      "name": "Quote",
+      "name": "FDM Quote",
       "description": "Operations for generating quotes and retrieving quote details. Requires Cloud Slicer Token"
+    },
+    {
+      "name": "SLA Quote",
+      "description": "Operations for generating SLA (resin) quotes. Requires Cloud Slicer Token"
     },
     {
       "name": "Webhooks",
