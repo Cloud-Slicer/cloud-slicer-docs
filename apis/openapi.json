@@ -6019,6 +6019,57 @@
         "title": "FileInfo",
         "description": "**File and G-code details:**\n\n    file_path (str): The file path to the file in cloud storage.\n\n    gcode_path (str): The file path to the generated G-code file in cloud storage.\n\n    gcode_name (str): The name of the generated G-code file.\n\n    gcode_file_size (float): The size of the generated G-code file in megabytes (MB)."
       },
+      "GeometryInfo": {
+        "properties": {
+          "first_layer_area_mm2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Layer Area Mm2"
+          },
+          "build_plate_area_mm2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Build Plate Area Mm2"
+          },
+          "build_plate_coverage_percent": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Build Plate Coverage Percent"
+          },
+          "max_models_per_plate": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Models Per Plate"
+          }
+        },
+        "type": "object",
+        "title": "GeometryInfo",
+        "description": "**Build-plate geometry, measured from the sliced first layer:**\n    first_layer_area_mm2 (float): Area of the layer that is printed first, in mm².\n        This is the geometry that actually contacts the build plate, so when\n        supports and a pad are enabled (the default) it is the pad footprint,\n        which is larger than the model's own cross-section.\n    build_plate_area_mm2 (float): Total usable build-plate area in mm².\n    build_plate_coverage_percent (float): Share of the build plate consumed by\n        the first layer, as a percentage.\n    max_models_per_plate (int): floor(build plate area / first layer area).\n        A pure area ratio and therefore an **upper bound** — it ignores part\n        shape and any spacing required between parts.\n\nPopulated only for technology=\"sla\" quotes; None for FDM."
+      },
       "FileUploadLink": {
         "properties": {
           "user_id": {
@@ -8344,6 +8395,16 @@
           "pricing": {
             "$ref": "#/components/schemas/PricingBreakdown"
           },
+          "geometry": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GeometryInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "configurations": {
             "$ref": "#/components/schemas/ConfigurationInfo"
           }
@@ -8453,6 +8514,16 @@
           },
           "pricing": {
             "$ref": "#/components/schemas/PricingBreakdown"
+          },
+          "geometry": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GeometryInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
