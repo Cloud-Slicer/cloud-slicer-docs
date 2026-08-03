@@ -11,7 +11,7 @@ description: "Get started with Cloud Slicer API in just a few simple steps"
 - **[In the API Playground](https://docs.cloudslicer3d.com/api)**:
    1. Authenticate with the API in our [API Playground](https://docs.cloudslicer3d.com/api)
    2. Make your first API call to ```/v1/file``` to upload a file
-   3. Queue a quote with ```POST /v1/quote/queue/{file_id}``` using your `printer_id` and `filament_id`
+   3. Queue a quote with ```POST /v1/quote/fdm/{file_id}``` using your `printer_id` and `filament_id`
    4. Poll ```GET /v1/quote/{quote_id}``` until `status` is `success`, then read the pricing info from the response
 
 ----
@@ -123,7 +123,7 @@ description: "Get started with Cloud Slicer API in just a few simple steps"
 
    Slicing can take anywhere from a few seconds to over a minute, so quotes are async. You queue a job, then poll until it's ready.
 
-   1. **Find** the `POST /v1/quote/queue/{file_id}` endpoint in the API documentation
+   1. **Find** the `POST /v1/quote/fdm/{file_id}` endpoint in the API documentation
    2. **Expand** the tab to reveal the POST request details
    3. **Add Details**:
       - Fill in the path parameter with the `file_id` from the previous upload step
@@ -150,7 +150,7 @@ description: "Get started with Cloud Slicer API in just a few simple steps"
    1. **Find** the `GET /v1/quote/{quote_id}` endpoint
    2. **Paste** the `quote_id` into the path parameter and **Execute**
    3. **Re-run** every couple of seconds — `status` starts at `"pending"` and ends at `"success"` or `"failed"`
-   4. Once `status` is `"success"`, the response includes `pricing`, `time`, and `files.gcode_path` — download the g-code with `GET /v1/quote/gcode/{quote_id}`
+   4. Once `status` is `"success"`, the response includes `pricing`, `time`, and `files.gcode_path` — download the g-code with `GET /v1/quote/output/{quote_id}`
 
    :::note
    For a step-by-step code walkthrough of this same flow, see [Creating Quotes](/guides/creating-quotes).

@@ -16,7 +16,7 @@ Before you can quote, you need:
 
 ## Queue a quote
 
-`POST /v1/quote/queue/{file_id}` accepts a JSON body with at minimum `printer_id` and `filament_id`. Everything else (`slicer_model`, `pricing_config`, `print_settings`) is optional and falls back to sensible defaults. The response is `202 Accepted` with a `quote_id` you'll poll on.
+`POST /v1/quote/fdm/{file_id}` accepts a JSON body with at minimum `printer_id` and `filament_id`. Everything else (`slicer_model`, `pricing_config`, `print_settings`) is optional and falls back to sensible defaults. The response is `202 Accepted` with a `quote_id` you'll poll on.
 
 <CodeTabs>
 
@@ -28,7 +28,7 @@ BASE_URL = "https://api.cloudslicer3d.com/v1"
 
 file_id = "YOUR_FILE_ID"
 response = requests.post(
-    f"{BASE_URL}/quote/queue/{file_id}",
+    f"{BASE_URL}/quote/fdm/{file_id}",
     headers={"Authorization": f"Bearer {API_TOKEN}"},
     json={
         "printer_id": "YOUR_PRINTER_ID",
@@ -45,7 +45,7 @@ const API_TOKEN = "YOUR_API_TOKEN";
 const BASE_URL = "https://api.cloudslicer3d.com/v1";
 
 const fileId = "YOUR_FILE_ID";
-const response = await fetch(`${BASE_URL}/quote/queue/${fileId}`, {
+const response = await fetch(`${BASE_URL}/quote/fdm/${fileId}`, {
   method: "POST",
   headers: {
     "Authorization": `Bearer ${API_TOKEN}`,
@@ -137,7 +137,7 @@ The "fits printer" check the widget shows is computed **client-side** from the m
 
 ## Download the g-code
 
-Once the quote is `"success"`, `GET /v1/quote/gcode/{quote_id}` streams the sliced g-code back to you.
+Once the quote is `"success"`, `GET /v1/quote/output/{quote_id}` streams the sliced g-code back to you.
 
 <CodeTabs>
 
@@ -145,7 +145,7 @@ Once the quote is `"success"`, `GET /v1/quote/gcode/{quote_id}` streams the slic
 import requests
 
 response = requests.get(
-    f"{BASE_URL}/quote/gcode/{quote_id}",
+    f"{BASE_URL}/quote/output/{quote_id}",
     headers={"Authorization": f"Bearer {API_TOKEN}"},
     stream=True,
 )
@@ -159,7 +159,7 @@ with open("output.gcode", "wb") as out:
 ```typescript
 import { writeFile } from "node:fs/promises";
 
-const response = await fetch(`${BASE_URL}/quote/gcode/${quote_id}`, {
+const response = await fetch(`${BASE_URL}/quote/output/${quote_id}`, {
   headers: { Authorization: `Bearer ${API_TOKEN}` },
 });
 
@@ -192,7 +192,3 @@ await fetch(`${BASE_URL}/quote/${quote_id}`, {
 ```
 
 </CodeTabs>
-
-## A note on the synchronous endpoint
-
-You'll also see `POST /v1/quote/{file_id}` in the API reference — that's the **deprecated** synchronous quote endpoint. It blocks until slicing finishes (or the connection times out), which is fragile for any file larger than a benchy. Use the queue + poll flow above unless you have a very specific reason not to.
