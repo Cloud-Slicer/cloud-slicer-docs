@@ -2893,213 +2893,6 @@
         }
       }
     },
-    "/v1/quote/{file_id}": {
-      "post": {
-        "tags": [
-          "FDM Quote"
-        ],
-        "summary": "Quote Model",
-        "description": "Deprecated: use POST /v1/quote/queue/{file_id} instead.\n\nSlice an uploaded file and generate an instant quote synchronously.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the uploaded file ID as a query parameter and printer/quote configuration as JSON body.\nReturns a quote with price, estimated print time, and filament usage if the part fits the printer.",
-        "operationId": "quote_model_v1_quote__file_id__post",
-        "deprecated": true,
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "file_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID for the uploaded file (this can be found in the upload response)",
-              "title": "File Id"
-            },
-            "description": "ID for the uploaded file (this can be found in the upload response)"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuoteConfig"
-              },
-              "examples": {
-                "default": {
-                  "summary": "Example Prusa Quote",
-                  "value": {
-                    "printer_id": "printer-id",
-                    "filament_id": "filament-id",
-                    "slicer_model": "prusa_slicer",
-                    "pricing_config": {
-                      "currency": "USD",
-                      "cost_per_hour": 2.5,
-                      "cost_per_gram": 0.02,
-                      "base_price": 5,
-                      "printer_watts": 100,
-                      "cost_per_kwh": 0.12
-                    },
-                    "print_settings": {
-                      "name": "Default Print Settings",
-                      "filament_color": "string",
-                      "layers_and_perimeters": {
-                        "layer_height": {
-                          "layer_height": 0.2,
-                          "first_layer_height": 0.2,
-                          "top_layers": 5,
-                          "bottom_layers": 3,
-                          "perimeters": 3
-                        },
-                        "advanced": {
-                          "detect_thin_walls": false,
-                          "thick_bridges": true,
-                          "seam_position": "nearest",
-                          "perimeter_generator": "classic",
-                          "elefant_foot_compensation": 0.15,
-                          "xy_size_compensation": 0,
-                          "xy_hole_compensation": 0
-                        }
-                      },
-                      "extrusion_width": {
-                        "default": 0.45,
-                        "first_layer": 0.42,
-                        "external_perimeter": 0.4,
-                        "perimeter": 0.45,
-                        "infill": 0.45,
-                        "solid_infill": 0.45,
-                        "top_infill": 0.4,
-                        "support": 0.42
-                      },
-                      "infill": {
-                        "fill_density": "15%",
-                        "fill_pattern": "grid",
-                        "fill_angle": 45,
-                        "infill_anchor": 2.5,
-                        "infill_anchor_max": 15,
-                        "infill_overlap": "25%",
-                        "top_fill_pattern": "monotoniclines",
-                        "ironing_type": "top",
-                        "solid_infill_every_layers": 0,
-                        "combine_infill_every_layers": 0
-                      },
-                      "skirt_and_brim": {
-                        "skirt": {
-                          "loops": 0,
-                          "distance": 2,
-                          "height": 2
-                        },
-                        "brim": {
-                          "type": "no_brim",
-                          "width": 5,
-                          "separation_gap": 0.1
-                        }
-                      },
-                      "support_material": {
-                        "enable": false,
-                        "style": "grid",
-                        "pattern": "rectilinear",
-                        "threshold_angle": 40,
-                        "buildplate_only": false,
-                        "top_z_distance": 0.15,
-                        "xy_distance": 0.5,
-                        "spacing": 2,
-                        "top_interface_layers": 2,
-                        "bottom_interface_layers": 0,
-                        "interface_pattern": "rectilinear",
-                        "interface_spacing": 0,
-                        "dont_support_bridges": false,
-                        "raft_layers": 0,
-                        "raft_first_layer_expansion": 2
-                      },
-                      "speed": {
-                        "perimeters": 300,
-                        "small_perimeters": "50%",
-                        "external_perimeters": 200,
-                        "infill": 270,
-                        "solid_infill": 250,
-                        "top_solid_infill": 200,
-                        "support_material": 150,
-                        "support_material_interface": 80,
-                        "gap_fill": 250,
-                        "ironing": 15,
-                        "travel": 500,
-                        "travel_z": 0,
-                        "first_layer": 50,
-                        "first_layer_infill": 105,
-                        "bridge": 50
-                      },
-                      "acceleration": {
-                        "default": 10000,
-                        "first_layer": 500,
-                        "perimeter": 0,
-                        "external_perimeter": 5000,
-                        "infill": "100%",
-                        "solid_infill": 0,
-                        "top_solid_infill": 2000,
-                        "travel": 10000,
-                        "bridge": 0
-                      },
-                      "overhang": {
-                        "enable_overhang_speed": true,
-                        "speed_0": 0,
-                        "speed_1": 50,
-                        "speed_2": 30,
-                        "speed_3": 10
-                      },
-                      "wipe_tower": {
-                        "enable": false,
-                        "width": 60
-                      },
-                      "output_options": {
-                        "spiral_vase": false,
-                        "print_sequence": "by layer"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Quote generated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/QuoteResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Model exceeds printer build volume or invalid configuration"
-          },
-          "401": {
-            "description": "Invalid or missing authentication token"
-          },
-          "404": {
-            "description": "File, printer config, or filament config not found"
-          },
-          "500": {
-            "description": "Internal server error during slicing"
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/v1/quote/queue/{file_id}": {
       "post": {
         "tags": [
@@ -6030,7 +5823,8 @@
                 "type": "null"
               }
             ],
-            "title": "First Layer Area Mm2"
+            "title": "First Layer Area Mm2",
+            "default": null
           },
           "build_plate_area_mm2": {
             "anyOf": [
@@ -6041,7 +5835,8 @@
                 "type": "null"
               }
             ],
-            "title": "Build Plate Area Mm2"
+            "title": "Build Plate Area Mm2",
+            "default": null
           },
           "build_plate_coverage_percent": {
             "anyOf": [
@@ -6052,7 +5847,8 @@
                 "type": "null"
               }
             ],
-            "title": "Build Plate Coverage Percent"
+            "title": "Build Plate Coverage Percent",
+            "default": null
           },
           "max_models_per_plate": {
             "anyOf": [
@@ -6063,12 +5859,13 @@
                 "type": "null"
               }
             ],
-            "title": "Max Models Per Plate"
+            "title": "Max Models Per Plate",
+            "default": null
           }
         },
         "type": "object",
         "title": "GeometryInfo",
-        "description": "**Build-plate geometry, measured from the sliced first layer:**\n    first_layer_area_mm2 (float): Area of the layer that is printed first, in mm².\n        This is the geometry that actually contacts the build plate, so when\n        supports and a pad are enabled (the default) it is the pad footprint,\n        which is larger than the model's own cross-section.\n    build_plate_area_mm2 (float): Total usable build-plate area in mm².\n    build_plate_coverage_percent (float): Share of the build plate consumed by\n        the first layer, as a percentage.\n    max_models_per_plate (int): floor(build plate area / first layer area).\n        A pure area ratio and therefore an **upper bound** — it ignores part\n        shape and any spacing required between parts.\n\nPopulated only for technology=\"sla\" quotes; None for FDM."
+        "description": "**Build-plate geometry, measured from the sliced first layer:**\n\n    first_layer_area_mm2 (float): Area of the layer that is printed first, in mm².\n        This is the geometry that actually contacts the build plate, so when\n        supports and a pad are enabled (the default) it is the pad footprint,\n        which is larger than the model's own cross-section.\n\n    build_plate_area_mm2 (float): Total usable build-plate area in mm².\n\n    build_plate_coverage_percent (float): Share of the build plate consumed by\n        the first layer, as a percentage.\n\n    max_models_per_plate (int): floor(build plate area / first layer area).\n        A pure area ratio and therefore an **upper bound** — it ignores part\n        shape and any spacing required between parts.\n\n\nPopulated only for technology=\"sla\" quotes; None for FDM."
       },
       "FileUploadLink": {
         "properties": {
@@ -8403,7 +8200,8 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "default": null
           },
           "configurations": {
             "$ref": "#/components/schemas/ConfigurationInfo"
@@ -8523,7 +8321,8 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "default": null
           }
         },
         "type": "object",
