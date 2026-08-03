@@ -5791,6 +5791,28 @@
             ],
             "title": "Priority Surcharge"
           },
+          "quality_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quality Name"
+          },
+          "quality_layer_height": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quality Layer Height"
+          },
           "selected_addons": {
             "anyOf": [
               {
