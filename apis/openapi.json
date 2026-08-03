@@ -97,80 +97,6 @@
               "schema": {
                 "$ref": "#/components/schemas/PrinterConfig",
                 "description": "Create a printer configuration including general settings, machine limits, and extruder settings."
-              },
-              "examples": {
-                "default": {
-                  "summary": "Example Printer",
-                  "value": {
-                    "general": {
-                      "name": "Default Printer",
-                      "printer_model": "Generic Printer",
-                      "printer_variant": "0.4",
-                      "printer_structure": "corexy",
-                      "bed_size_x": 200,
-                      "bed_size_y": 200,
-                      "max_print_z": 250,
-                      "origin": [
-                        0,
-                        0
-                      ],
-                      "z_offset": 0,
-                      "gcode_flavor": "marlin",
-                      "use_relative_e_distances": false,
-                      "use_firmware_retraction": false,
-                      "silent_mode": false
-                    },
-                    "machine_limits": {
-                      "max_feedrates": {
-                        "x": 200,
-                        "y": 200,
-                        "z": 5,
-                        "e": 25
-                      },
-                      "max_accelerations": {
-                        "x": 1000,
-                        "y": 1000,
-                        "z": 100,
-                        "e": 5000,
-                        "extruding": 5000,
-                        "retracting": 5000,
-                        "travel": 9000
-                      },
-                      "max_jerks": {
-                        "x": 8,
-                        "y": 8,
-                        "z": 0.4,
-                        "e": 5
-                      },
-                      "min_feedrates": {
-                        "extruding_rate": 0,
-                        "travel_rate": 0
-                      }
-                    },
-                    "extruder": {
-                      "nozzle_diameter": 0.4,
-                      "layer_height_min": 0.1,
-                      "layer_height_max": 0.3
-                    },
-                    "retraction": {
-                      "length": 0.8,
-                      "speed": 30,
-                      "deretract_speed": 30,
-                      "lift_z": 0.4,
-                      "lift_above": 0,
-                      "lift_below": 249,
-                      "wipe": true,
-                      "wipe_distance": 2,
-                      "retract_before_wipe": "0%",
-                      "minimum_travel": 1,
-                      "retract_on_layer_change": true
-                    },
-                    "clearance": {
-                      "extruder_clearance_height": 34,
-                      "extruder_clearance_radius": 68
-                    }
-                  }
-                }
               }
             }
           },
@@ -304,80 +230,6 @@
               "schema": {
                 "$ref": "#/components/schemas/PrinterConfig",
                 "description": "Complete printer configuration including general settings, machine limits, and extruder settings."
-              },
-              "examples": {
-                "default": {
-                  "summary": "Example Printer Patch",
-                  "value": {
-                    "general": {
-                      "name": "Default Printer",
-                      "printer_model": "Generic Printer",
-                      "printer_variant": "0.4",
-                      "printer_structure": "corexy",
-                      "bed_size_x": 200,
-                      "bed_size_y": 200,
-                      "max_print_z": 250,
-                      "origin": [
-                        0,
-                        0
-                      ],
-                      "z_offset": 0,
-                      "gcode_flavor": "marlin",
-                      "use_relative_e_distances": false,
-                      "use_firmware_retraction": false,
-                      "silent_mode": false
-                    },
-                    "machine_limits": {
-                      "max_feedrates": {
-                        "x": 200,
-                        "y": 200,
-                        "z": 5,
-                        "e": 25
-                      },
-                      "max_accelerations": {
-                        "x": 1000,
-                        "y": 1000,
-                        "z": 100,
-                        "e": 5000,
-                        "extruding": 5000,
-                        "retracting": 5000,
-                        "travel": 9000
-                      },
-                      "max_jerks": {
-                        "x": 8,
-                        "y": 8,
-                        "z": 0.4,
-                        "e": 5
-                      },
-                      "min_feedrates": {
-                        "extruding_rate": 0,
-                        "travel_rate": 0
-                      }
-                    },
-                    "extruder": {
-                      "nozzle_diameter": 0.4,
-                      "layer_height_min": 0.1,
-                      "layer_height_max": 0.3
-                    },
-                    "retraction": {
-                      "length": 0.8,
-                      "speed": 30,
-                      "deretract_speed": 30,
-                      "lift_z": 0.4,
-                      "lift_above": 0,
-                      "lift_below": 249,
-                      "wipe": true,
-                      "wipe_distance": 2,
-                      "retract_before_wipe": "0%",
-                      "minimum_travel": 1,
-                      "retract_on_layer_change": true
-                    },
-                    "clearance": {
-                      "extruder_clearance_height": 34,
-                      "extruder_clearance_radius": 68
-                    }
-                  }
-                }
               }
             }
           }
@@ -518,35 +370,6 @@
               "schema": {
                 "$ref": "#/components/schemas/SLAPrinterConfig",
                 "description": "SLA printer configuration."
-              },
-              "examples": {
-                "default": {
-                  "summary": "Example SLA Printer",
-                  "value": {
-                    "general": {
-                      "name": "Default SLA Printer",
-                      "printer_model": "SL1S",
-                      "printer_variant": "default",
-                      "display": {
-                        "width": 127.68,
-                        "height": 80.784,
-                        "pixels_x": 2560,
-                        "pixels_y": 1620,
-                        "orientation": "landscape",
-                        "mirror_x": true,
-                        "mirror_y": false
-                      },
-                      "max_print_height": 150.0,
-                      "gamma_correction": 1.0,
-                      "exposure": {
-                        "min_time": 0.5,
-                        "max_time": 120.0,
-                        "min_initial_time": 1.0,
-                        "max_initial_time": 300.0
-                      }
-                    }
-                  }
-                }
               }
             }
           },
@@ -662,35 +485,6 @@
               "schema": {
                 "$ref": "#/components/schemas/SLAPrinterConfig",
                 "description": "Complete SLA printer configuration."
-              },
-              "examples": {
-                "default": {
-                  "summary": "Example SLA Printer",
-                  "value": {
-                    "general": {
-                      "name": "Default SLA Printer",
-                      "printer_model": "SL1S",
-                      "printer_variant": "default",
-                      "display": {
-                        "width": 127.68,
-                        "height": 80.784,
-                        "pixels_x": 2560,
-                        "pixels_y": 1620,
-                        "orientation": "landscape",
-                        "mirror_x": true,
-                        "mirror_y": false
-                      },
-                      "max_print_height": 150.0,
-                      "gamma_correction": 1.0,
-                      "exposure": {
-                        "min_time": 0.5,
-                        "max_time": 120.0,
-                        "min_initial_time": 1.0,
-                        "max_initial_time": 300.0
-                      }
-                    }
-                  }
-                }
               }
             }
           }
@@ -816,60 +610,6 @@
               "schema": {
                 "$ref": "#/components/schemas/FilamentConfig",
                 "description": "Complete filament configuration including material, temperature, cooling, and speed settings."
-              },
-              "examples": {
-                "default": {
-                  "summary": "Generic PLA",
-                  "value": {
-                    "filament": {
-                      "name": "Default Filament",
-                      "type": "PLA",
-                      "vendor": "Generic",
-                      "color": "#FFFFFF",
-                      "diameter": 1.75,
-                      "extrusion_multiplier": 1,
-                      "density": 1.24,
-                      "cost": 20,
-                      "spool_weight": 1000,
-                      "soluble": false
-                    },
-                    "temperature": {
-                      "nozzle_temp": 200,
-                      "first_layer_nozzle_temp": 210,
-                      "bed_temp": 60,
-                      "first_layer_bed_temp": 65
-                    },
-                    "cooling": {
-                      "enable": true,
-                      "fan_always_on": true,
-                      "fan_speed_min": 20,
-                      "fan_speed_max": 100,
-                      "bridges_fan_speed": 100,
-                      "disable_fan_first_layers": 1,
-                      "full_fan_speed_layer": 0,
-                      "fan_below_layer_time": 100,
-                      "slowdown_below_layer_time": 4,
-                      "min_print_speed": 10,
-                      "overhang_fan_speed": 100,
-                      "overhang_fan_threshold": "50%"
-                    },
-                    "print_speed": {
-                      "max_volumetric_speed": 15
-                    },
-                    "retraction": {
-                      "length": 0.8,
-                      "speed": 30,
-                      "deretract_speed": 30,
-                      "lift_z": 0.4,
-                      "wipe": true,
-                      "retract_before_wipe": "0%",
-                      "retract_restart_extra": 0,
-                      "minimum_travel": 1,
-                      "retract_on_layer_change": true,
-                      "minimal_purge_on_wipe_tower": 15
-                    }
-                  }
-                }
               }
             }
           },
@@ -1003,60 +743,6 @@
               "schema": {
                 "$ref": "#/components/schemas/FilamentConfig",
                 "description": "Complete filament configuration including material, temperature, cooling, and speed settings."
-              },
-              "examples": {
-                "default": {
-                  "summary": "Example Filament Patch",
-                  "value": {
-                    "filament": {
-                      "name": "Default Filament",
-                      "type": "PLA",
-                      "vendor": "Generic",
-                      "color": "#FFFFFF",
-                      "diameter": 1.75,
-                      "extrusion_multiplier": 1,
-                      "density": 1.24,
-                      "cost": 20,
-                      "spool_weight": 1000,
-                      "soluble": false
-                    },
-                    "temperature": {
-                      "nozzle_temp": 200,
-                      "first_layer_nozzle_temp": 210,
-                      "bed_temp": 60,
-                      "first_layer_bed_temp": 65
-                    },
-                    "cooling": {
-                      "enable": true,
-                      "fan_always_on": true,
-                      "fan_speed_min": 20,
-                      "fan_speed_max": 100,
-                      "bridges_fan_speed": 100,
-                      "disable_fan_first_layers": 1,
-                      "full_fan_speed_layer": 0,
-                      "fan_below_layer_time": 100,
-                      "slowdown_below_layer_time": 4,
-                      "min_print_speed": 10,
-                      "overhang_fan_speed": 100,
-                      "overhang_fan_threshold": "50%"
-                    },
-                    "print_speed": {
-                      "max_volumetric_speed": 15
-                    },
-                    "retraction": {
-                      "length": 0.8,
-                      "speed": 30,
-                      "deretract_speed": 30,
-                      "lift_z": 0.4,
-                      "wipe": true,
-                      "retract_before_wipe": "0%",
-                      "retract_restart_extra": 0,
-                      "minimum_travel": 1,
-                      "retract_on_layer_change": true,
-                      "minimal_purge_on_wipe_tower": 15
-                    }
-                  }
-                }
               }
             }
           }
@@ -1197,28 +883,6 @@
               "schema": {
                 "$ref": "#/components/schemas/SLAResinConfig",
                 "description": "Resin configuration."
-              },
-              "examples": {
-                "default": {
-                  "summary": "Example Resin",
-                  "value": {
-                    "resin": {
-                      "name": "Default Resin",
-                      "type": "Tough",
-                      "vendor": "Generic",
-                      "color": "#808080",
-                      "density": 1.1,
-                      "cost": 0.05,
-                      "bottle_volume": 1000.0
-                    },
-                    "exposure": {
-                      "exposure_time": 2.0,
-                      "initial_exposure_time": 25.0,
-                      "initial_layer_height": 0.05,
-                      "material_type": "Tough"
-                    }
-                  }
-                }
               }
             }
           },
@@ -1334,28 +998,6 @@
               "schema": {
                 "$ref": "#/components/schemas/SLAResinConfig",
                 "description": "Complete resin configuration."
-              },
-              "examples": {
-                "default": {
-                  "summary": "Example Resin",
-                  "value": {
-                    "resin": {
-                      "name": "Default Resin",
-                      "type": "Tough",
-                      "vendor": "Generic",
-                      "color": "#808080",
-                      "density": 1.1,
-                      "cost": 0.05,
-                      "bottle_volume": 1000.0
-                    },
-                    "exposure": {
-                      "exposure_time": 2.0,
-                      "initial_exposure_time": 25.0,
-                      "initial_layer_height": 0.05,
-                      "material_type": "Tough"
-                    }
-                  }
-                }
               }
             }
           }
@@ -1475,127 +1117,6 @@
               "schema": {
                 "$ref": "#/components/schemas/PrintSettings",
                 "description": "Complete print settings configuration including layers, infill, support, and speed settings."
-              },
-              "examples": {
-                "default": {
-                  "summary": "Standard 0.2 mm PLA profile",
-                  "value": {
-                    "name": "Default Print Settings",
-                    "filament_color": "string",
-                    "layers_and_perimeters": {
-                      "layer_height": {
-                        "layer_height": 0.2,
-                        "first_layer_height": 0.2,
-                        "top_layers": 5,
-                        "bottom_layers": 3,
-                        "perimeters": 3
-                      },
-                      "advanced": {
-                        "detect_thin_walls": false,
-                        "thick_bridges": true,
-                        "seam_position": "nearest",
-                        "perimeter_generator": "classic",
-                        "elefant_foot_compensation": 0.15,
-                        "xy_size_compensation": 0,
-                        "xy_hole_compensation": 0
-                      }
-                    },
-                    "extrusion_width": {
-                      "default": 0.45,
-                      "first_layer": 0.42,
-                      "external_perimeter": 0.4,
-                      "perimeter": 0.45,
-                      "infill": 0.45,
-                      "solid_infill": 0.45,
-                      "top_infill": 0.4,
-                      "support": 0.42
-                    },
-                    "infill": {
-                      "fill_density": "15%",
-                      "fill_pattern": "grid",
-                      "fill_angle": 45,
-                      "infill_anchor": 2.5,
-                      "infill_anchor_max": 15,
-                      "infill_overlap": "25%",
-                      "top_fill_pattern": "monotoniclines",
-                      "ironing_type": "top",
-                      "solid_infill_every_layers": 0,
-                      "combine_infill_every_layers": 0
-                    },
-                    "skirt_and_brim": {
-                      "skirt": {
-                        "loops": 0,
-                        "distance": 2,
-                        "height": 2
-                      },
-                      "brim": {
-                        "type": "no_brim",
-                        "width": 5,
-                        "separation_gap": 0.1
-                      }
-                    },
-                    "support_material": {
-                      "enable": false,
-                      "style": "grid",
-                      "pattern": "rectilinear",
-                      "threshold_angle": 40,
-                      "buildplate_only": false,
-                      "top_z_distance": 0.15,
-                      "xy_distance": 0.5,
-                      "spacing": 2,
-                      "top_interface_layers": 2,
-                      "bottom_interface_layers": 0,
-                      "interface_pattern": "rectilinear",
-                      "interface_spacing": 0,
-                      "dont_support_bridges": false,
-                      "raft_layers": 0,
-                      "raft_first_layer_expansion": 2
-                    },
-                    "speed": {
-                      "perimeters": 300,
-                      "small_perimeters": "50%",
-                      "external_perimeters": 200,
-                      "infill": 270,
-                      "solid_infill": 250,
-                      "top_solid_infill": 200,
-                      "support_material": 150,
-                      "support_material_interface": 80,
-                      "gap_fill": 250,
-                      "ironing": 15,
-                      "travel": 500,
-                      "travel_z": 0,
-                      "first_layer": 50,
-                      "first_layer_infill": 105,
-                      "bridge": 50
-                    },
-                    "acceleration": {
-                      "default": 10000,
-                      "first_layer": 500,
-                      "perimeter": 0,
-                      "external_perimeter": 5000,
-                      "infill": "100%",
-                      "solid_infill": 0,
-                      "top_solid_infill": 2000,
-                      "travel": 10000,
-                      "bridge": 0
-                    },
-                    "overhang": {
-                      "enable_overhang_speed": true,
-                      "speed_0": 0,
-                      "speed_1": 50,
-                      "speed_2": 30,
-                      "speed_3": 10
-                    },
-                    "wipe_tower": {
-                      "enable": false,
-                      "width": 60
-                    },
-                    "output_options": {
-                      "spiral_vase": false,
-                      "print_sequence": "by layer"
-                    }
-                  }
-                }
               }
             }
           },
@@ -1711,127 +1232,6 @@
               "schema": {
                 "$ref": "#/components/schemas/PrintSettings",
                 "description": "Complete print settings configuration including layers, infill, support, and speed settings."
-              },
-              "examples": {
-                "default": {
-                  "summary": "Bump infill for high-strength parts",
-                  "value": {
-                    "name": "Default Print Settings",
-                    "filament_color": "string",
-                    "layers_and_perimeters": {
-                      "layer_height": {
-                        "layer_height": 0.2,
-                        "first_layer_height": 0.2,
-                        "top_layers": 5,
-                        "bottom_layers": 3,
-                        "perimeters": 3
-                      },
-                      "advanced": {
-                        "detect_thin_walls": false,
-                        "thick_bridges": true,
-                        "seam_position": "nearest",
-                        "perimeter_generator": "classic",
-                        "elefant_foot_compensation": 0.15,
-                        "xy_size_compensation": 0,
-                        "xy_hole_compensation": 0
-                      }
-                    },
-                    "extrusion_width": {
-                      "default": 0.45,
-                      "first_layer": 0.42,
-                      "external_perimeter": 0.4,
-                      "perimeter": 0.45,
-                      "infill": 0.45,
-                      "solid_infill": 0.45,
-                      "top_infill": 0.4,
-                      "support": 0.42
-                    },
-                    "infill": {
-                      "fill_density": "15%",
-                      "fill_pattern": "grid",
-                      "fill_angle": 45,
-                      "infill_anchor": 2.5,
-                      "infill_anchor_max": 15,
-                      "infill_overlap": "25%",
-                      "top_fill_pattern": "monotoniclines",
-                      "ironing_type": "top",
-                      "solid_infill_every_layers": 0,
-                      "combine_infill_every_layers": 0
-                    },
-                    "skirt_and_brim": {
-                      "skirt": {
-                        "loops": 0,
-                        "distance": 2,
-                        "height": 2
-                      },
-                      "brim": {
-                        "type": "no_brim",
-                        "width": 5,
-                        "separation_gap": 0.1
-                      }
-                    },
-                    "support_material": {
-                      "enable": false,
-                      "style": "grid",
-                      "pattern": "rectilinear",
-                      "threshold_angle": 40,
-                      "buildplate_only": false,
-                      "top_z_distance": 0.15,
-                      "xy_distance": 0.5,
-                      "spacing": 2,
-                      "top_interface_layers": 2,
-                      "bottom_interface_layers": 0,
-                      "interface_pattern": "rectilinear",
-                      "interface_spacing": 0,
-                      "dont_support_bridges": false,
-                      "raft_layers": 0,
-                      "raft_first_layer_expansion": 2
-                    },
-                    "speed": {
-                      "perimeters": 300,
-                      "small_perimeters": "50%",
-                      "external_perimeters": 200,
-                      "infill": 270,
-                      "solid_infill": 250,
-                      "top_solid_infill": 200,
-                      "support_material": 150,
-                      "support_material_interface": 80,
-                      "gap_fill": 250,
-                      "ironing": 15,
-                      "travel": 500,
-                      "travel_z": 0,
-                      "first_layer": 50,
-                      "first_layer_infill": 105,
-                      "bridge": 50
-                    },
-                    "acceleration": {
-                      "default": 10000,
-                      "first_layer": 500,
-                      "perimeter": 0,
-                      "external_perimeter": 5000,
-                      "infill": "100%",
-                      "solid_infill": 0,
-                      "top_solid_infill": 2000,
-                      "travel": 10000,
-                      "bridge": 0
-                    },
-                    "overhang": {
-                      "enable_overhang_speed": true,
-                      "speed_0": 0,
-                      "speed_1": 50,
-                      "speed_2": 30,
-                      "speed_3": 10
-                    },
-                    "wipe_tower": {
-                      "enable": false,
-                      "width": 60
-                    },
-                    "output_options": {
-                      "spiral_vase": false,
-                      "print_sequence": "by layer"
-                    }
-                  }
-                }
               }
             }
           }
@@ -1951,41 +1351,6 @@
               "schema": {
                 "$ref": "#/components/schemas/SLAPrintSettings",
                 "description": "Complete SLA print settings including layer height, supports, and pad settings."
-              },
-              "examples": {
-                "default": {
-                  "summary": "Example SLA Print Settings",
-                  "value": {
-                    "name": "Default SLA Print Settings",
-                    "layer_height": 0.05,
-                    "faded_layers": 8,
-                    "slice_closing_radius": 0.005,
-                    "hollowing_enable": false,
-                    "supports": {
-                      "enable": true,
-                      "head_front_diameter": 0.4,
-                      "head_penetration": 0.4,
-                      "head_width": 3.0,
-                      "pillar_diameter": 1.0,
-                      "pillar_connection_mode": "zigzag",
-                      "base_diameter": 3.0,
-                      "base_height": 1.0,
-                      "object_elevation": 5.0,
-                      "density_at_45": 250,
-                      "density_at_horizontal": 500,
-                      "critical_angle": 45,
-                      "max_bridge_length": 10.0
-                    },
-                    "pad": {
-                      "enable": true,
-                      "wall_thickness": 1.0,
-                      "wall_height": 0.0,
-                      "wall_slope": 45.0,
-                      "edge_radius": 0.5,
-                      "max_merge_distance": 50.0
-                    }
-                  }
-                }
               }
             }
           },
@@ -2101,41 +1466,6 @@
               "schema": {
                 "$ref": "#/components/schemas/SLAPrintSettings",
                 "description": "Complete SLA print settings configuration."
-              },
-              "examples": {
-                "default": {
-                  "summary": "Example SLA Print Settings",
-                  "value": {
-                    "name": "Default SLA Print Settings",
-                    "layer_height": 0.05,
-                    "faded_layers": 8,
-                    "slice_closing_radius": 0.005,
-                    "hollowing_enable": false,
-                    "supports": {
-                      "enable": true,
-                      "head_front_diameter": 0.4,
-                      "head_penetration": 0.4,
-                      "head_width": 3.0,
-                      "pillar_diameter": 1.0,
-                      "pillar_connection_mode": "zigzag",
-                      "base_diameter": 3.0,
-                      "base_height": 1.0,
-                      "object_elevation": 5.0,
-                      "density_at_45": 250,
-                      "density_at_horizontal": 500,
-                      "critical_angle": 45,
-                      "max_bridge_length": 10.0
-                    },
-                    "pad": {
-                      "enable": true,
-                      "wall_thickness": 1.0,
-                      "wall_height": 0.0,
-                      "wall_slope": 45.0,
-                      "edge_radius": 0.5,
-                      "max_merge_distance": 50.0
-                    }
-                  }
-                }
               }
             }
           }
@@ -2363,17 +1693,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/OrderUpdateRequest"
-              },
-              "examples": {
-                "default": {
-                  "summary": "Move order into production",
-                  "value": {
-                    "status": "in_progress",
-                    "notes": "Started printing on the MK3S+. ETA tomorrow morning.",
-                    "deadline": "2026-06-10",
-                    "priority": "high"
-                  }
-                }
               }
             }
           }
@@ -2506,16 +1825,6 @@
                   "x": 210.0,
                   "y": 210.0,
                   "z": 250.0
-                }
-              },
-              "examples": {
-                "default": {
-                  "summary": "250×210×210 mm build volume",
-                  "value": {
-                    "x": 250.0,
-                    "y": 210.0,
-                    "z": 210.0
-                  }
                 }
               }
             }
@@ -2893,14 +2202,14 @@
         }
       }
     },
-    "/v1/quote/queue/{file_id}": {
+    "/v1/quote/fdm/{file_id}": {
       "post": {
         "tags": [
           "FDM Quote"
         ],
         "summary": "Queue Quote Model",
         "description": "Submit a quote job to the async queue.\n\nUse the returned quote_id to poll GET /v1/quote/{quote_id} until the status\ntransitions from pending to success or failed.",
-        "operationId": "queue_quote_model_v1_quote_queue__file_id__post",
+        "operationId": "queue_quote_model_v1_quote_fdm__file_id__post",
         "security": [
           {
             "HTTPBearer": []
@@ -2925,272 +2234,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/QuoteConfig"
-              },
-              "examples": {
-                "default": {
-                  "summary": "Example Prusa Quote",
-                  "value": {
-                    "printer_id": "printer-id",
-                    "filament_id": "filament-id",
-                    "slicer_model": "prusa_slicer",
-                    "pricing_config": {
-                      "currency": "USD",
-                      "cost_per_hour": 2.5,
-                      "cost_per_gram": 0.02,
-                      "base_price": 5,
-                      "printer_watts": 100,
-                      "cost_per_kwh": 0.12
-                    },
-                    "print_settings": {
-                      "name": "Default Print Settings",
-                      "filament_color": "string",
-                      "layers_and_perimeters": {
-                        "layer_height": {
-                          "layer_height": 0.2,
-                          "first_layer_height": 0.2,
-                          "top_layers": 5,
-                          "bottom_layers": 3,
-                          "perimeters": 3
-                        },
-                        "advanced": {
-                          "detect_thin_walls": false,
-                          "thick_bridges": true,
-                          "seam_position": "nearest",
-                          "perimeter_generator": "classic",
-                          "elefant_foot_compensation": 0.15,
-                          "xy_size_compensation": 0,
-                          "xy_hole_compensation": 0
-                        }
-                      },
-                      "extrusion_width": {
-                        "default": 0.45,
-                        "first_layer": 0.42,
-                        "external_perimeter": 0.4,
-                        "perimeter": 0.45,
-                        "infill": 0.45,
-                        "solid_infill": 0.45,
-                        "top_infill": 0.4,
-                        "support": 0.42
-                      },
-                      "infill": {
-                        "fill_density": "15%",
-                        "fill_pattern": "grid",
-                        "fill_angle": 45,
-                        "infill_anchor": 2.5,
-                        "infill_anchor_max": 15,
-                        "infill_overlap": "25%",
-                        "top_fill_pattern": "monotoniclines",
-                        "ironing_type": "top",
-                        "solid_infill_every_layers": 0,
-                        "combine_infill_every_layers": 0
-                      },
-                      "skirt_and_brim": {
-                        "skirt": {
-                          "loops": 0,
-                          "distance": 2,
-                          "height": 2
-                        },
-                        "brim": {
-                          "type": "no_brim",
-                          "width": 5,
-                          "separation_gap": 0.1
-                        }
-                      },
-                      "support_material": {
-                        "enable": false,
-                        "style": "grid",
-                        "pattern": "rectilinear",
-                        "threshold_angle": 40,
-                        "buildplate_only": false,
-                        "top_z_distance": 0.15,
-                        "xy_distance": 0.5,
-                        "spacing": 2,
-                        "top_interface_layers": 2,
-                        "bottom_interface_layers": 0,
-                        "interface_pattern": "rectilinear",
-                        "interface_spacing": 0,
-                        "dont_support_bridges": false,
-                        "raft_layers": 0,
-                        "raft_first_layer_expansion": 2
-                      },
-                      "speed": {
-                        "perimeters": 300,
-                        "small_perimeters": "50%",
-                        "external_perimeters": 200,
-                        "infill": 270,
-                        "solid_infill": 250,
-                        "top_solid_infill": 200,
-                        "support_material": 150,
-                        "support_material_interface": 80,
-                        "gap_fill": 250,
-                        "ironing": 15,
-                        "travel": 500,
-                        "travel_z": 0,
-                        "first_layer": 50,
-                        "first_layer_infill": 105,
-                        "bridge": 50
-                      },
-                      "acceleration": {
-                        "default": 10000,
-                        "first_layer": 500,
-                        "perimeter": 0,
-                        "external_perimeter": 5000,
-                        "infill": "100%",
-                        "solid_infill": 0,
-                        "top_solid_infill": 2000,
-                        "travel": 10000,
-                        "bridge": 0
-                      },
-                      "overhang": {
-                        "enable_overhang_speed": true,
-                        "speed_0": 0,
-                        "speed_1": 50,
-                        "speed_2": 30,
-                        "speed_3": 10
-                      },
-                      "wipe_tower": {
-                        "enable": false,
-                        "width": 60
-                      },
-                      "output_options": {
-                        "spiral_vase": false,
-                        "print_sequence": "by layer"
-                      }
-                    }
-                  }
-                },
-                "bambu_studio": {
-                  "summary": "Example Bambu Quote",
-                  "value": {
-                    "printer_id": "printer-id",
-                    "filament_id": "filament-id",
-                    "slicer_model": "bambu_studio",
-                    "pricing_config": {
-                      "currency": "USD",
-                      "cost_per_hour": 2.5,
-                      "cost_per_gram": 0.02,
-                      "base_price": 5,
-                      "printer_watts": 100,
-                      "cost_per_kwh": 0.12
-                    },
-                    "print_settings": {
-                      "name": "Default Print Settings",
-                      "filament_color": "string",
-                      "layers_and_perimeters": {
-                        "layer_height": {
-                          "layer_height": 0.2,
-                          "first_layer_height": 0.2,
-                          "top_layers": 5,
-                          "bottom_layers": 3,
-                          "perimeters": 3
-                        },
-                        "advanced": {
-                          "detect_thin_walls": false,
-                          "thick_bridges": true,
-                          "seam_position": "nearest",
-                          "perimeter_generator": "classic",
-                          "elefant_foot_compensation": 0.15,
-                          "xy_size_compensation": 0,
-                          "xy_hole_compensation": 0
-                        }
-                      },
-                      "extrusion_width": {
-                        "default": 0.45,
-                        "first_layer": 0.42,
-                        "external_perimeter": 0.4,
-                        "perimeter": 0.45,
-                        "infill": 0.45,
-                        "solid_infill": 0.45,
-                        "top_infill": 0.4,
-                        "support": 0.42
-                      },
-                      "infill": {
-                        "fill_density": "15%",
-                        "fill_pattern": "grid",
-                        "fill_angle": 45,
-                        "infill_anchor": 2.5,
-                        "infill_anchor_max": 15,
-                        "infill_overlap": "25%",
-                        "top_fill_pattern": "monotoniclines",
-                        "ironing_type": "top",
-                        "solid_infill_every_layers": 0,
-                        "combine_infill_every_layers": 0
-                      },
-                      "skirt_and_brim": {
-                        "skirt": {
-                          "loops": 0,
-                          "distance": 2,
-                          "height": 2
-                        },
-                        "brim": {
-                          "type": "no_brim",
-                          "width": 5,
-                          "separation_gap": 0.1
-                        }
-                      },
-                      "support_material": {
-                        "enable": false,
-                        "style": "grid",
-                        "pattern": "rectilinear",
-                        "threshold_angle": 40,
-                        "buildplate_only": false,
-                        "top_z_distance": 0.15,
-                        "xy_distance": 0.5,
-                        "spacing": 2,
-                        "top_interface_layers": 2,
-                        "bottom_interface_layers": 0,
-                        "interface_pattern": "rectilinear",
-                        "interface_spacing": 0,
-                        "dont_support_bridges": false,
-                        "raft_layers": 0,
-                        "raft_first_layer_expansion": 2
-                      },
-                      "speed": {
-                        "perimeters": 300,
-                        "small_perimeters": "50%",
-                        "external_perimeters": 200,
-                        "infill": 270,
-                        "solid_infill": 250,
-                        "top_solid_infill": 200,
-                        "support_material": 150,
-                        "support_material_interface": 80,
-                        "gap_fill": 250,
-                        "ironing": 15,
-                        "travel": 500,
-                        "travel_z": 0,
-                        "first_layer": 50,
-                        "first_layer_infill": 105,
-                        "bridge": 50
-                      },
-                      "acceleration": {
-                        "default": 10000,
-                        "first_layer": 500,
-                        "perimeter": 0,
-                        "external_perimeter": 5000,
-                        "infill": "100%",
-                        "solid_infill": 0,
-                        "top_solid_infill": 2000,
-                        "travel": 10000,
-                        "bridge": 0
-                      },
-                      "overhang": {
-                        "enable_overhang_speed": true,
-                        "speed_0": 0,
-                        "speed_1": 50,
-                        "speed_2": 30,
-                        "speed_3": 10
-                      },
-                      "wipe_tower": {
-                        "enable": false,
-                        "width": 60
-                      },
-                      "output_options": {
-                        "spiral_vase": false,
-                        "print_sequence": "by layer"
-                      }
-                    }
-                  }
-                }
               }
             }
           }
@@ -3237,10 +2280,88 @@
         }
       }
     },
+    "/v1/quote/sla/{file_id}": {
+      "post": {
+        "tags": [
+          "SLA Quote"
+        ],
+        "summary": "Queue Sla Quote Model",
+        "description": "Submit an SLA (resin) quote job to the async queue.\n\nPoll GET /v1/quote/{quote_id} until the status transitions from pending to\nsuccess or failed. The quote's pricing block carries resin volume (mL) and\nweight (g) alongside the total price.",
+        "operationId": "queue_sla_quote_model_v1_quote_sla__file_id__post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the uploaded file",
+              "title": "File Id"
+            },
+            "description": "ID for the uploaded file"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SLAQuoteConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "SLA quote job queued successfully; poll GET /v1/quote/{quote_id} for updates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteQueueSubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request configuration"
+          },
+          "401": {
+            "description": "Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "File, SLA printer config, or resin config not found"
+          },
+          "429": {
+            "description": "Rate limit exceeded"
+          },
+          "500": {
+            "description": "Internal server error while queueing SLA quote"
+          },
+          "503": {
+            "description": "Modal queue dispatch failed"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/quote/{quote_id}": {
       "get": {
         "tags": [
-          "FDM Quote"
+          "Quotes"
         ],
         "summary": "Get Quote Record",
         "description": "Retrieve a quote record by its ID.\n\nRequires a valid API token in the Authorization header (Bearer scheme).",
@@ -3297,10 +2418,10 @@
       },
       "delete": {
         "tags": [
-          "FDM Quote"
+          "Quotes"
         ],
         "summary": "Delete Quote",
-        "description": "Deletes the quote record and the associated .gcode file for the given Quote ID.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns a success message and the path of the removed file if deletion is successful.",
+        "description": "Deletes the quote record and its associated output file (G-code or SLA\narchive) for the given Quote ID.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns a success message and the path of the removed file if deletion is successful.",
         "operationId": "delete_quote_v1_quote__quote_id__delete",
         "security": [
           {
@@ -3353,14 +2474,14 @@
         }
       }
     },
-    "/v1/quote/gcode/{quote_id}": {
+    "/v1/quote/output/{quote_id}": {
       "get": {
         "tags": [
-          "FDM Quote"
+          "Quotes"
         ],
         "summary": "Download Quote Gcode",
-        "description": "Retrieve the .gcode file for the quote that matches **quote_id**.\n\nRequires a valid API token in the Authorization header (Bearer scheme).",
-        "operationId": "download_quote_gcode_v1_quote_gcode__quote_id__get",
+        "description": "Retrieve the sliced output file (G-code or SLA archive) for the quote that\nmatches **quote_id**.\n\nRequires a valid API token in the Authorization header (Bearer scheme).",
+        "operationId": "download_quote_gcode_v1_quote_output__quote_id__get",
         "security": [
           {
             "HTTPBearer": []
@@ -3381,141 +2502,16 @@
         ],
         "responses": {
           "200": {
-            "description": "G-code file downloaded successfully"
+            "description": "Sliced output file downloaded successfully"
           },
           "401": {
             "description": "Invalid or missing authentication token"
           },
           "404": {
-            "description": "Quote or G-code file not found"
+            "description": "Quote or output file not found"
           },
           "500": {
             "description": "Internal server error during download"
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/quote/sla/{file_id}": {
-      "post": {
-        "tags": [
-          "SLA Quote"
-        ],
-        "summary": "Queue Sla Quote Model",
-        "description": "Submit an SLA (resin) quote job to the async queue.\n\nPoll GET /v1/quote/{quote_id} until the status transitions from pending to\nsuccess or failed. The quote's pricing block carries resin volume (mL) and\nweight (g) alongside the total price.",
-        "operationId": "queue_sla_quote_model_v1_quote_sla__file_id__post",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "file_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "ID for the uploaded file",
-              "title": "File Id"
-            },
-            "description": "ID for the uploaded file"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SLAQuoteConfig"
-              },
-              "examples": {
-                "default": {
-                  "summary": "Example SLA Quote",
-                  "value": {
-                    "sla_printer_id": "sla-printer-id",
-                    "resin_id": "resin-id",
-                    "pricing_config": {
-                      "currency": "USD",
-                      "cost_per_hour": 2.5,
-                      "cost_per_ml": 0.05,
-                      "base_price": 5.0,
-                      "printer_watts": 100.0,
-                      "cost_per_kwh": 0.12
-                    },
-                    "sla_print_settings": {
-                      "name": "Default SLA Print Settings",
-                      "layer_height": 0.05,
-                      "faded_layers": 8,
-                      "slice_closing_radius": 0.005,
-                      "hollowing_enable": false,
-                      "supports": {
-                        "enable": true,
-                        "head_front_diameter": 0.4,
-                        "head_penetration": 0.4,
-                        "head_width": 3.0,
-                        "pillar_diameter": 1.0,
-                        "pillar_connection_mode": "zigzag",
-                        "base_diameter": 3.0,
-                        "base_height": 1.0,
-                        "object_elevation": 5.0,
-                        "density_at_45": 250,
-                        "density_at_horizontal": 500,
-                        "critical_angle": 45,
-                        "max_bridge_length": 10.0
-                      },
-                      "pad": {
-                        "enable": true,
-                        "wall_thickness": 1.0,
-                        "wall_height": 0.0,
-                        "wall_slope": 45.0,
-                        "edge_radius": 0.5,
-                        "max_merge_distance": 50.0
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "202": {
-            "description": "SLA quote job queued successfully; poll GET /v1/quote/{quote_id} for updates",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/QuoteQueueSubmitResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request configuration"
-          },
-          "401": {
-            "description": "Invalid or missing authentication token"
-          },
-          "404": {
-            "description": "File, SLA printer config, or resin config not found"
-          },
-          "429": {
-            "description": "Rate limit exceeded"
-          },
-          "500": {
-            "description": "Internal server error while queueing SLA quote"
-          },
-          "503": {
-            "description": "Modal queue dispatch failed"
           },
           "422": {
             "description": "Validation Error",
@@ -3629,21 +2625,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/WebhookEndpointCreateRequest"
-              },
-              "examples": {
-                "default": {
-                  "summary": "Subscribe to all order events",
-                  "value": {
-                    "name": "Order events",
-                    "endpoint_url": "https://example.com/webhooks/cloud-slicer",
-                    "subscribed_events": [
-                      "order.created",
-                      "order.updated",
-                      "order.deleted"
-                    ],
-                    "is_active": true
-                  }
-                }
               }
             }
           },
@@ -3786,17 +2767,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/WebhookEndpointUpdateRequest"
-              },
-              "examples": {
-                "default": {
-                  "summary": "Disable endpoint and narrow events",
-                  "value": {
-                    "is_active": false,
-                    "subscribed_events": [
-                      "order.deleted"
-                    ]
-                  }
-                }
               }
             }
           }
@@ -4274,7 +3244,7 @@
         "properties": {
           "file": {
             "type": "string",
-            "format": "binary",
+            "contentMediaType": "application/octet-stream",
             "title": "File",
             "description": "Bambu Studio profile archive (.bbscfg)"
           }
@@ -4289,7 +3259,7 @@
         "properties": {
           "file": {
             "type": "string",
-            "format": "binary",
+            "contentMediaType": "application/octet-stream",
             "title": "File",
             "description": "Bambu Studio profile export (.bbscfg, .bbsflmt, .zip, or .json)"
           }
@@ -4304,7 +3274,7 @@
         "properties": {
           "file": {
             "type": "string",
-            "format": "binary",
+            "contentMediaType": "application/octet-stream",
             "title": "File",
             "description": "3D model file (.3mf, .obj, .step, .stp)"
           }
@@ -4319,7 +3289,7 @@
         "properties": {
           "file": {
             "type": "string",
-            "format": "binary",
+            "contentMediaType": "application/octet-stream",
             "title": "File",
             "description": "File to upload"
           }
@@ -4334,7 +3304,7 @@
         "properties": {
           "file": {
             "type": "string",
-            "format": "binary",
+            "contentMediaType": "application/octet-stream",
             "title": "File"
           }
         },
@@ -5812,61 +4782,6 @@
         "title": "FileInfo",
         "description": "**File and G-code details:**\n\n    file_path (str): The file path to the file in cloud storage.\n\n    gcode_path (str): The file path to the generated G-code file in cloud storage.\n\n    gcode_name (str): The name of the generated G-code file.\n\n    gcode_file_size (float): The size of the generated G-code file in megabytes (MB)."
       },
-      "GeometryInfo": {
-        "properties": {
-          "first_layer_area_mm2": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "First Layer Area Mm2",
-            "default": null
-          },
-          "build_plate_area_mm2": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Build Plate Area Mm2",
-            "default": null
-          },
-          "build_plate_coverage_percent": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Build Plate Coverage Percent",
-            "default": null
-          },
-          "max_models_per_plate": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Max Models Per Plate",
-            "default": null
-          }
-        },
-        "type": "object",
-        "title": "GeometryInfo",
-        "description": "**Build-plate geometry, measured from the sliced first layer:**\n\n    first_layer_area_mm2 (float): Area of the layer that is printed first, in mm².\n        This is the geometry that actually contacts the build plate, so when\n        supports and a pad are enabled (the default) it is the pad footprint,\n        which is larger than the model's own cross-section.\n\n    build_plate_area_mm2 (float): Total usable build-plate area in mm².\n\n    build_plate_coverage_percent (float): Share of the build plate consumed by\n        the first layer, as a percentage.\n\n    max_models_per_plate (int): floor(build plate area / first layer area).\n        A pure area ratio and therefore an **upper bound** — it ignores part\n        shape and any spacing required between parts.\n\n\nPopulated only for technology=\"sla\" quotes; None for FDM."
-      },
       "FileUploadLink": {
         "properties": {
           "user_id": {
@@ -5964,6 +4879,57 @@
         ],
         "title": "FillPattern",
         "description": "Infill pattern types."
+      },
+      "GeometryInfo": {
+        "properties": {
+          "first_layer_area_mm2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Layer Area Mm2"
+          },
+          "build_plate_area_mm2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Build Plate Area Mm2"
+          },
+          "build_plate_coverage_percent": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Build Plate Coverage Percent"
+          },
+          "max_models_per_plate": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Models Per Plate"
+          }
+        },
+        "type": "object",
+        "title": "GeometryInfo",
+        "description": "**Build-plate geometry, measured from the sliced first layer:**\n\n    first_layer_area_mm2 (float): Area of the layer that is printed first, in mm².\n        This is the geometry that actually contacts the build plate, so when\n        supports and a pad are enabled (the default) it is the pad footprint,\n        which is larger than the model's own cross-section.\n\n    build_plate_area_mm2 (float): Total usable build-plate area in mm².\n\n    build_plate_coverage_percent (float): Share of the build plate consumed by\n        the first layer, as a percentage.\n\n    max_models_per_plate (int): floor(build plate area / first layer area).\n        A pure area ratio and therefore an **upper bound** — it ignores part\n        shape and any spacing required between parts.\n\n\nPopulated only for technology=\"sla\" quotes; None for FDM."
       },
       "HTTPValidationError": {
         "properties": {
@@ -8200,8 +7166,7 @@
               {
                 "type": "null"
               }
-            ],
-            "default": null
+            ]
           },
           "configurations": {
             "$ref": "#/components/schemas/ConfigurationInfo"
@@ -8219,7 +7184,7 @@
           "configurations"
         ],
         "title": "QuoteDetailsResponse",
-        "description": "**Response schema:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    files (FileInfo): File and G-code information.\n\n    time (TimeEstimate): Time estimation details.\n\n    pricing (PricingBreakdown): Detailed pricing breakdown.\n\n    configurations (ConfigurationInfo): Configuration IDs and full config data."
+        "description": "**Response schema:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    files (FileInfo): File and G-code information.\n\n    time (TimeEstimate): Time estimation details.\n\n    pricing (PricingBreakdown): Detailed pricing breakdown.\n\n    geometry (GeometryInfo): Build-plate geometry. SLA quotes only; None for FDM.\n\n    configurations (ConfigurationInfo): Configuration IDs and full config data."
       },
       "QuoteQueueSubmitResponse": {
         "properties": {
@@ -8265,79 +7230,6 @@
         ],
         "title": "QuoteQueueSubmitResponse",
         "description": "Minimal response returned when a quote is accepted into the async queue."
-      },
-      "QuoteResponse": {
-        "properties": {
-          "quote_id": {
-            "type": "string",
-            "title": "Quote Id"
-          },
-          "user_id": {
-            "type": "string",
-            "title": "User Id"
-          },
-          "status": {
-            "type": "string",
-            "title": "Status"
-          },
-          "progress": {
-            "type": "integer",
-            "title": "Progress",
-            "default": 100
-          },
-          "error_message": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Error Message"
-          },
-          "timestamp": {
-            "type": "string",
-            "title": "Timestamp"
-          },
-          "slicer_model": {
-            "type": "string",
-            "title": "Slicer Model"
-          },
-          "files": {
-            "$ref": "#/components/schemas/FileInfo"
-          },
-          "time": {
-            "$ref": "#/components/schemas/TimeEstimate"
-          },
-          "pricing": {
-            "$ref": "#/components/schemas/PricingBreakdown"
-          },
-          "geometry": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/GeometryInfo"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null
-          }
-        },
-        "type": "object",
-        "required": [
-          "quote_id",
-          "user_id",
-          "status",
-          "timestamp",
-          "slicer_model",
-          "files",
-          "time",
-          "pricing"
-        ],
-        "title": "QuoteResponse",
-        "description": "**Response schema:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    files (FileInfo): File and G-code information.\n\n    time (TimeEstimate): Time estimation details.\n\n    pricing (PricingBreakdown): Detailed pricing breakdown.\n\n    slicer_model (str): The slicer model used for time estimation (e.g., 'prusa_slicer', 'bambu_studio')."
       },
       "ResinExposure": {
         "properties": {
@@ -10433,6 +9325,13 @@
           "type": {
             "type": "string",
             "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
           }
         },
         "type": "object",
@@ -10856,11 +9755,15 @@
     },
     {
       "name": "FDM Quote",
-      "description": "Operations for generating quotes and retrieving quote details. Requires Cloud Slicer Token"
+      "description": "Operations for generating FDM (filament) quotes. Requires Cloud Slicer Token"
     },
     {
       "name": "SLA Quote",
       "description": "Operations for generating SLA (resin) quotes. Requires Cloud Slicer Token"
+    },
+    {
+      "name": "Quotes",
+      "description": "Operations for retrieving, deleting, and downloading the sliced output of quotes (FDM and SLA). Requires Cloud Slicer Token"
     },
     {
       "name": "Webhooks",
