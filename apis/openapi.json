@@ -4109,6 +4109,43 @@
         "title": "ExtrusionWidth",
         "description": "Extrusion width settings."
       },
+      "FilamentBreakdown": {
+        "properties": {
+          "total_weight_g": {
+            "type": "number",
+            "title": "Total Weight G"
+          },
+          "support_weight_g": {
+            "type": "number",
+            "title": "Support Weight G"
+          },
+          "model_weight_g": {
+            "type": "number",
+            "title": "Model Weight G"
+          },
+          "support_percent": {
+            "type": "number",
+            "title": "Support Percent"
+          },
+          "features": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/FilamentFeatureUsage"
+            },
+            "type": "object",
+            "title": "Features"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_weight_g",
+          "support_weight_g",
+          "model_weight_g",
+          "support_percent",
+          "features"
+        ],
+        "title": "FilamentBreakdown",
+        "description": "**Per-feature filament usage, derived from the sliced G-code.**\n\n\nNeither PrusaSlicer nor Bambu Studio reports this directly. It is\nreconstructed from the sliced file and scaled so the parts sum exactly to\n`total_weight_g`, the same whole-print figure the quote is priced on.\n\n\n`features` always carries the same fixed key set whichever slicer produced\nthe quote, so you can switch slicers without a key disappearing. Features the\nprint did not use are present with zero values. The keys are\n`external_perimeter`, `perimeter`, `overhang_perimeter`, `solid_infill`,\n`top_solid_infill`, `internal_infill`, `bridge_infill`, `gap_fill`,\n`ironing`, `skirt_brim`, `support`, `support_interface`, `wipe_tower`,\n`custom` and `other`.\n\n\n    total_weight_g (float): Whole-print filament weight in grams.\n\n    support_weight_g (float): Filament spent on supports and support\n        interface, in grams.\n\n    model_weight_g (float): total_weight_g minus support_weight_g. Purge,\n        skirt and wipe-tower material is included here; subtract the\n        `custom`, `skirt_brim` and `wipe_tower` features to exclude it.\n\n    support_percent (float): Support share of the print, as a percentage.\n\n    features (dict[str, FilamentFeatureUsage]): Usage keyed by feature name,\n        from the fixed key set above.\n\n\nThis is reporting only and does not affect pricing."
+      },
       "FilamentConfig": {
         "properties": {
           "filament": {
@@ -4357,6 +4394,36 @@
         "type": "object",
         "title": "FilamentCooling",
         "description": "Filament cooling fan settings."
+      },
+      "FilamentFeatureUsage": {
+        "properties": {
+          "weight_g": {
+            "type": "number",
+            "title": "Weight G"
+          },
+          "percent": {
+            "type": "number",
+            "title": "Percent"
+          },
+          "length_mm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Length Mm"
+          }
+        },
+        "type": "object",
+        "required": [
+          "weight_g",
+          "percent"
+        ],
+        "title": "FilamentFeatureUsage",
+        "description": "**Filament consumed by a single extrusion feature:**\n\n    weight_g (float): Weight of filament deposited by this feature, in grams.\n\n    percent (float): Share of the print's total filament, as a percentage.\n\n    length_mm (float): Length of filament for this feature, in mm. None when\n        the slicer did not report a whole-print length."
       },
       "FilamentInfo": {
         "properties": {
@@ -6500,6 +6567,19 @@
             "title": "Filament Color",
             "description": "Filament color in hex format, this will override filament config color"
           },
+          "auto_orient": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Auto Orient",
+            "description": "Auto-orient the model to minimize overhangs before slicing, which reduces the supports it needs and so lowers the quoted weight and time. On by default; set false to slice the model in the orientation it was uploaded in. Bambu Studio only; ignored by PrusaSlicer.",
+            "default": true
+          },
           "layers_and_perimeters": {
             "anyOf": [
               {
@@ -7180,6 +7260,16 @@
           "pricing": {
             "$ref": "#/components/schemas/PricingBreakdown"
           },
+          "filament_breakdown": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FilamentBreakdown"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "geometry": {
             "anyOf": [
               {
@@ -7206,7 +7296,7 @@
           "configurations"
         ],
         "title": "QuoteDetailsResponse",
-        "description": "**Response schema:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    files (FileInfo): File and G-code information.\n\n    time (TimeEstimate): Time estimation details.\n\n    pricing (PricingBreakdown): Detailed pricing breakdown.\n\n    geometry (GeometryInfo): Build-plate geometry. SLA quotes only; None for FDM.\n\n    configurations (ConfigurationInfo): Configuration IDs and full config data."
+        "description": "**Response schema:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    files (FileInfo): File and G-code information.\n\n    time (TimeEstimate): Time estimation details.\n\n    pricing (PricingBreakdown): Detailed pricing breakdown.\n\n    filament_breakdown (FilamentBreakdown): Per-feature material usage,\n        including how much of the print is support. Reporting only - it does\n        not affect any price above. None for SLA quotes, for FDM quotes whose\n        G-code could not be walked, and for any FDM quote that has not finished\n        slicing yet - it is only written once the quote completes.\n\n    geometry (GeometryInfo): Build-plate geometry. SLA quotes only; None for FDM.\n\n    configurations (ConfigurationInfo): Configuration IDs and full config data."
       },
       "QuoteQueueSubmitResponse": {
         "properties": {

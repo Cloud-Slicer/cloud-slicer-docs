@@ -66,6 +66,10 @@ console.log(quote_id);
 
 :::note
 Want to override defaults? You can also pass `pricing_config` (currency, cost-per-hour, cost-per-gram, base price, electricity) and `print_settings` (layer height, infill, supports, filament color, etc.) in the same body. Both default to Cloud Slicer's reasonable defaults if omitted.
+
+**`print_settings.auto_orient` is `true` by default.** Before slicing, the model is
+rotated to minimize overhangs, which cuts the supports it needs and so lowers the
+quoted weight and time. Bambu Studio only; PrusaSlicer ignores it.
 :::
 
 ## Poll until ready
@@ -126,6 +130,10 @@ A successful quote response includes:
 - **`pricing.total_price`** — the all-in price (number)
 - **`pricing.filament_cost`**, **`pricing.electricity_cost`**, **`pricing.currency`** — cost breakdown
 - **`pricing.filament_weight`** — grams of filament the print will use
+- **`filament_breakdown`** — per-feature material usage: grams and percent for
+  perimeters, infill, supports and the rest, plus `support_percent` and
+  `support_weight_g`. Reporting only — it never changes the price, and it's `null`
+  for SLA quotes and for any quote whose g-code couldn't be walked
 - **`time.estimated_time`** — human-readable (e.g. `"2h 30m"`)
 - **`time.estimated_time_seconds`** — number of seconds, useful for math
 - **`files.gcode_path`**, **`files.gcode_name`** — the generated g-code, ready to download
