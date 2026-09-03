@@ -5210,6 +5210,32 @@
             "description": "Number of bottom solid layers",
             "default": 3
           },
+          "top_shell_thickness": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Top Shell Thickness",
+            "description": "Minimum thickness of the top shell in mm. The number of top solid layers is raised above top_layers if needed to reach it. 0 disables the constraint so top_layers is used as-is.",
+            "default": 0.0
+          },
+          "bottom_shell_thickness": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bottom Shell Thickness",
+            "description": "Minimum thickness of the bottom shell in mm. The number of bottom solid layers is raised above bottom_layers if needed to reach it. 0 disables the constraint so bottom_layers is used as-is.",
+            "default": 0.0
+          },
           "perimeters": {
             "anyOf": [
               {
@@ -8829,7 +8855,7 @@
             ],
             "title": "Ironing",
             "description": "Ironing speed in mm/s",
-            "default": 15.0
+            "default": 30.0
           },
           "travel": {
             "anyOf": [
