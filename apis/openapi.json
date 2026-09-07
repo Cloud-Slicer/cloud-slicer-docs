@@ -9535,6 +9535,36 @@
           "created_at": {
             "type": "string",
             "title": "Created At"
+          },
+          "attempt_count": {
+            "type": "integer",
+            "title": "Attempt Count",
+            "description": "Delivery attempts made so far. 0 means the first attempt has not run yet.",
+            "default": 0
+          },
+          "next_attempt_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Attempt At",
+            "description": "When the next attempt is due, ISO 8601. Set on a `pending` delivery that failed and is waiting on the retry schedule; null once the delivery has succeeded or exhausted its retries."
+          },
+          "delivered_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivered At",
+            "description": "When the endpoint accepted the delivery with a 2xx response, ISO 8601. Null until the delivery succeeds."
           }
         },
         "type": "object",
