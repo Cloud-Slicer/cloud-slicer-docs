@@ -85,7 +85,7 @@ const config: ZudokuConfig = {
         "--shadow-spread": "0px",
         "--shadow-offset-x": "0px",
         "--shadow-offset-y": "2px",
-        "--letter-spacing": "-0.025em",
+        "--letter-spacing": "0em",
         "--spacing": "0.27rem",
         "--shadow-2xs": "0px 2px 3px 0px hsl(0 0% 0% / 0.08)",
         "--shadow-xs": "0px 2px 3px 0px hsl(0 0% 0% / 0.08)",
@@ -100,7 +100,7 @@ const config: ZudokuConfig = {
         "--shadow-xl":
           "0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 8px 10px -1px hsl(0 0% 0% / 0.16)",
         "--shadow-2xl": "0px 2px 3px 0px hsl(0 0% 0% / 0.40)",
-        "--tracking-normal": "-0.025em",
+        "--tracking-normal": "0em",
         "--tracking-tighter": "calc(var(--tracking-normal) - 0.05em)",
         "--tracking-tight": "calc(var(--tracking-normal) - 0.025em)",
         "--tracking-wide": "calc(var(--tracking-normal) + 0.025em)",
@@ -154,7 +154,7 @@ const config: ZudokuConfig = {
         "--shadow-spread": "0px",
         "--shadow-offset-x": "0px",
         "--shadow-offset-y": "2px",
-        "--letter-spacing": "-0.025em",
+        "--letter-spacing": "0em",
         "--spacing": "0.27rem",
         "--shadow-2xs": "0px 2px 3px 0px hsl(0 0% 0% / 0.08)",
         "--shadow-xs": "0px 2px 3px 0px hsl(0 0% 0% / 0.08)",
@@ -173,6 +173,12 @@ const config: ZudokuConfig = {
       "@layer base": {
         body: {
           "letter-spacing": "var(--tracking-normal)",
+        },
+        // Open body copy up a little: docs paragraphs read cramped with the
+        // default tracking, so give running text a touch more word spacing.
+        ".prose p, .prose li": {
+          "word-spacing": "0.05em",
+          "line-height": "1.8",
         },
       },
     },
@@ -224,6 +230,12 @@ const config: ZudokuConfig = {
               label: "Authentication",
               icon: "lock",
               file: "introduction/authentication",
+            },
+            {
+              type: "doc",
+              label: "Webhooks",
+              icon: "webhook",
+              file: "introduction/webhooks",
             },
           ],
         },

@@ -7,22 +7,23 @@
     "dev": "zudoku dev",
     "build": "zudoku build",
     "preview": "zudoku preview",
-    "lint": "eslint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "react-icons": "^5.5.0",
     "zudoku": "^0.79.0"
   },
-  "overrides": {
-    "react-router": "^7.15.0"
-  },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript-eslint/eslint-plugin": "^8",
-    "@typescript-eslint/parser": "^8",
-    "eslint": "^8",
-    "typescript": "^5"
+    "eslint": "^10.10.0",
+    "globals": "^16.5.0",
+    "typescript": "^5",
+    "typescript-eslint": "^8.46.4"
+  },
+  "overrides": {
+    "react-router": "^7.15.0"
   }
 }
