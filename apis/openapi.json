@@ -2944,7 +2944,7 @@
           "Convert Files"
         ],
         "summary": "Convert Bambu To Json",
-        "description": "Convert a Bambu Studio profile export to intermediate JSON format. Accepts .bbscfg, .bbsflmt, .zip (Printer/Filament/Process preset bundles), or a raw .json preset. Returns only the categories that were present in the upload; each present category is returned as a list of resolved configs.",
+        "description": "Convert a Bambu Studio profile export to intermediate JSON format. Accepts .bbscfg, .bbsflmt, .zip (Printer/Filament/Process preset bundles), a raw .json preset, or a sliced .gcode file whose CONFIG_BLOCK carries the resolved presets. Returns only the categories that were present in the upload; each present category is returned as a list of resolved configs.",
         "operationId": "convert_bambu_to_json_v1_convert_bambu_to_json_post",
         "requestBody": {
           "content": {
@@ -3244,7 +3244,7 @@
         "properties": {
           "file": {
             "type": "string",
-            "contentMediaType": "application/octet-stream",
+            "format": "binary",
             "title": "File",
             "description": "Bambu Studio profile archive (.bbscfg)"
           }
@@ -3259,9 +3259,9 @@
         "properties": {
           "file": {
             "type": "string",
-            "contentMediaType": "application/octet-stream",
+            "format": "binary",
             "title": "File",
-            "description": "Bambu Studio profile export (.bbscfg, .bbsflmt, .zip, or .json)"
+            "description": "Bambu Studio profile export (.bbscfg, .bbsflmt, .zip, .json) or a sliced .gcode file"
           }
         },
         "type": "object",
@@ -3274,7 +3274,7 @@
         "properties": {
           "file": {
             "type": "string",
-            "contentMediaType": "application/octet-stream",
+            "format": "binary",
             "title": "File",
             "description": "3D model file (.3mf, .obj, .step, .stp)"
           }
@@ -3289,7 +3289,7 @@
         "properties": {
           "file": {
             "type": "string",
-            "contentMediaType": "application/octet-stream",
+            "format": "binary",
             "title": "File",
             "description": "File to upload"
           }
@@ -3304,7 +3304,7 @@
         "properties": {
           "file": {
             "type": "string",
-            "contentMediaType": "application/octet-stream",
+            "format": "binary",
             "title": "File"
           }
         },
@@ -4907,6 +4907,116 @@
           "file_size": {
             "type": "number",
             "title": "File Size"
+          },
+          "triangle_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Triangle Count"
+          },
+          "vertex_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vertex Count"
+          },
+          "body_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Body Count"
+          },
+          "bbox_x_mm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bbox X Mm"
+          },
+          "bbox_y_mm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bbox Y Mm"
+          },
+          "bbox_z_mm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bbox Z Mm"
+          },
+          "part_bbox_x_mm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Part Bbox X Mm"
+          },
+          "part_bbox_y_mm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Part Bbox Y Mm"
+          },
+          "part_bbox_z_mm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Part Bbox Z Mm"
+          },
+          "mesh_analyzed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mesh Analyzed At"
           }
         },
         "type": "object",
@@ -4920,7 +5030,7 @@
           "file_size"
         ],
         "title": "FileUploadResponse",
-        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    file_id (str): The unique identifier of the uploaded file.\n\n    file_path (str): The file path to the uploaded file in cloud storage.\n\n    status (str): The status of the upload (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded.\n\n    file_name (str): The name of the uploaded file.\n\n    file_size (float): The size of the uploaded file in megabytes (MB)."
+        "description": "**Response schema:**\n\n    user_id (str): The unique identifier of the user who uploaded the file.\n\n    file_id (str): The unique identifier of the uploaded file.\n\n    file_path (str): The file path to the uploaded file in cloud storage.\n\n    status (str): The status of the upload (e.g., 'success', 'error').\n\n    timestamp (str): ISO 8601 timestamp of when the file was uploaded.\n\n    file_name (str): The name of the uploaded file.\n\n    file_size (float): The size of the uploaded file in megabytes (MB).\n\n    triangle_count (int | None): Triangles across every body in the model.\n\n    vertex_count (int | None): Unique vertices in the model.\n\n    body_count (int | None): Placed instances/bodies (1 for a plain STL).\n\n    bbox_x_mm (float | None): Overall bounding-box width in mm.\n\n    bbox_y_mm (float | None): Overall bounding-box depth in mm.\n\n    bbox_z_mm (float | None): Overall bounding-box height in mm.\n\n    part_bbox_x_mm (float | None): Largest single part's width in mm.\n\n    part_bbox_y_mm (float | None): Largest single part's depth in mm.\n\n    part_bbox_z_mm (float | None): Largest single part's height in mm.\n\n    mesh_analyzed_at (str | None): When the mesh stats were captured."
       },
       "FillPattern": {
         "type": "string",
@@ -5220,8 +5330,7 @@
               }
             ],
             "title": "Top Shell Thickness",
-            "description": "Minimum thickness of the top shell in mm. The number of top solid layers is raised above top_layers if needed to reach it. 0 disables the constraint so top_layers is used as-is.",
-            "default": 0.0
+            "description": "Minimum thickness of the top shell in mm. The number of top solid layers is raised above top_layers if needed to reach it. 0 disables the constraint so top_layers is used as-is. Omit (null) to inherit the value from the resolved slicer profile -- the profile's own thickness then still wins over top_layers."
           },
           "bottom_shell_thickness": {
             "anyOf": [
@@ -5233,8 +5342,7 @@
               }
             ],
             "title": "Bottom Shell Thickness",
-            "description": "Minimum thickness of the bottom shell in mm. The number of bottom solid layers is raised above bottom_layers if needed to reach it. 0 disables the constraint so bottom_layers is used as-is.",
-            "default": 0.0
+            "description": "Minimum thickness of the bottom shell in mm. The number of bottom solid layers is raised above bottom_layers if needed to reach it. 0 disables the constraint so bottom_layers is used as-is. Omit (null) to inherit the value from the resolved slicer profile."
           },
           "perimeters": {
             "anyOf": [
@@ -6603,7 +6711,7 @@
               }
             ],
             "title": "Auto Orient",
-            "description": "Auto-orient the model to minimize overhangs before slicing, which reduces the supports it needs and so lowers the quoted weight and time. On by default; set false to slice the model in the orientation it was uploaded in. Bambu Studio only; ignored by PrusaSlicer.",
+            "description": "Auto-orient the model to minimize overhangs before slicing. Bambu Studio only; ignored by PrusaSlicer.",
             "default": true
           },
           "layers_and_perimeters": {
@@ -9463,13 +9571,6 @@
           "type": {
             "type": "string",
             "title": "Error Type"
-          },
-          "input": {
-            "title": "Input"
-          },
-          "ctx": {
-            "type": "object",
-            "title": "Context"
           }
         },
         "type": "object",
