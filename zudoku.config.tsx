@@ -296,6 +296,20 @@ const config: ZudokuConfig = {
           to: "https://api.cloudslicer3d.com/docs",
           target: "_blank",
         },
+        {
+          type: "category",
+          label: "Security & Privacy",
+          icon: "shield-check",
+          link: "security/data-storage-and-retention",
+          items: [
+            {
+              type: "doc",
+              label: "Data Storage & Retention",
+              icon: "database",
+              file: "security/data-storage-and-retention",
+            },
+          ],
+        },
       ],
     },
     {

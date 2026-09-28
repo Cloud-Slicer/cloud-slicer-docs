@@ -1,0 +1,170 @@
+---
+title: "Data Storage & Retention"
+description: "Understand where Cloud Slicer stores your files, how they are encrypted and isolated, and how long each kind of data is kept"
+---
+
+This page covers what happens to the files and data you send to Cloud Slicer: where they are stored, how they are protected in transit and at rest, who can reach them, and when they are deleted. It is written to answer security and privacy reviews. For the short answer, read [At a glance](#at-a-glance) and the [retention table](#retention-periods).
+
+## At a glance
+
+- Files are stored in a **private** Supabase Storage bucket, backed by Amazon S3 in AWS `us-east-2` (Ohio, USA). There are no public links to your files.
+- Data is encrypted **in transit** with TLS and **at rest** with AES-256.
+- Every file lives under a folder named for your user ID. Row Level Security (RLS) policies and per-request ownership checks keep one account's data out of another's.
+- Uploaded models are kept until you delete them, or until your [automatic retention window](#automatic-file-retention) (1 to 365 days) removes them.
+- Generated g-code and SLA slice files are **not stored by default**. The slicer produces them to price your quote, then discards them.
+- File storage is not included in backups. A deleted file is gone immediately and cannot be restored by you or by us.
+
+## What we store
+
+| Data | What it contains | Where |
+| --- | --- | --- |
+| Uploaded models | The `.stl`, `.obj`, `.3mf`, `.amf`, `.step`, or `.stp` file you uploaded | Supabase Storage |
+| Generated output files | `.gcode` (FDM) or `.sl1` (SLA) slice files, **only if you turn on file saving** | Supabase Storage |
+| File metadata | Filename, size, upload time, and measured geometry stats (triangle, vertex, and body counts, bounding box in mm) | Postgres |
+| Quote records | Price, print time, material usage, status, and a snapshot of the printer, material, and print settings used | Postgres |
+| Orders | Your customer's name, email, phone, and shipping address, plus line items (file name, material, color, quantity) | Postgres |
+| Account | Email, username, plan, and usage counters | Postgres |
+| API token metadata | Token name, ID, creation date, and expiry date. **Not the token itself** | Postgres |
+
+Orders only exist if you use the quote widget with ordering turned on. Cloud Slicer **never** stores payment details; Polar handles billing.
+
+## Where data is stored
+
+Cloud Slicer runs on the providers below. Supabase is the only place your files are stored long term; the others handle a file only while a request or job is running.
+
+| Provider | Role | Location | Handles file contents |
+| --- | --- | --- | --- |
+| Supabase | Database, file storage, and dashboard sign-in | AWS `us-east-2` (Ohio, USA) | Yes, at rest |
+| Fly.io | Hosts the API at `api.cloudslicer3d.com` | Dallas, USA (`dfw`) | Yes, while a request is in flight |
+| Modal | Runs slicing jobs | Requests enter through Virginia, USA (`us-east`); worker containers are not pinned to a region | Yes, while a slicing job runs |
+| Vercel | Hosts the dashboard and quote widget | USA | Yes, when you download a file from the dashboard |
+| PostHog | Product analytics, application logs, and error reports | USA | No. Logs can contain filenames (see [Analytics and logs](#analytics-and-logs)) |
+
+Modal schedules slicing containers across several clouds and does not pin them to a region by default, so a slicing job can run outside the US. The copy of your file on the worker exists only for the length of the job (see [File lifecycle](#file-lifecycle)).
+
+Resend sends order notification emails (order details, no file contents). Polar procesess payments and never receive files.
+
+## Encryption
+
+### In transit
+
+Every connection that carries your data uses TLS:
+
+- The API accepts HTTPS only. Plain HTTP requests are redirected to HTTPS.
+- The dashboard and quote widget are served over HTTPS.
+- Service-to-service traffic (API to Supabase, API to Modal, dashboard to Supabase) uses TLS.
+
+### At rest
+
+Supabase encrypts all stored data, database and Storage objects alike, with AES-256 using provider-managed keys.
+
+Cloud Slicer does not add its own application-level encryption and does not support customer-managed keys. Slicing needs the plaintext mesh, so the servers that slice your file can always read it. A design where only you hold the decryption key is not compatible with server-side slicing.
+
+## Access control
+
+### Authentication
+
+- **API tokens** are JWTs signed with HS256 that you create on the [Tokens](https://www.cloudslicer3d.com/dashboard/tokens) page. You can give a token an expiry or leave it open-ended. Every request checks the token's ID against your active tokens, so **revoking a token takes effect on the next request**. Cloud Slicer stores only the token's metadata; the token value is returned once, when you create it.
+- Tokens are **signed, not encrypted**. Anyone holding a token can decode its payload, which contains your user ID, email, token name, and token ID. Treat tokens like passwords (see [Authentication](/introduction/authentication)).
+- **Dashboard sessions** use Supabase Auth.
+- **Upload sessions** (`GET /v1/file/upload-id`) let an unauthenticated client add exactly one file to your account. Each session is single use, expires after 1 hour, and grants no read access to anything.
+
+### Account isolation
+
+Isolation is enforced at two layers, depending on how data is reached:
+
+- **Dashboard.** The dashboard queries the database and storage with your signed-in session. RLS is enabled on every table, and its policies only return rows whose `user_id` matches your account. Storage policies allow reading, updating, and deleting only objects inside your own `{user_id}` folder.
+- **API and slicing workers.** These run server-side with a privileged service connection, which RLS does not restrict. Instead, every request resolves the token to its owner and scopes each lookup to that user ID, so a request can only reach records and files that belong to the token's account.
+
+The privileged service credentials are held only by Cloud Slicer's servers (the API, the slicing workers, and the dashboard backend) and are never sent to a browser.
+
+### Quote widget
+
+Files uploaded through the [quote widget](https://www.cloudslicer3d.com/dashboard/widget) belong to the widget owner's account and follow that account's retention settings. The widget's API token is stored server-side and is never sent to a visitor's browser. Visitors get a single-use upload session: they can upload a file and receive a quote, but they cannot list, download, or delete files.
+
+## File lifecycle
+
+1. **Upload.** The file streams to the API over HTTPS. The API writes a temporary copy to measure its geometry (triangle counts and bounding box), gzip-compresses the file, writes it to storage, and deletes the temporary copy.
+2. **Slicing.** When you request a quote, a slicing worker downloads the model into a temporary directory created for that job, decompresses it, and slices it. The directory is deleted when the job ends, whether it succeeded or failed.
+3. **Output files.** If you turned on g-code or SLA file saving, the output file is compressed and stored next to the model. Otherwise it is discarded with the job directory.
+4. **Download.** `GET /v1/file/{file_id}` and dashboard downloads decompress the file on the fly. Any temporary copy is deleted after the response is sent.
+5. **Deletion.** The file is removed when you delete it or when your retention window expires. See [Deleting data](#deleting-data).
+
+As a backstop, the API sweeps its temporary directory every 30 minutes and removes anything older than 6 hours, so an interrupted request cannot leave a copy behind indefinitely.
+
+## Retention periods
+
+| Data | Kept until |
+| --- | --- |
+| Uploaded models | You delete them, or they pass your [retention window](#automatic-file-retention). With retention off (the default), they are kept until you delete them. |
+| Saved g-code and `.sl1` files | You delete the quote or the model they belong to, or the model passes your retention window. Not saved by default. |
+| File metadata | The file is deleted. |
+| Quote records | You delete the quote. Deleting the file keeps the quote and clears its file paths. |
+| Orders | You delete the order. |
+| Webhook delivery log (includes the full order payload that was sent) | The order or the webhook endpoint is deleted. |
+| Upload sessions | Usable for 1 hour, single use. Purged daily once older than 24 hours. |
+| Temporary processing copies | The request or slicing job finishes. |
+| API token metadata | You revoke the token. |
+| Database backups | 7 days, rolling. File storage is not included. |
+| Logs and error reports | PostHog's retention policy. |
+
+If you [request account deletion](#delete-your-account), we remove everything in this table. Database backups are the exception: they age out on their own within 7 days.
+
+## Automatic file retention
+
+Automatic retention deletes uploaded files once they reach an age you choose. It is **off by default**, so files are kept until you delete them.
+
+To turn it on, open [Settings](https://www.cloudslicer3d.com/dashboard/settings), find the **File Retention** card, turn on **Auto-delete old files**, set **Keep files for** to between 1 and 365 days, and click **Save Changes**.
+
+A cleanup job runs **daily at 04:00 UTC** and deletes every upload older than your window, measured from upload time. A file with a 30-day window is therefore deleted between 30 and 31 days after upload. For each expired upload, the job deletes:
+
+- the model file,
+- any g-code or `.sl1` files saved with it,
+- the file's metadata record.
+
+Quote and order records are kept, with their file paths cleared, so your quote and order history survives.
+
+:::warning
+Retention applies to **existing files**, not only new uploads. Turning it on, or shortening the window, deletes every file already older than the new window at the next cleanup. Deleted files cannot be recovered.
+:::
+
+The same card has **Save gcode files (.gcode)** and **Save SLA slice files (.sl1)** toggles, available on the Pro and Max plans. Both are off by default. Saved output files count toward your storage limit and are deleted along with their model.
+
+## Deleting data
+
+### Delete a file
+
+Call `DELETE /v1/file/{file_id}`, or delete the file from the [Files](https://www.cloudslicer3d.com/dashboard/files) page. This removes the model and any saved output files from storage, deletes the file's metadata record, and clears the file paths on quotes that used it. The quote records themselves are kept. See [Managing Files](/guides/managing-files#delete-a-file).
+
+### Delete a quote
+
+`DELETE /v1/quote/{quote_id}` deletes the quote record and its saved output file, if there is one.
+
+### Delete your account
+
+If you require account deletion, reach out to [info@cloudslicer3d.com](mailto:info@cloudslicer3d.com) and we can remove all of your data from our systems and close down your account.
+
+### Backups
+
+Supabase takes a daily backup of the database and keeps the last 7. Backups cover the database only: **file storage is not backed up**, so a deleted file is permanently gone the moment you delete it. Database records you delete (for example, a file's metadata row) can remain in a backup for up to 7 days before aging out.
+
+## Analytics and logs
+
+- **API analytics** record the route called, the HTTP method, and your user ID. Route paths can include resource IDs such as a `file_id` or `quote_id`, but never file contents or filenames.
+- **Dashboard analytics** record page views and interactions, and can capture on-screen text such as a filename in the Files table. They never capture file contents.
+- **Application logs and error reports** go to PostHog in the US. An error message can include a filename or storage path to help diagnose a failed upload or slice. Logs never contain file contents.
+
+## Reducing what you store
+
+If you handle sensitive designs, these settings keep the least data on Cloud Slicer:
+
+- Turn on [automatic retention](#automatic-file-retention) with the shortest window your workflow allows.
+- Leave g-code and SLA file saving off (the default), so only the model you uploaded is ever stored.
+- Delete each file with `DELETE /v1/file/{file_id}` once you have your quote. The quote record stays, without a path to the file.
+- Rename files before upload if the filename itself is sensitive. Filenames outlive the file in quote history, order line items, and logs.
+- Set an expiry when you create API tokens, and revoke tokens you no longer use on the [Tokens](https://www.cloudslicer3d.com/dashboard/tokens) page.
+- Restrict your widget's allowed origins to the domains you control.
+
+## Questions and security reports
+
+Email [info@cloudslicer3d.com](mailto:info@cloudslicer3d.com) with questions about this page, data requests, or to report a security issue. The [Privacy Policy](https://www.cloudslicer3d.com/legal/privacy-policy) covers how account information is collected and used.

@@ -127,10 +127,10 @@ await writeFile("downloaded.stl", Buffer.from(await response.arrayBuffer()));
 
 ## Delete a file
 
-`DELETE /v1/file/{file_id}` removes the file from storage.
+`DELETE /v1/file/{file_id}` removes the file, and any g-code or SLA slice files saved with it, from storage. Quotes generated from the file are kept, with their file paths cleared, so your quote history survives. See [Data Storage & Retention](/security/data-storage-and-retention#deleting-data).
 
 :::caution
-Deleting a file **cascades** — any quotes generated from it are deleted too. There's no undo.
+Deletion is permanent. File storage is not backed up, so there is no undo.
 :::
 
 <CodeTabs>
