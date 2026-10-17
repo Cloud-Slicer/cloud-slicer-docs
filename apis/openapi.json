@@ -18,8 +18,8 @@
           "Account"
         ],
         "summary": "Get User Info",
-        "description": "Get information for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can gernerate a token from the Cloud Slicer website in your account settings.\nReturns account information for the authenticated user.",
-        "operationId": "get_user_info_v1_user_get",
+        "description": "Get information for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can gernerate a token from the Cloud Slicer website in your account settings.\nReturns account information for the authenticated user.\n\n**Required permissions:** `account:read`",
+        "operationId": "get_account",
         "responses": {
           "200": {
             "description": "Successfully retrieved user information",
@@ -39,12 +39,18 @@
           },
           "500": {
             "description": "Internal server error while fetching user data"
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`account:read`)"
           }
         },
         "security": [
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "account:read"
         ]
       }
     },
@@ -54,8 +60,8 @@
           "FDM Printer Config"
         ],
         "summary": "Get Printer Configs",
-        "description": "Get all of the authenticated user's printer configurations. Requires a valid API token.",
-        "operationId": "get_printer_configs_v1_printer_get",
+        "description": "Get all of the authenticated user's printer configurations. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
+        "operationId": "list_printers",
         "responses": {
           "200": {
             "description": "Successfully retrieved printer configurations",
@@ -66,7 +72,7 @@
                     "$ref": "#/components/schemas/PrinterConfigResponse"
                   },
                   "type": "array",
-                  "title": "Response Get Printer Configs V1 Printer Get"
+                  "title": "Response List Printers"
                 }
               }
             }
@@ -76,12 +82,18 @@
           },
           "500": {
             "description": "Internal server error while fetching configurations"
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:read`)"
           }
         },
         "security": [
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "configs:read"
         ]
       },
       "post": {
@@ -89,7 +101,7 @@
           "FDM Printer Config"
         ],
         "summary": "Create Printer Config",
-        "description": "Create a printer configuration including general settings, machine limits, and extruder settings. Requires a valid API token.",
+        "description": "Create a printer configuration including general settings, machine limits, and extruder settings. Requires a valid API token.\n\n**Required permissions:** `configs:write`",
         "operationId": "create_printer_config_v1_printer_post",
         "requestBody": {
           "content": {
@@ -122,6 +134,9 @@
           "500": {
             "description": "Internal server error while creating configuration"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -137,6 +152,9 @@
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "configs:write"
         ]
       }
     },
@@ -146,8 +164,8 @@
           "FDM Printer Config"
         ],
         "summary": "Get Printer Config",
-        "description": "Get a specific printer configuration for the authenticated user. Requires a valid API token.",
-        "operationId": "get_printer_config_v1_printer__printer_id__get",
+        "description": "Get a specific printer configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
+        "operationId": "get_printer",
         "security": [
           {
             "HTTPBearer": []
@@ -186,6 +204,9 @@
           "500": {
             "description": "Internal server error while fetching configuration"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:read`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -196,14 +217,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:read"
+        ]
       },
       "patch": {
         "tags": [
           "FDM Printer Config"
         ],
         "summary": "Update Printer Config",
-        "description": "Update an existing printer configuration for the authenticated user. Requires a valid API token.",
+        "description": "Update an existing printer configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:write`",
         "operationId": "update_printer_config_v1_printer__printer_id__patch",
         "security": [
           {
@@ -257,6 +281,9 @@
           "500": {
             "description": "Internal server error while updating configuration"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -267,14 +294,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:write"
+        ]
       },
       "delete": {
         "tags": [
           "FDM Printer Config"
         ],
         "summary": "Delete Printer Config",
-        "description": "Delete a specific printer configuration for the authenticated user. Requires a valid API token.",
+        "description": "Delete a specific printer configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:delete`",
         "operationId": "delete_printer_config_v1_printer__printer_id__delete",
         "security": [
           {
@@ -314,6 +344,9 @@
           "500": {
             "description": "Internal server error while deleting configuration"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:delete`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -324,7 +357,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:delete"
+        ]
       }
     },
     "/v1/sla-printer": {
@@ -333,7 +369,7 @@
           "SLA Printer Config"
         ],
         "summary": "Get Sla Printer Configs",
-        "description": "Get all of the authenticated user's SLA printer configurations. Requires a valid API token.",
+        "description": "Get all of the authenticated user's SLA printer configurations. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
         "operationId": "get_sla_printer_configs_v1_sla_printer_get",
         "responses": {
           "200": {
@@ -349,12 +385,18 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:read`)"
           }
         },
         "security": [
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "configs:read"
         ]
       },
       "post": {
@@ -362,7 +404,7 @@
           "SLA Printer Config"
         ],
         "summary": "Create Sla Printer Config",
-        "description": "Create an SLA printer configuration including build volume and display geometry. Requires a valid API token.",
+        "description": "Create an SLA printer configuration including build volume and display geometry. Requires a valid API token.\n\n**Required permissions:** `configs:write`",
         "operationId": "create_sla_printer_config_v1_sla_printer_post",
         "requestBody": {
           "content": {
@@ -386,6 +428,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -401,6 +446,9 @@
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "configs:write"
         ]
       }
     },
@@ -410,7 +458,7 @@
           "SLA Printer Config"
         ],
         "summary": "Get Sla Printer Config",
-        "description": "Get a specific SLA printer configuration for the authenticated user. Requires a valid API token.",
+        "description": "Get a specific SLA printer configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
         "operationId": "get_sla_printer_config_v1_sla_printer__sla_printer_id__get",
         "security": [
           {
@@ -441,6 +489,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:read`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -451,14 +502,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:read"
+        ]
       },
       "patch": {
         "tags": [
           "SLA Printer Config"
         ],
         "summary": "Update Sla Printer Config",
-        "description": "Update an existing SLA printer configuration for the authenticated user. Requires a valid API token.",
+        "description": "Update an existing SLA printer configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:write`",
         "operationId": "update_sla_printer_config_v1_sla_printer__sla_printer_id__patch",
         "security": [
           {
@@ -500,6 +554,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -510,14 +567,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:write"
+        ]
       },
       "delete": {
         "tags": [
           "SLA Printer Config"
         ],
         "summary": "Delete Sla Printer Config",
-        "description": "Delete a specific SLA printer configuration for the authenticated user. Requires a valid API token.",
+        "description": "Delete a specific SLA printer configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:delete`",
         "operationId": "delete_sla_printer_config_v1_sla_printer__sla_printer_id__delete",
         "security": [
           {
@@ -548,6 +608,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:delete`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -558,7 +621,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:delete"
+        ]
       }
     },
     "/v1/filament": {
@@ -567,8 +633,8 @@
           "FDM Filament Config"
         ],
         "summary": "Get Filament Configs",
-        "description": "Get all of the authenticated user's filament configurations. Requires a valid API token.",
-        "operationId": "get_filament_configs_v1_filament_get",
+        "description": "Get all of the authenticated user's filament configurations. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
+        "operationId": "list_filaments",
         "responses": {
           "200": {
             "description": "Successfully retrieved filament configurations",
@@ -579,7 +645,7 @@
                     "$ref": "#/components/schemas/FilamentConfigResponse"
                   },
                   "type": "array",
-                  "title": "Response Get Filament Configs V1 Filament Get"
+                  "title": "Response List Filaments"
                 }
               }
             }
@@ -589,12 +655,18 @@
           },
           "500": {
             "description": "Internal server error while fetching configurations"
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:read`)"
           }
         },
         "security": [
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "configs:read"
         ]
       },
       "post": {
@@ -602,7 +674,7 @@
           "FDM Filament Config"
         ],
         "summary": "Create Filament Config",
-        "description": "Create a new filament configuration for the authenticated user. Requires a valid API token.",
+        "description": "Create a new filament configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:write`",
         "operationId": "create_filament_config_v1_filament_post",
         "requestBody": {
           "content": {
@@ -635,6 +707,9 @@
           "500": {
             "description": "Internal server error while creating configuration"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -650,6 +725,9 @@
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "configs:write"
         ]
       }
     },
@@ -659,8 +737,8 @@
           "FDM Filament Config"
         ],
         "summary": "Get Filament Config",
-        "description": "Get a specific filament configuration for the authenticated user. Requires a valid API token.",
-        "operationId": "get_filament_config_v1_filament__filament_id__get",
+        "description": "Get a specific filament configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
+        "operationId": "get_filament",
         "security": [
           {
             "HTTPBearer": []
@@ -699,6 +777,9 @@
           "500": {
             "description": "Internal server error while fetching configuration"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:read`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -709,14 +790,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:read"
+        ]
       },
       "patch": {
         "tags": [
           "FDM Filament Config"
         ],
         "summary": "Update Filament Config",
-        "description": "Update an existing filament configuration for the authenticated user. Requires a valid API token.",
+        "description": "Update an existing filament configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:write`",
         "operationId": "update_filament_config_v1_filament__filament_id__patch",
         "security": [
           {
@@ -770,6 +854,9 @@
           "500": {
             "description": "Internal server error while updating configuration"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -780,14 +867,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:write"
+        ]
       },
       "delete": {
         "tags": [
           "FDM Filament Config"
         ],
         "summary": "Delete Filament Config",
-        "description": "Delete a specific filament configuration for the authenticated user. Requires a valid API token.",
+        "description": "Delete a specific filament configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:delete`",
         "operationId": "delete_filament_config_v1_filament__filament_id__delete",
         "security": [
           {
@@ -827,6 +917,9 @@
           "500": {
             "description": "Internal server error while deleting configuration"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:delete`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -837,7 +930,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:delete"
+        ]
       }
     },
     "/v1/sla-resin": {
@@ -846,7 +942,7 @@
           "SLA Resin Config"
         ],
         "summary": "Get Resin Configs",
-        "description": "Get all of the authenticated user's resin configurations. Requires a valid API token.",
+        "description": "Get all of the authenticated user's resin configurations. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
         "operationId": "get_resin_configs_v1_sla_resin_get",
         "responses": {
           "200": {
@@ -862,12 +958,18 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:read`)"
           }
         },
         "security": [
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "configs:read"
         ]
       },
       "post": {
@@ -875,7 +977,7 @@
           "SLA Resin Config"
         ],
         "summary": "Create Resin Config",
-        "description": "Create a resin configuration including density, cost, and exposure defaults. Requires a valid API token.",
+        "description": "Create a resin configuration including density, cost, and exposure defaults. Requires a valid API token.\n\n**Required permissions:** `configs:write`",
         "operationId": "create_resin_config_v1_sla_resin_post",
         "requestBody": {
           "content": {
@@ -899,6 +1001,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -914,6 +1019,9 @@
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "configs:write"
         ]
       }
     },
@@ -923,7 +1031,7 @@
           "SLA Resin Config"
         ],
         "summary": "Get Resin Config",
-        "description": "Get a specific resin configuration for the authenticated user. Requires a valid API token.",
+        "description": "Get a specific resin configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
         "operationId": "get_resin_config_v1_sla_resin__resin_id__get",
         "security": [
           {
@@ -954,6 +1062,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:read`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -964,14 +1075,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:read"
+        ]
       },
       "patch": {
         "tags": [
           "SLA Resin Config"
         ],
         "summary": "Update Resin Config",
-        "description": "Update an existing resin configuration for the authenticated user. Requires a valid API token.",
+        "description": "Update an existing resin configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:write`",
         "operationId": "update_resin_config_v1_sla_resin__resin_id__patch",
         "security": [
           {
@@ -1013,6 +1127,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1023,14 +1140,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:write"
+        ]
       },
       "delete": {
         "tags": [
           "SLA Resin Config"
         ],
         "summary": "Delete Resin Config",
-        "description": "Delete a specific resin configuration for the authenticated user. Requires a valid API token.",
+        "description": "Delete a specific resin configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:delete`",
         "operationId": "delete_resin_config_v1_sla_resin__resin_id__delete",
         "security": [
           {
@@ -1061,6 +1181,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:delete`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1071,7 +1194,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:delete"
+        ]
       }
     },
     "/v1/print-setting": {
@@ -1080,8 +1206,8 @@
           "FDM Print Setting"
         ],
         "summary": "Get Print Settings",
-        "description": "Get all of the authenticated user's print setting configurations. Requires a valid API token.",
-        "operationId": "get_print_settings_v1_print_setting_get",
+        "description": "Get all of the authenticated user's print setting configurations. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
+        "operationId": "list_print_settings",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1092,16 +1218,22 @@
                     "$ref": "#/components/schemas/PrintSettingResponse"
                   },
                   "type": "array",
-                  "title": "Response Get Print Settings V1 Print Setting Get"
+                  "title": "Response List Print Settings"
                 }
               }
             }
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:read`)"
           }
         },
         "security": [
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "configs:read"
         ]
       },
       "post": {
@@ -1109,7 +1241,7 @@
           "FDM Print Setting"
         ],
         "summary": "Create Print Setting",
-        "description": "Create a new print setting configuration for the authenticated user. Requires a valid API token.",
+        "description": "Create a new print setting configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:write`",
         "operationId": "create_print_setting_v1_print_setting_post",
         "requestBody": {
           "content": {
@@ -1133,6 +1265,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1148,6 +1283,9 @@
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "configs:write"
         ]
       }
     },
@@ -1157,8 +1295,8 @@
           "FDM Print Setting"
         ],
         "summary": "Get Print Setting",
-        "description": "Get a specific print setting configuration for the authenticated user. Requires a valid API token.",
-        "operationId": "get_print_setting_v1_print_setting__print_setting_id__get",
+        "description": "Get a specific print setting configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
+        "operationId": "get_print_setting",
         "security": [
           {
             "HTTPBearer": []
@@ -1188,6 +1326,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:read`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1198,14 +1339,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:read"
+        ]
       },
       "patch": {
         "tags": [
           "FDM Print Setting"
         ],
         "summary": "Update Print Setting",
-        "description": "Update an existing print setting configuration for the authenticated user. Requires a valid API token.",
+        "description": "Update an existing print setting configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:write`",
         "operationId": "update_print_setting_v1_print_setting__print_setting_id__patch",
         "security": [
           {
@@ -1247,6 +1391,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1257,14 +1404,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:write"
+        ]
       },
       "delete": {
         "tags": [
           "FDM Print Setting"
         ],
         "summary": "Delete Print Setting",
-        "description": "Delete a specific print setting configuration for the authenticated user. Requires a valid API token.",
+        "description": "Delete a specific print setting configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:delete`",
         "operationId": "delete_print_setting_v1_print_setting__print_setting_id__delete",
         "security": [
           {
@@ -1295,6 +1445,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:delete`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1305,7 +1458,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:delete"
+        ]
       }
     },
     "/v1/sla-print-setting": {
@@ -1314,7 +1470,7 @@
           "SLA Print Setting"
         ],
         "summary": "Get Sla Print Settings",
-        "description": "Get all of the authenticated user's SLA print setting configurations. Requires a valid API token.",
+        "description": "Get all of the authenticated user's SLA print setting configurations. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
         "operationId": "get_sla_print_settings_v1_sla_print_setting_get",
         "responses": {
           "200": {
@@ -1330,12 +1486,18 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:read`)"
           }
         },
         "security": [
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "configs:read"
         ]
       },
       "post": {
@@ -1343,7 +1505,7 @@
           "SLA Print Setting"
         ],
         "summary": "Create Sla Print Setting",
-        "description": "Create a new SLA print setting configuration for the authenticated user. Requires a valid API token.",
+        "description": "Create a new SLA print setting configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:write`",
         "operationId": "create_sla_print_setting_v1_sla_print_setting_post",
         "requestBody": {
           "content": {
@@ -1367,6 +1529,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1382,6 +1547,9 @@
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "configs:write"
         ]
       }
     },
@@ -1391,7 +1559,7 @@
           "SLA Print Setting"
         ],
         "summary": "Get Sla Print Setting",
-        "description": "Get a specific SLA print setting configuration for the authenticated user. Requires a valid API token.",
+        "description": "Get a specific SLA print setting configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
         "operationId": "get_sla_print_setting_v1_sla_print_setting__sla_print_setting_id__get",
         "security": [
           {
@@ -1422,6 +1590,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:read`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1432,14 +1603,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:read"
+        ]
       },
       "patch": {
         "tags": [
           "SLA Print Setting"
         ],
         "summary": "Update Sla Print Setting",
-        "description": "Update an existing SLA print setting configuration for the authenticated user. Requires a valid API token.",
+        "description": "Update an existing SLA print setting configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:write`",
         "operationId": "update_sla_print_setting_v1_sla_print_setting__sla_print_setting_id__patch",
         "security": [
           {
@@ -1481,6 +1655,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1491,14 +1668,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:write"
+        ]
       },
       "delete": {
         "tags": [
           "SLA Print Setting"
         ],
         "summary": "Delete Sla Print Setting",
-        "description": "Delete a specific SLA print setting configuration for the authenticated user. Requires a valid API token.",
+        "description": "Delete a specific SLA print setting configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:delete`",
         "operationId": "delete_sla_print_setting_v1_sla_print_setting__sla_print_setting_id__delete",
         "security": [
           {
@@ -1529,6 +1709,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`configs:delete`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1539,7 +1722,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "configs:delete"
+        ]
       }
     },
     "/v1/order": {
@@ -1548,17 +1734,22 @@
           "Orders"
         ],
         "summary": "Create Order",
-        "description": "Create an order for the authenticated user's widget and persist calculated totals.",
-        "operationId": "create_order_v1_order_post",
+        "description": "Create an order for the authenticated user's widget and persist calculated totals.\n\n**Required permissions:** `orders:write`",
+        "operationId": "create_order",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/OrderCreateRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -1578,7 +1769,7 @@
             "description": "Invalid or missing authentication token"
           },
           "403": {
-            "description": "Ordering is disabled for this widget"
+            "description": "Ordering is disabled for this widget, or your API token doesn't have the required permissions (`orders:write`)"
           },
           "404": {
             "description": "Widget not found"
@@ -1597,10 +1788,94 @@
             }
           }
         },
+        "x-required-permissions": [
+          "orders:write"
+        ]
+      },
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "List Orders",
+        "description": "List the authenticated user's orders, newest first. Optionally filter by `status` and cap the result with `limit`. Requires a valid API token and a paid plan.\n\n**Required permissions:** `orders:read`",
+        "operationId": "list_orders",
         "security": [
           {
             "HTTPBearer": []
           }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^(new|in_progress|printing|completed|cancelled)$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only return orders in this status.",
+              "title": "Status"
+            },
+            "description": "Only return orders in this status."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Maximum number of orders to return.",
+              "default": 50,
+              "title": "Limit"
+            },
+            "description": "Maximum number of orders to return."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved orders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrderResponse"
+                  },
+                  "title": "Response List Orders"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing authentication token"
+          },
+          "403": {
+            "description": "This feature requires a paid plan, or your API token doesn't have the required permissions (`orders:read`)"
+          },
+          "500": {
+            "description": "Internal server error while fetching orders"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permissions": [
+          "orders:read"
         ]
       }
     },
@@ -1610,8 +1885,8 @@
           "Orders"
         ],
         "summary": "Get Order",
-        "description": "Get a specific order for the authenticated user. **NOTE: The *order_id* must be the default ID provided to you in your Cloud Slicer dashboard.  It cannot be your custom ID**",
-        "operationId": "get_order_v1_order__order_id__get",
+        "description": "Get a specific order for the authenticated user. **NOTE: The *order_id* must be the default ID provided to you in your Cloud Slicer dashboard.  It cannot be your custom ID**\n\n**Required permissions:** `orders:read`",
+        "operationId": "get_order",
         "security": [
           {
             "HTTPBearer": []
@@ -1650,6 +1925,9 @@
           "500": {
             "description": "Internal server error while fetching order"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`orders:read`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1660,15 +1938,18 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "orders:read"
+        ]
       },
       "patch": {
         "tags": [
           "Orders"
         ],
         "summary": "Update Order",
-        "description": "Update an existing order for the authenticated user. **NOTE: The *order_id* must be the default ID provided to you in your Cloud Slicer dashboard.  It cannot be your custom ID**",
-        "operationId": "update_order_v1_order__order_id__patch",
+        "description": "Update an existing order for the authenticated user. **NOTE: The *order_id* must be the default ID provided to you in your Cloud Slicer dashboard.  It cannot be your custom ID**\n\n**Required permissions:** `orders:write`",
+        "operationId": "update_order",
         "security": [
           {
             "HTTPBearer": []
@@ -1720,6 +2001,9 @@
           "500": {
             "description": "Internal server error while updating order"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`orders:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1730,14 +2014,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "orders:write"
+        ]
       },
       "delete": {
         "tags": [
           "Orders"
         ],
         "summary": "Delete Order",
-        "description": "Delete an order for the authenticated user. **NOTE: The *order_id* must be the default ID provided to you in your Cloud Slicer dashboard.  It cannot be your custom ID**",
+        "description": "Delete an order for the authenticated user. **NOTE: The *order_id* must be the default ID provided to you in your Cloud Slicer dashboard.  It cannot be your custom ID**\n\n**Required permissions:** `orders:delete`",
         "operationId": "delete_order_v1_order__order_id__delete",
         "security": [
           {
@@ -1777,6 +2064,9 @@
           "500": {
             "description": "Internal server error while deleting order"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`orders:delete`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1787,7 +2077,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "orders:delete"
+        ]
       }
     },
     "/v1/printability/{file_id}": {
@@ -1796,8 +2089,8 @@
           "Part Info"
         ],
         "summary": "Check Model Printability",
-        "description": "Check if a model fits on the print bed given the dimensions.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can gernerate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID and printer bed dimensions (mm) as query parameters.\nReturns printability status and model/printer dimensions.",
-        "operationId": "check_model_printability_v1_printability__file_id__post",
+        "description": "Check if a model fits on the print bed given the dimensions.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can gernerate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID and printer bed dimensions (mm) as query parameters.\nReturns printability status and model/printer dimensions.\n\n**Required permissions:** `files:read`",
+        "operationId": "check_printability",
         "security": [
           {
             "HTTPBearer": []
@@ -1842,7 +2135,7 @@
             }
           },
           "400": {
-            "description": "Invalid request or file ownership mismatch"
+            "description": "Invalid request"
           },
           "401": {
             "description": "Invalid or missing authentication token"
@@ -1852,6 +2145,9 @@
           },
           "500": {
             "description": "Internal server error during printability analysis"
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`files:read`)"
           },
           "422": {
             "description": "Validation Error",
@@ -1863,7 +2159,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "files:read"
+        ]
       }
     },
     "/v1/file": {
@@ -1872,8 +2171,8 @@
           "File"
         ],
         "summary": "Get User Files",
-        "description": "Get uploaded files for the authenticated user, sorted by latest first. Pass an optional `file_id` query parameter to fetch metadata for a single file (returns a list of 0 or 1 items). Requires a valid API token.",
-        "operationId": "get_user_files_v1_file_get",
+        "description": "Get uploaded files for the authenticated user, sorted by latest first. Pass an optional `file_id` query parameter to fetch metadata for a single file (returns a list of 0 or 1 items). Requires a valid API token.\n\n**Required permissions:** `files:read`",
+        "operationId": "list_files",
         "security": [
           {
             "HTTPBearer": []
@@ -1909,7 +2208,7 @@
                   "items": {
                     "$ref": "#/components/schemas/UploadRecordResponse"
                   },
-                  "title": "Response Get User Files V1 File Get"
+                  "title": "Response List Files"
                 }
               }
             }
@@ -1919,6 +2218,9 @@
           },
           "500": {
             "description": "Internal server error while fetching files"
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`files:read`)"
           },
           "422": {
             "description": "Validation Error",
@@ -1930,14 +2232,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "files:read"
+        ]
       },
       "post": {
         "tags": [
           "File"
         ],
         "summary": "Upload File",
-        "description": "Upload a file to the database for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nThe upload must be a .stl, .obj, .3mf, .amf, or .step/.stp file.\nReturns details about the uploaded file, including its ID and storage path.",
+        "description": "Upload a file to the database for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nThe upload must be a .stl, .obj, .3mf, .amf, or .step/.stp file.\nReturns details about the uploaded file, including its ID and storage path.\n\n**Required permissions:** `files:write`",
         "operationId": "upload_file_v1_file_post",
         "security": [
           {
@@ -1977,6 +2282,9 @@
           "500": {
             "description": "Internal server error during upload"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`files:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1987,7 +2295,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "files:write"
+        ]
       }
     },
     "/v1/file/upload-id": {
@@ -1996,8 +2307,8 @@
           "File"
         ],
         "summary": "Get Upload Id",
-        "description": "Generate an upload ID for uploading a file to the database.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nReturns an upload id that can be used with the /file/public/{upload_id} endpoint\nto upload files without authentication. The upload id expires after 1 hour.\n\nWorkflow:\n1. Call this endpoint to get an upload_id\n2. Use the upload_id with POST /file/public/{upload_id} to upload the file",
-        "operationId": "get_upload_id_v1_file_upload_id_get",
+        "description": "Generate an upload ID for uploading a file to the database.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nReturns an upload id that can be used with the /file/public/{upload_id} endpoint\nto upload files without authentication. The upload id expires after 1 hour.\n\nWorkflow:\n1. Call this endpoint to get an upload_id\n2. Use the upload_id with POST /file/public/{upload_id} to upload the file\n\n**Required permissions:** `files:write`",
+        "operationId": "create_upload_link",
         "responses": {
           "200": {
             "description": "Successfully generated upload ID",
@@ -2014,12 +2325,18 @@
           },
           "500": {
             "description": "Internal server error while generating upload ID"
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`files:write`)"
           }
         },
         "security": [
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "files:write"
         ]
       }
     },
@@ -2099,7 +2416,7 @@
           "File"
         ],
         "summary": "Download File",
-        "description": "Download an uploaded file for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns the file as a download if the user is authorized and the file exists.",
+        "description": "Download an uploaded file for the authenticated user.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns the file as a download if the user is authorized and the file exists.\n\n**Required permissions:** `files:read`",
         "operationId": "download_file_v1_file__file_id__get",
         "security": [
           {
@@ -2132,6 +2449,9 @@
           "500": {
             "description": "Internal server error during download"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`files:read`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -2142,14 +2462,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "files:read"
+        ]
       },
       "delete": {
         "tags": [
           "File"
         ],
         "summary": "Delete File",
-        "description": "Deletes an uploaded file and its associated gcode from storage. **The quote record is\nkept** — its `file_path` and `gcode_path` are cleared (set to null) rather than deleted,\nso quote and order history is preserved.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns a deleted message and the path of the removed file if deletion is successful.",
+        "description": "Deletes an uploaded file and its associated gcode from storage. **The quote record is\nkept** \u2014 its `file_path` and `gcode_path` are cleared (set to null) rather than deleted,\nso quote and order history is preserved.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns a deleted message and the path of the removed file if deletion is successful.\n\n**Required permissions:** `files:delete`",
         "operationId": "delete_file_v1_file__file_id__delete",
         "security": [
           {
@@ -2189,6 +2512,9 @@
           "500": {
             "description": "Internal server error during deletion"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`files:delete`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -2199,7 +2525,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "files:delete"
+        ]
       }
     },
     "/v1/quote/fdm/{file_id}": {
@@ -2208,8 +2537,8 @@
           "FDM Quote"
         ],
         "summary": "Queue Quote Model",
-        "description": "Submit a quote job to the async queue.\n\nUse the returned quote_id to poll GET /v1/quote/{quote_id} until the status\ntransitions from pending to success or failed.",
-        "operationId": "queue_quote_model_v1_quote_fdm__file_id__post",
+        "description": "Submit a quote job to the async queue.\n\nUse the returned quote_id to poll GET /v1/quote/{quote_id} until the status\ntransitions from pending to success or failed.\n\n**Required permissions:** `quotes:write`",
+        "operationId": "queue_fdm_quote",
         "security": [
           {
             "HTTPBearer": []
@@ -2267,6 +2596,9 @@
           "503": {
             "description": "Modal queue dispatch failed"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`quotes:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -2277,7 +2609,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "quotes:write"
+        ]
       }
     },
     "/v1/quote/sla/{file_id}": {
@@ -2286,7 +2621,7 @@
           "SLA Quote"
         ],
         "summary": "Queue Sla Quote Model",
-        "description": "Submit an SLA (resin) quote job to the async queue.\n\nPoll GET /v1/quote/{quote_id} until the status transitions from pending to\nsuccess or failed. The quote's pricing block carries resin volume (mL) and\nweight (g) alongside the total price.",
+        "description": "Submit an SLA (resin) quote job to the async queue.\n\nPoll GET /v1/quote/{quote_id} until the status transitions from pending to\nsuccess or failed. The quote's pricing block carries resin volume (mL) and\nweight (g) alongside the total price.\n\n**Required permissions:** `quotes:write`",
         "operationId": "queue_sla_quote_model_v1_quote_sla__file_id__post",
         "security": [
           {
@@ -2345,6 +2680,9 @@
           "503": {
             "description": "Modal queue dispatch failed"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`quotes:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -2355,7 +2693,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "quotes:write"
+        ]
       }
     },
     "/v1/quote/{quote_id}": {
@@ -2364,8 +2705,8 @@
           "Quotes"
         ],
         "summary": "Get Quote Record",
-        "description": "Retrieve a quote record by its ID.\n\nRequires a valid API token in the Authorization header (Bearer scheme).",
-        "operationId": "get_quote_record_v1_quote__quote_id__get",
+        "description": "Retrieve a quote record by its ID.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\n\n**Required permissions:** `quotes:read`",
+        "operationId": "get_quote",
         "security": [
           {
             "HTTPBearer": []
@@ -2404,6 +2745,9 @@
           "500": {
             "description": "Internal server error while fetching quote"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`quotes:read`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -2414,14 +2758,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "quotes:read"
+        ]
       },
       "delete": {
         "tags": [
           "Quotes"
         ],
         "summary": "Delete Quote",
-        "description": "Deletes the quote record and its associated output file (G-code or SLA\narchive) for the given Quote ID.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns a success message and the path of the removed file if deletion is successful.",
+        "description": "Deletes the quote record and its associated output file (G-code or SLA\narchive) for the given Quote ID.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns a success message and the path of the removed file if deletion is successful.\n\n**Required permissions:** `quotes:delete`",
         "operationId": "delete_quote_v1_quote__quote_id__delete",
         "security": [
           {
@@ -2461,6 +2808,9 @@
           "500": {
             "description": "Internal server error while deleting quote"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`quotes:delete`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -2471,7 +2821,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "quotes:delete"
+        ]
       }
     },
     "/v1/quote/output/{quote_id}": {
@@ -2480,7 +2833,7 @@
           "Quotes"
         ],
         "summary": "Download Quote Gcode",
-        "description": "Retrieve the sliced output file (G-code or SLA archive) for the quote that\nmatches **quote_id**.\n\nRequires a valid API token in the Authorization header (Bearer scheme).",
+        "description": "Retrieve the sliced output file (G-code or SLA archive) for the quote that\nmatches **quote_id**.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\n\n**Required permissions:** `quotes:read`",
         "operationId": "download_quote_gcode_v1_quote_output__quote_id__get",
         "security": [
           {
@@ -2513,6 +2866,9 @@
           "500": {
             "description": "Internal server error during download"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`quotes:read`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -2523,7 +2879,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "quotes:read"
+        ]
       }
     },
     "/v1/webhook/deliveries": {
@@ -2532,6 +2891,7 @@
           "Webhooks"
         ],
         "summary": "Get Webhook Deliveries",
+        "description": "**Required permissions:** `orders:read`, `webhooks:read`",
         "operationId": "get_webhook_deliveries_v1_webhook_deliveries_get",
         "responses": {
           "200": {
@@ -2554,12 +2914,19 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`orders:read`, `webhooks:read`)"
           }
         },
         "security": [
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "orders:read",
+          "webhooks:read"
         ]
       }
     },
@@ -2569,6 +2936,7 @@
           "Webhooks"
         ],
         "summary": "Retry Webhook Delivery",
+        "description": "**Required permissions:** `orders:read`, `webhooks:write`",
         "operationId": "retry_webhook_delivery_v1_webhook_delivery_retry__webhook_delivery_id__post",
         "security": [
           {
@@ -2599,6 +2967,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`orders:read`, `webhooks:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -2609,7 +2980,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "orders:read",
+          "webhooks:write"
+        ]
       }
     },
     "/v1/webhook/endpoint": {
@@ -2618,7 +2993,7 @@
           "Webhooks"
         ],
         "summary": "Create Webhook Endpoint",
-        "description": "Supported event types for webhook subscriptions:\n- order.created\n- order.updated\n- order.deleted",
+        "description": "Supported event types for webhook subscriptions:\n- order.created\n- order.updated\n- order.deleted\n\n**Required permissions:** `orders:read`, `webhooks:write`",
         "operationId": "create_webhook_endpoint_v1_webhook_endpoint_post",
         "requestBody": {
           "content": {
@@ -2641,6 +3016,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`orders:read`, `webhooks:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -2656,6 +3034,10 @@
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "orders:read",
+          "webhooks:write"
         ]
       }
     },
@@ -2665,6 +3047,7 @@
           "Webhooks"
         ],
         "summary": "Get Webhook Endpoints",
+        "description": "**Required permissions:** `webhooks:read`",
         "operationId": "get_webhook_endpoints_v1_webhook_endpoints_get",
         "responses": {
           "200": {
@@ -2680,12 +3063,18 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`webhooks:read`)"
           }
         },
         "security": [
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "webhooks:read"
         ]
       }
     },
@@ -2695,6 +3084,7 @@
           "Webhooks"
         ],
         "summary": "Get Webhook Endpoint",
+        "description": "**Required permissions:** `webhooks:read`",
         "operationId": "get_webhook_endpoint_v1_webhook_endpoint__webhook_id__get",
         "security": [
           {
@@ -2725,6 +3115,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`webhooks:read`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -2735,13 +3128,17 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "webhooks:read"
+        ]
       },
       "patch": {
         "tags": [
           "Webhooks"
         ],
         "summary": "Update Webhook Endpoint",
+        "description": "**Required permissions:** `orders:read`, `webhooks:write`",
         "operationId": "update_webhook_endpoint_v1_webhook_endpoint__webhook_id__patch",
         "security": [
           {
@@ -2782,6 +3179,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`orders:read`, `webhooks:write`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -2792,13 +3192,18 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "orders:read",
+          "webhooks:write"
+        ]
       },
       "delete": {
         "tags": [
           "Webhooks"
         ],
         "summary": "Delete Webhook Endpoint",
+        "description": "**Required permissions:** `webhooks:delete`",
         "operationId": "delete_webhook_endpoint_v1_webhook_endpoint__webhook_id__delete",
         "security": [
           {
@@ -2829,6 +3234,9 @@
               }
             }
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`webhooks:delete`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -2839,7 +3247,10 @@
               }
             }
           }
-        }
+        },
+        "x-required-permissions": [
+          "webhooks:delete"
+        ]
       }
     },
     "/v1/convert/file-to-stl": {
@@ -2895,7 +3306,7 @@
           "Convert Files"
         ],
         "summary": "Convert Bambu To Ini",
-        "description": "Convert a Bambu Studio profile archive (.bbscfg) to PrusaSlicer INI format. Upload a .bbscfg file containing filament/, printer/, and process/ directories with Bambu profile JSON files. Returns a downloadable .ini configuration file.",
+        "description": "Convert a Bambu Studio profile archive (.bbscfg) to PrusaSlicer INI format. Upload a .bbscfg file containing filament/, printer/, and process/ directories with Bambu profile JSON files. Returns a downloadable .ini configuration file.\n\n**Required permissions:** `convert`",
         "operationId": "convert_bambu_to_ini_v1_convert_bambu_to_ini_post",
         "requestBody": {
           "content": {
@@ -2920,6 +3331,9 @@
           "401": {
             "description": "Invalid or missing authentication token"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`convert`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -2935,6 +3349,9 @@
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "convert"
         ]
       }
     },
@@ -2944,7 +3361,7 @@
           "Convert Files"
         ],
         "summary": "Convert Bambu To Json",
-        "description": "Convert a Bambu Studio profile export to intermediate JSON format. Accepts .bbscfg, .bbsflmt, .zip (Printer/Filament/Process preset bundles), a raw .json preset, or a sliced .gcode file whose CONFIG_BLOCK carries the resolved presets. Returns only the categories that were present in the upload; each present category is returned as a list of resolved configs.",
+        "description": "Convert a Bambu Studio profile export to intermediate JSON format. Accepts .bbscfg, .bbsflmt, .zip (Printer/Filament/Process preset bundles), a raw .json preset, or a sliced .gcode file whose CONFIG_BLOCK carries the resolved presets. Returns only the categories that were present in the upload; each present category is returned as a list of resolved configs.\n\n**Required permissions:** `convert`",
         "operationId": "convert_bambu_to_json_v1_convert_bambu_to_json_post",
         "requestBody": {
           "content": {
@@ -2971,6 +3388,9 @@
           "401": {
             "description": "Invalid or missing authentication token"
           },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`convert`)"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -2986,6 +3406,9 @@
           {
             "HTTPBearer": []
           }
+        ],
+        "x-required-permissions": [
+          "convert"
         ]
       }
     }
@@ -3004,7 +3427,7 @@
               }
             ],
             "title": "Default",
-            "description": "Default acceleration in mm/s²",
+            "description": "Default acceleration in mm/s\u00b2",
             "default": 10000
           },
           "first_layer": {
@@ -3017,7 +3440,7 @@
               }
             ],
             "title": "First Layer",
-            "description": "First layer acceleration in mm/s²",
+            "description": "First layer acceleration in mm/s\u00b2",
             "default": 500
           },
           "perimeter": {
@@ -3046,7 +3469,7 @@
               }
             ],
             "title": "External Perimeter",
-            "description": "External perimeter acceleration in mm/s²",
+            "description": "External perimeter acceleration in mm/s\u00b2",
             "default": 5000
           },
           "infill": {
@@ -3088,7 +3511,7 @@
               }
             ],
             "title": "Top Solid Infill",
-            "description": "Top solid infill acceleration in mm/s²",
+            "description": "Top solid infill acceleration in mm/s\u00b2",
             "default": 2000
           },
           "travel": {
@@ -3101,7 +3524,7 @@
               }
             ],
             "title": "Travel",
-            "description": "Travel acceleration in mm/s²",
+            "description": "Travel acceleration in mm/s\u00b2",
             "default": 10000
           },
           "bridge": {
@@ -4514,7 +4937,7 @@
               }
             ],
             "title": "Density",
-            "description": "Filament density in g/cm³",
+            "description": "Filament density in g/cm\u00b3",
             "default": 1.24
           },
           "cost": {
@@ -4573,7 +4996,7 @@
               }
             ],
             "title": "Max Volumetric Speed",
-            "description": "Max volumetric speed in mm³/s",
+            "description": "Max volumetric speed in mm\u00b3/s",
             "default": 15.0
           }
         },
@@ -4730,7 +5153,7 @@
               }
             ],
             "title": "Nozzle Temp",
-            "description": "Nozzle temperature in °C",
+            "description": "Nozzle temperature in \u00b0C",
             "default": 200
           },
           "first_layer_nozzle_temp": {
@@ -4743,7 +5166,7 @@
               }
             ],
             "title": "First Layer Nozzle Temp",
-            "description": "First layer nozzle temperature in °C",
+            "description": "First layer nozzle temperature in \u00b0C",
             "default": 210
           },
           "bed_temp": {
@@ -4756,7 +5179,7 @@
               }
             ],
             "title": "Bed Temp",
-            "description": "Bed temperature in °C",
+            "description": "Bed temperature in \u00b0C",
             "default": 60
           },
           "first_layer_bed_temp": {
@@ -4769,7 +5192,7 @@
               }
             ],
             "title": "First Layer Bed Temp",
-            "description": "First layer bed temperature in °C",
+            "description": "First layer bed temperature in \u00b0C",
             "default": 65
           }
         },
@@ -5106,7 +5529,7 @@
         },
         "type": "object",
         "title": "GeometryInfo",
-        "description": "**Build-plate geometry, measured from the sliced first layer:**\n\n    first_layer_area_mm2 (float): Area of the layer that is printed first, in mm².\n        This is the geometry that actually contacts the build plate, so when\n        supports and a pad are enabled (the default) it is the pad footprint,\n        which is larger than the model's own cross-section.\n\n    build_plate_area_mm2 (float): Total usable build-plate area in mm².\n\n    build_plate_coverage_percent (float): Share of the build plate consumed by\n        the first layer, as a percentage.\n\n    max_models_per_plate (int): floor(build plate area / first layer area).\n        A pure area ratio and therefore an **upper bound** — it ignores part\n        shape and any spacing required between parts.\n\n\nPopulated only for technology=\"sla\" quotes; None for FDM."
+        "description": "**Build-plate geometry, measured from the sliced first layer:**\n\n    first_layer_area_mm2 (float): Area of the layer that is printed first, in mm\u00b2.\n        This is the geometry that actually contacts the build plate, so when\n        supports and a pad are enabled (the default) it is the pad footprint,\n        which is larger than the model's own cross-section.\n\n    build_plate_area_mm2 (float): Total usable build-plate area in mm\u00b2.\n\n    build_plate_coverage_percent (float): Share of the build plate consumed by\n        the first layer, as a percentage.\n\n    max_models_per_plate (int): floor(build plate area / first layer area).\n        A pure area ratio and therefore an **upper bound** \u2014 it ignores part\n        shape and any spacing required between parts.\n\n\nPopulated only for technology=\"sla\" quotes; None for FDM."
       },
       "HTTPValidationError": {
         "properties": {
@@ -5448,7 +5871,7 @@
               }
             ],
             "title": "X",
-            "description": "Max X acceleration in mm/s²",
+            "description": "Max X acceleration in mm/s\u00b2",
             "default": 1000.0
           },
           "y": {
@@ -5461,7 +5884,7 @@
               }
             ],
             "title": "Y",
-            "description": "Max Y acceleration in mm/s²",
+            "description": "Max Y acceleration in mm/s\u00b2",
             "default": 1000.0
           },
           "z": {
@@ -5474,7 +5897,7 @@
               }
             ],
             "title": "Z",
-            "description": "Max Z acceleration in mm/s²",
+            "description": "Max Z acceleration in mm/s\u00b2",
             "default": 100.0
           },
           "e": {
@@ -5487,7 +5910,7 @@
               }
             ],
             "title": "E",
-            "description": "Max E acceleration in mm/s²",
+            "description": "Max E acceleration in mm/s\u00b2",
             "default": 5000.0
           },
           "extruding": {
@@ -5500,7 +5923,7 @@
               }
             ],
             "title": "Extruding",
-            "description": "Max extruding acceleration in mm/s²",
+            "description": "Max extruding acceleration in mm/s\u00b2",
             "default": 5000.0
           },
           "retracting": {
@@ -5513,7 +5936,7 @@
               }
             ],
             "title": "Retracting",
-            "description": "Max retracting acceleration in mm/s²",
+            "description": "Max retracting acceleration in mm/s\u00b2",
             "default": 5000.0
           },
           "travel": {
@@ -5526,7 +5949,7 @@
               }
             ],
             "title": "Travel",
-            "description": "Max travel acceleration in mm/s²",
+            "description": "Max travel acceleration in mm/s\u00b2",
             "default": 9000.0
           }
         },
@@ -5761,6 +6184,17 @@
               }
             ],
             "title": "Discount Code"
+          },
+          "notification_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notification Email"
           },
           "discount_amount": {
             "anyOf": [
