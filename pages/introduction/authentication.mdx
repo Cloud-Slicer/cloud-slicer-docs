@@ -1,6 +1,6 @@
 ---
 title: "Authentication"
-description: "How authentication works in the Cloud Slicer API and a primer on JWTs."
+description: "Authenticate API requests with a bearer token and limit what each token can do with permissions"
 ---
 
 Cloud Slicer uses **JWT (JSON Web Token) Bearer authentication** to secure all API endpoints. This ensures that only authorized users can access and interact with your account and 3D printing resources.
@@ -44,6 +44,69 @@ curl -H "Authorization: Bearer YOUR_TOKEN_HERE" https://api.cloudslicer3d.com/v1
 ```
 
 Or in the [API playground](https://docs.cloudslicer3d.com/api), paste your token into the authorization modal (lock icon) to authenticate your session.  See how you can get started with our **API Playground** in the [Quickstart Guide](/quick-start#authenticate-with-the-api).
+
+## Token Permissions
+
+When you create a token, you choose what it is allowed to do. Each endpoint requires one or more **permissions** (also called scopes), and a token can only call the endpoints whose permissions it holds. Every endpoint in the [API reference](/api) lists its **Required permissions**.
+
+### Full access and restricted tokens
+
+- **Full access** (the default): the token can call every endpoint, including any covered by permissions added in the future. Tokens created before permissions were introduced have full access.
+- **Restricted**: you pick the permissions when you create the token. It can call an endpoint only if it holds **every** permission that endpoint requires.
+
+Permissions can't be changed after a token is created. To change them, create a new token with the permissions you need and delete the old one.
+
+### Available permissions
+
+Permissions are named `resource:action`. Each action is separate: `write` does not include `read`, and `delete` is never included in `write`.
+
+| Permission | Allows |
+| --- | --- |
+| `account:read` | Read account details, plan and usage. |
+| `files:read` | List and download uploaded files, and run printability checks on them. |
+| `files:write` | Upload files and create upload links. |
+| `files:delete` | Delete uploaded files. |
+| `quotes:read` | Read quotes and download sliced output. |
+| `quotes:write` | Create quotes (slices a file and counts toward your quote quota). |
+| `quotes:delete` | Delete quotes. |
+| `configs:read` | Read printers, filaments, resins and print settings. |
+| `configs:write` | Create and update printers, filaments, resins and print settings. |
+| `configs:delete` | Delete printers, filaments, resins and print settings. |
+| `orders:read` | List and read orders. |
+| `orders:write` | Create and update orders. |
+| `orders:delete` | Delete orders. |
+| `webhooks:read` | Read webhook endpoints. Reading deliveries also needs `orders:read`. |
+| `webhooks:write` | Create and update webhook endpoints and retry deliveries. Also needs `orders:read`. |
+| `webhooks:delete` | Delete webhook endpoints. |
+| `convert` | Convert Bambu Studio profiles to PrusaSlicer INI or JSON. |
+
+### Endpoints that need more than one permission
+
+Webhook deliveries carry the full order, and a webhook endpoint receives order data at whatever URL it points to. So the webhook endpoints that read or send order data also require `orders:read`:
+
+| Endpoint | Requires |
+| --- | --- |
+| `GET /v1/webhook/deliveries` | `webhooks:read` + `orders:read` |
+| `POST /v1/webhook/delivery/retry/{id}` | `webhooks:write` + `orders:read` |
+| `POST /v1/webhook`, `PATCH /v1/webhook/{id}` | `webhooks:write` + `orders:read` |
+
+Listing or reading webhook endpoints needs only `webhooks:read`, and deleting one needs only `webhooks:delete`.
+
+### When a permission is missing
+
+A request with a token that lacks a required permission returns `403 Forbidden`, naming the permissions it is missing:
+
+```json
+{
+  "detail": "Your API token doesn't have permission to perform this operation. It needs the 'orders:read' permission. Create a token that includes it in the Cloud Slicer dashboard."
+}
+```
+
+This is different from a `401 Unauthorized`, which means the token itself is invalid, expired or deleted. Order and webhook endpoints can also return `403` when your plan doesn't include them; that response says the feature requires a paid plan.
+
+### Choosing permissions
+
+Give each integration only the permissions it needs, so a leaked token can do as little as possible. An integration that uploads models and quotes them needs `files:write`, `quotes:write` and `quotes:read`, plus `configs:read` to look up your printers and filaments. If that token leaks, it can't delete your files or read your orders.
 
 :::warning
 **Keep your token secret!** Treat it like a password—never share it or expose it in public code repositories.
