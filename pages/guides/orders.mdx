@@ -1,0 +1,400 @@
+---
+title: "Orders"
+description: "Place an order from your quotes, read the order object, and understand how its totals are computed"
+---
+
+An order is a customer's checkout: who placed it, how it ships, and one line item per
+quoted part. You post the line items with their prices, and the server computes every
+total from them, so the stored order always adds up. The order you read back from
+`GET /v1/order/{order_id}` is the same object every [webhook](/introduction/webhooks)
+delivers in `data`. Orders are a paid-plan feature (Pro and Max).
+
+## Prerequisites
+
+- A **`widget_id`** with ordering turned on. Orders are placed against a widget, which
+  supplies the currency, the shipping cost, the priority scope, and the discount rules.
+- A **`quote_id`** for each part. See [Creating Quotes](/guides/creating-quotes).
+- Your **API token** in the `Authorization: Bearer ...` header. Creating or updating
+  needs the `orders:write` permission and reading needs `orders:read` (see
+  [Token Permissions](/introduction/authentication#token-permissions)).
+
+## Place an order
+
+`POST /v1/order` takes the customer, the delivery choice, and at least one line item.
+`widget_id`, `customer_name`, `customer_email`, `deadline` (a `YYYY-MM-DD` date),
+`shipping_selected`, and `line_items` are required. `shipping_address` is required
+when `shipping_selected` is `true` and must be omitted when it is `false` (pickup).
+
+<CodeTabs>
+
+```python
+import requests
+
+API_TOKEN = "YOUR_API_TOKEN"
+BASE_URL = "https://api.cloudslicer3d.com/v1"
+
+response = requests.post(
+    f"{BASE_URL}/order",
+    headers={"Authorization": f"Bearer {API_TOKEN}"},
+    json={
+        "widget_id": "YOUR_WIDGET_ID",
+        "customer_name": "Ada Lovelace",
+        "customer_email": "ada@example.com",
+        "deadline": "2026-10-30",
+        "shipping_selected": False,
+        "line_items": [
+            {
+                "quote_id": "YOUR_QUOTE_ID",
+                "file_name": "bracket.stl",
+                "quantity": 4,
+                "material": {"filament_id": "YOUR_FILAMENT_ID", "color": "#1A1A1A"},
+                "print_settings": {"print_settings_id": "YOUR_PRINT_SETTINGS_ID"},
+                "priority": {"name": "Standard", "surcharge": 0},
+                "pricing": {"base_price": 2.00, "unit_price": 3.50},
+            }
+        ],
+    },
+)
+response.raise_for_status()
+order = response.json()
+print(order["order_id"], order["custom_order_id"])
+```
+
+```typescript
+const API_TOKEN = "YOUR_API_TOKEN";
+const BASE_URL = "https://api.cloudslicer3d.com/v1";
+
+const response = await fetch(`${BASE_URL}/order`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${API_TOKEN}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    widget_id: "YOUR_WIDGET_ID",
+    customer_name: "Ada Lovelace",
+    customer_email: "ada@example.com",
+    deadline: "2026-10-30",
+    shipping_selected: false,
+    line_items: [
+      {
+        quote_id: "YOUR_QUOTE_ID",
+        file_name: "bracket.stl",
+        quantity: 4,
+        material: { filament_id: "YOUR_FILAMENT_ID", color: "#1A1A1A" },
+        print_settings: { print_settings_id: "YOUR_PRINT_SETTINGS_ID" },
+        priority: { name: "Standard", surcharge: 0 },
+        pricing: { base_price: 2.0, unit_price: 3.5 },
+      },
+    ],
+  }),
+});
+
+if (!response.ok) throw new Error(await response.text());
+const order = await response.json();
+console.log(order.order_id, order.custom_order_id);
+```
+
+</CodeTabs>
+
+The response is a short acknowledgment: `order_id`, `custom_order_id` (or `null`),
+`created_at`, `user_id`, and `status: "success"`. Every new order starts in status
+`new`, and `order.created` fires to your subscribed webhook endpoints.
+
+Optional fields on the request:
+
+- **`customer_phone`**, **`notes`**: free text, stored as sent.
+- **`discount_code`**: one of the widget's discount codes. An unknown code is a `400`.
+- **`notification_email`**: sends the new-order email here instead of the widget's
+  configured address, for this order only.
+- **`base_price_application`**: how each line's `base_price` is charged, one value for
+  the whole order. Defaults to `per_item`. See [How totals are computed](#how-totals-are-computed).
+
+Errors you can get back:
+
+- **`403`** `Ordering is disabled` when the widget is disabled or has ordering off.
+- **`404`** when the widget does not exist on your account.
+- **`422`** when a line item's quote was sliced with different settings than the
+  preset it names in `print_settings.print_settings_id` (infill density, perimeters,
+  top/bottom layers, or supports), so you never sell a part priced at one setting and
+  printed at another. Quote with the same preset you order with.
+
+## The order object
+
+`GET /v1/order/{order_id}` returns one order, and `GET /v1/order` lists them newest
+first (filter with `status`, cap with `limit`, default `50`, max `200`). Both return
+this shape, and so does every webhook's `data`:
+
+```json
+{
+  "order_id": "3c2b1a0f9e8d4c7b6a5f4e3d2c1b0a9f",
+  "custom_order_id": "FNT-1042",
+  "created_at": "2026-10-20T15:04:05.123456+00:00",
+  "updated_at": "2026-10-20T15:04:05.123456+00:00",
+  "user_id": "USER_ID",
+  "widget_id": "WIDGET_ID",
+  "customer_name": "Ada Lovelace",
+  "customer_email": "ada@example.com",
+  "customer_phone": "+1 555 0100",
+  "shipping_selected": true,
+  "shipping_address": {
+    "first_name": "Ada",
+    "last_name": "Lovelace",
+    "company": null,
+    "address_line1": "12 Analytical Way",
+    "address_line2": null,
+    "city_locality": "Austin",
+    "state_region": "TX",
+    "postal_code": "78701",
+    "country": "US"
+  },
+  "notes": "Please pack the brackets together.",
+  "status": "new",
+  "priority_scope": "per_order",
+  "priority": "Rush",
+  "base_price_application": "per_item",
+  "currency": "USD",
+  "subtotal": 50.25,
+  "order_base_fee": 0.0,
+  "order_priority_surcharge": 10.0,
+  "discount_amount": 0.0,
+  "shipping_cost": 8.0,
+  "total": 58.25,
+  "deadline": "2026-10-30",
+  "line_items": [
+    {
+      "quote_id": "5f0c1d2e3a4b4c5d9e8f7a6b5c4d3e2f",
+      "status": "new",
+      "file_name": "bracket.stl",
+      "files": {
+        "file_id": "0a1b2c3d4e5f46a7b8c9d0e1f2a3b4c5",
+        "file_path": "USER_ID/models/bracket.stl",
+        "gcode_path": "USER_ID/gcode/bracket.gcode",
+        "gcode_name": "bracket.gcode"
+      },
+      "quantity": 4,
+      "material": {
+        "filament_id": "f1e2d3c4b5a64789a0b1c2d3e4f5a6b7",
+        "filament_name": "Prusament PLA",
+        "filament_type": "PLA",
+        "color": "#1A1A1A",
+        "color_name": "Galaxy Black"
+      },
+      "print_settings": {
+        "print_settings_id": "9d8c7b6a5f4e4d3c2b1a0f9e8d7c6b5a",
+        "print_settings_name": "0.20mm Standard",
+        "quality_name": "Standard",
+        "layer_height": 0.2
+      },
+      "priority": { "name": "Rush", "surcharge": 10.0 },
+      "addons": [
+        { "id": "sanding", "name": "Sanding", "addon_type": "amount", "number": 1.0, "note": null }
+      ],
+      "dimensions": { "x": 82.4, "y": 40.0, "z": 18.5 },
+      "estimate": { "filament_weight_g": 38.6, "print_time_seconds": 5820 },
+      "pricing": {
+        "base_price": 2.0,
+        "unit_price": 3.5,
+        "addons_total": 4.0,
+        "priority_total": 0.0,
+        "line_total": 26.0
+      }
+    },
+    {
+      "quote_id": "7a6b5c4d3e2f4a1b9c8d7e6f5a4b3c2d",
+      "status": "new",
+      "file_name": "lid.3mf",
+      "files": {
+        "file_id": "1b2c3d4e5f6a47b8c9d0e1f2a3b4c5d6",
+        "file_path": "USER_ID/models/lid.3mf",
+        "gcode_path": "USER_ID/gcode/lid.gcode",
+        "gcode_name": "lid.gcode"
+      },
+      "quantity": 1,
+      "material": {
+        "filament_id": "f1e2d3c4b5a64789a0b1c2d3e4f5a6b7",
+        "filament_name": "Prusament PLA",
+        "filament_type": "PLA",
+        "color": "#FFFFFF",
+        "color_name": "White"
+      },
+      "print_settings": {
+        "print_settings_id": "9d8c7b6a5f4e4d3c2b1a0f9e8d7c6b5a",
+        "print_settings_name": "0.20mm Standard",
+        "quality_name": "Standard",
+        "layer_height": 0.2
+      },
+      "priority": { "name": "Standard", "surcharge": 0.0 },
+      "addons": [],
+      "dimensions": { "x": 120.0, "y": 120.0, "z": 12.0 },
+      "estimate": { "filament_weight_g": 96.2, "print_time_seconds": 14400 },
+      "pricing": {
+        "base_price": 2.0,
+        "unit_price": 12.25,
+        "addons_total": 0.0,
+        "priority_total": 0.0,
+        "line_total": 14.25
+      }
+    }
+  ]
+}
+```
+
+### Order fields
+
+- **`order_id`** (string): the Cloud Slicer ID. Every order API call and webhook keys
+  on this.
+- **`custom_order_id`** (string or `null`): your human-facing order number
+  (`{prefix}{n}`), assigned at create time only if custom order IDs are enabled in
+  order settings. It is a label; the API never accepts it in place of `order_id`.
+- **`status`** (string): `new`, `in_progress`, `printing`, `completed`, or `cancelled`.
+- **`priority_scope`** (string): `per_order` or `per_item`, from the widget at create
+  time. It decides how priority surcharges are charged.
+- **`priority`** (string or `null`): computed, never set by you. Under `per_order` it is
+  the name of the priority whose surcharge is charged (the line with the highest
+  surcharge, the first one on a tie). Under `per_item` it is `null`, because each line
+  is charged its own priority. A `priority` you send is ignored.
+- **`base_price_application`** (string): `per_item`, `per_line_item`, `per_order`, or
+  `minimum_spend`. Fixed when the order is created; repricing never changes it.
+- **`currency`** (string): the widget's currency, for example `USD`.
+- **`subtotal`**, **`order_base_fee`**, **`order_priority_surcharge`**,
+  **`discount_amount`**, **`shipping_cost`**, **`total`** (numbers): all computed. See
+  [How totals are computed](#how-totals-are-computed).
+- **`shipping_address`** (object or `null`): `null` unless `shipping_selected` is `true`.
+  `company`, `address_line2`, `state_region`, and `postal_code` are nullable.
+- **`deadline`** (string): the date the customer needs the order by, `YYYY-MM-DD`.
+
+### Line item fields
+
+Each line item groups related fields into objects. On input, only `file_name`,
+`quantity` (at least `1`), `material.color`, and `priority.name` are required;
+everything else is optional.
+
+- **`quote_id`** (string or `null`): the quote this line was priced from.
+- **`status`** (string): the line's own status, same values as the order's. Setting the
+  order to `completed` marks every line `completed`.
+- **`file_name`** (string): the name shown to the customer and on the order.
+- **`quantity`** (integer): copies to print. Every price on the line is per unit, and
+  every quote is sliced for one copy.
+- **`files`**: `file_id`, `file_path` (the stored model), `gcode_path`, and `gcode_name`
+  (the sliced G-code), for downloads.
+- **`material`**: `filament_id`, `filament_name`, `filament_type`, and the customer's
+  `color` (required) and `color_name`.
+- **`print_settings`**: the preset the part was quoted with (`print_settings_id`,
+  `print_settings_name`) and the customer's quality choice (`quality_name`,
+  `layer_height` in mm). Quality has no surcharge; it is recorded so you print at the
+  layer height that was quoted.
+- **`priority`**: the turnaround the customer chose, `name` (required) and `surcharge`
+  (per unit, default `0`).
+- **`addons`** (array): add-ons the customer selected, copied onto the order so its
+  totals survive later catalog edits. Each has `id`, `name`, `addon_type` (`amount` or
+  `percentage`), `number`, and `note`. Extra keys you attach are kept.
+- **`dimensions`** (object or `null`): the part's bounding box, `x`, `y`, `z` in mm.
+- **`estimate`**: slicer estimates for one unit, `filament_weight_g` and
+  `print_time_seconds`.
+- **`pricing`**: `base_price` (the flat fee) and `unit_price` (the per-unit print cost,
+  excluding the fee) are inputs. `addons_total`, `priority_total`, and `line_total` are
+  computed by the server, and any value you send for them is ignored.
+
+:::note
+A line item with `quote_id` but no price at all (`base_price` and `unit_price` both
+`0` or omitted) is priced from its stored quote, so a client that posts only the
+quote still gets a correct total.
+:::
+
+## How totals are computed
+
+The server reprices the whole order on every create and on any update that changes
+`line_items` or `shipping_selected`, so the totals always follow from the line items.
+Every figure is rounded half-up to two decimals.
+
+For each line:
+
+- **Part cost** depends on `base_price_application`:
+  - `per_item`: `(base_price + unit_price) × quantity`. The fee is charged on every unit.
+  - `per_line_item`: `base_price + unit_price × quantity`. The fee is charged once per line.
+  - `per_order` and `minimum_spend`: `unit_price × quantity`. The fee moves to the order
+    level (below).
+- **`addons_total`**: an `amount` add-on charges `number × quantity`; a `percentage`
+  add-on charges `number`% of the part cost.
+- **`priority_total`**: `surcharge × quantity` under a `per_item` priority scope, else `0`.
+- **`line_total`** = part cost + `addons_total` + `priority_total`.
+
+Then for the order:
+
+- **`order_base_fee`**: under `per_order`, the highest `base_price` among the lines,
+  charged once. Under `minimum_spend`, that base price is a floor: only the shortfall
+  between it and the sum of the line totals is charged. Otherwise `0`.
+- **`order_priority_surcharge`**: under a `per_order` priority scope, the highest line
+  surcharge, charged once. Otherwise `0`.
+- **`subtotal`** = sum of `line_total` + `order_base_fee` + `order_priority_surcharge`,
+  give or take a cent (it rounds the unrounded sum).
+- **`discount_amount`**: the larger of the widget's discount rules and the discount
+  code, capped at `subtotal`.
+- **`shipping_cost`**: the widget's shipping cost when `shipping_selected` is `true`, else `0`.
+- **`total`** = `subtotal - discount_amount + shipping_cost`. There is no tax field.
+
+In the example above, the brackets are `(2.00 + 3.50) × 4 = 22.00` plus a `1.00 × 4`
+sanding add-on, a `line_total` of `26.00`; the lid is `(2.00 + 12.25) × 1 = 14.25`.
+The priority scope is `per_order`, so the Rush surcharge of `10.00` is charged once as
+`order_priority_surcharge`, and `priority` is `"Rush"`. The subtotal is
+`26.00 + 14.25 + 10.00 = 50.25`, and with `8.00` shipping the total is `58.25`.
+
+## Update an order
+
+`PATCH /v1/order/{order_id}` changes an order. Every field is optional, but send at
+least one: `status`, `notes`, `deadline`, `shipping_selected`, `shipping_address`,
+`line_items`. `order_id` must be the Cloud Slicer ID, not `custom_order_id`.
+
+- Any status can move to any other; there are no blocked transitions.
+- `line_items` replaces the whole list and takes the same shape as on create.
+- Sending `line_items` or `shipping_selected` reprices the order. The repricing uses
+  the widget's discount rules but does not re-apply a discount code.
+
+<CodeTabs>
+
+```python
+import requests
+
+API_TOKEN = "YOUR_API_TOKEN"
+BASE_URL = "https://api.cloudslicer3d.com/v1"
+
+response = requests.patch(
+    f"{BASE_URL}/order/{order_id}",
+    headers={"Authorization": f"Bearer {API_TOKEN}"},
+    json={"status": "printing"},
+)
+response.raise_for_status()
+```
+
+```typescript
+const API_TOKEN = "YOUR_API_TOKEN";
+const BASE_URL = "https://api.cloudslicer3d.com/v1";
+
+const response = await fetch(`${BASE_URL}/order/${orderId}`, {
+  method: "PATCH",
+  headers: {
+    Authorization: `Bearer ${API_TOKEN}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ status: "printing" }),
+});
+
+if (!response.ok) throw new Error(await response.text());
+```
+
+</CodeTabs>
+
+The response is a short acknowledgment (`order_id`, `updated_at`), not the updated
+order. Call `GET /v1/order/{order_id}` for the recomputed record, or read it from the
+`order.updated` webhook that every update fires.
+
+## Delete an order
+
+`DELETE /v1/order/{order_id}` removes the order and fires `order.deleted` with its last
+known state. It needs the `orders:delete` permission.
+
+:::warning
+Deleting cannot be undone. To stop work on an order but keep its record, set its
+`status` to `cancelled` instead.
+:::

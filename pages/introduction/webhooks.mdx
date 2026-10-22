@@ -93,7 +93,9 @@ Every delivery is a JSON body with this shape:
 - **`event_id`** is unique per event. Two endpoints receiving the same event share
   one `event_id`, and a retry keeps it, so it is the key to dedupe on.
 - **`data`** is the whole order, the same shape `GET /v1/order/{order_id}`
-  returns.
+  returns. [Orders](/guides/orders#the-order-object) documents every field,
+  including the grouped line items (`files`, `material`, `print_settings`,
+  `priority`, `addons`, `estimate`, `pricing`).
 - Keys are serialized sorted with no whitespace, because the signature is computed
   over these exact bytes.
 
@@ -101,10 +103,14 @@ Notable `data` fields:
 
 - **`data.total`** is the final customer amount:
   `subtotal - discount_amount + shipping_cost`, each rounded half-up to two
-  decimals. Custom add-ons, priority surcharges, and any per-order base fee are
-  already folded into `subtotal`; discounts (rule or code, whichever is larger)
-  are in `discount_amount`. Those four fields are the only order-level money
-  values, and there is no tax field.
+  decimals. `subtotal` is the sum of each line's `pricing.line_total` plus
+  `order_base_fee` and `order_priority_surcharge`, the charges that belong to no
+  single line. Discounts (rule or code, whichever is larger) are in
+  `discount_amount`. There is no tax field. See
+  [How totals are computed](/guides/orders#how-totals-are-computed).
+- **`data.priority`** is computed: under a `per_order` priority scope, the name of
+  the priority whose surcharge is charged; under `per_item`, `null`. Each line's
+  own choice is in `line_items[].priority`.
 - **`data.shipping_address`** is `null` unless `data.shipping_selected` is `true`.
   When set it has `first_name`, `last_name`, `company` (nullable),
   `address_line1`, `address_line2` (nullable), `city_locality`, `state_region`
@@ -267,12 +273,14 @@ with your Bearer token:
 - `order_id` is the Cloud Slicer default ID from `data.order_id`, not
   `custom_order_id`.
 - Body fields, all optional, at least one required: `status`, `notes`,
-  `deadline`, `priority`, `shipping_selected`, `shipping_address`, `line_items`.
+  `deadline`, `shipping_selected`, `shipping_address`, `line_items`. The order's
+  `priority` is computed from the line items, so it is not an input.
 - `status` accepts `new`, `in_progress`, `printing`, `completed`, `cancelled`.
   There are no blocked transitions; any status can move to any other. Setting
   `completed` also marks every line item `completed`. Sending `line_items` or
-  `shipping_selected` triggers a full server-side recompute of `subtotal`,
-  `discount_amount`, `shipping_cost`, and `total`.
+  `shipping_selected` triggers a full server-side recompute of the line totals,
+  `subtotal`, `discount_amount`, `shipping_cost`, and `total` (see
+  [Update an order](/guides/orders#update-an-order)).
 
 <CodeTabs>
 

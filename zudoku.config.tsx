@@ -257,6 +257,12 @@ const config: ZudokuConfig = {
               icon: "receipt",
               file: "guides/creating-quotes",
             },
+            {
+              type: "doc",
+              label: "Orders",
+              icon: "shopping-cart",
+              file: "guides/orders",
+            },
           ],
         },
         {

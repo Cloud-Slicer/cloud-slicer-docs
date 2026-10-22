@@ -5,12 +5,6 @@
     "description": "This API provides secure, cloud-based 3D printing services, including 3D file upload and management, instant quoting, printability checks, and slicing operations through a modern, REST API interface.",
     "version": "0.2.3"
   },
-  "servers": [
-    {
-      "url": "https://api.cloudslicer3d.com",
-      "description": "Production server"
-    }
-  ],
   "paths": {
     "/v1/user": {
       "get": {
@@ -370,7 +364,7 @@
         ],
         "summary": "Get Sla Printer Configs",
         "description": "Get all of the authenticated user's SLA printer configurations. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
-        "operationId": "get_sla_printer_configs_v1_sla_printer_get",
+        "operationId": "list_sla_printers",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -381,7 +375,7 @@
                     "$ref": "#/components/schemas/SLAPrinterConfigResponse"
                   },
                   "type": "array",
-                  "title": "Response Get Sla Printer Configs V1 Sla Printer Get"
+                  "title": "Response List Sla Printers"
                 }
               }
             }
@@ -459,7 +453,7 @@
         ],
         "summary": "Get Sla Printer Config",
         "description": "Get a specific SLA printer configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
-        "operationId": "get_sla_printer_config_v1_sla_printer__sla_printer_id__get",
+        "operationId": "get_sla_printer",
         "security": [
           {
             "HTTPBearer": []
@@ -943,7 +937,7 @@
         ],
         "summary": "Get Resin Configs",
         "description": "Get all of the authenticated user's resin configurations. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
-        "operationId": "get_resin_configs_v1_sla_resin_get",
+        "operationId": "list_sla_resins",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -954,7 +948,7 @@
                     "$ref": "#/components/schemas/SLAResinConfigResponse"
                   },
                   "type": "array",
-                  "title": "Response Get Resin Configs V1 Sla Resin Get"
+                  "title": "Response List Sla Resins"
                 }
               }
             }
@@ -1032,7 +1026,7 @@
         ],
         "summary": "Get Resin Config",
         "description": "Get a specific resin configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
-        "operationId": "get_resin_config_v1_sla_resin__resin_id__get",
+        "operationId": "get_sla_resin",
         "security": [
           {
             "HTTPBearer": []
@@ -1471,7 +1465,7 @@
         ],
         "summary": "Get Sla Print Settings",
         "description": "Get all of the authenticated user's SLA print setting configurations. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
-        "operationId": "get_sla_print_settings_v1_sla_print_setting_get",
+        "operationId": "list_sla_print_settings",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1482,7 +1476,7 @@
                     "$ref": "#/components/schemas/SLAPrintSettingResponse"
                   },
                   "type": "array",
-                  "title": "Response Get Sla Print Settings V1 Sla Print Setting Get"
+                  "title": "Response List Sla Print Settings"
                 }
               }
             }
@@ -1560,7 +1554,7 @@
         ],
         "summary": "Get Sla Print Setting",
         "description": "Get a specific SLA print setting configuration for the authenticated user. Requires a valid API token.\n\n**Required permissions:** `configs:read`",
-        "operationId": "get_sla_print_setting_v1_sla_print_setting__sla_print_setting_id__get",
+        "operationId": "get_sla_print_setting",
         "security": [
           {
             "HTTPBearer": []
@@ -2410,6 +2404,74 @@
         }
       }
     },
+    "/v1/file/from-url": {
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "summary": "Upload File From Url",
+        "description": "Upload a model file by URL: the API downloads it from **url** and stores it\nexactly as if it had been uploaded directly.\n\nThe URL must be a public **https://** link that serves the file itself (a\ndirect download link, not a page about the model). Links to private or\ninternal addresses are refused. The file name is taken from the download, or\nfrom the URL; pass **file_name** if neither has one. The same file types and\nsize limit as a direct upload apply.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\n\n**Required permissions:** `files:write`",
+        "operationId": "upload_file_from_url",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileFromUrlRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "File downloaded from the URL and stored",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileUploadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "URL not allowed, or invalid file type or filename"
+          },
+          "401": {
+            "description": "Invalid or missing authentication token"
+          },
+          "413": {
+            "description": "File too large"
+          },
+          "500": {
+            "description": "Internal server error during upload"
+          },
+          "502": {
+            "description": "The URL couldn't be downloaded"
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`files:write`)"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "x-required-permissions": [
+          "files:write"
+        ]
+      }
+    },
     "/v1/file/{file_id}": {
       "get": {
         "tags": [
@@ -2472,7 +2534,7 @@
           "File"
         ],
         "summary": "Delete File",
-        "description": "Deletes an uploaded file and its associated gcode from storage. **The quote record is\nkept** \u2014 its `file_path` and `gcode_path` are cleared (set to null) rather than deleted,\nso quote and order history is preserved.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns a deleted message and the path of the removed file if deletion is successful.\n\n**Required permissions:** `files:delete`",
+        "description": "Deletes an uploaded file and its associated gcode from storage. **The quote record is\nkept** — its `file_path` and `gcode_path` are cleared (set to null) rather than deleted,\nso quote and order history is preserved.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\nYou can generate a token from the Cloud Slicer website in your account settings.\nAccepts the file ID as a query parameter.\nReturns a deleted message and the path of the removed file if deletion is successful.\n\n**Required permissions:** `files:delete`",
         "operationId": "delete_file_v1_file__file_id__delete",
         "security": [
           {
@@ -2622,7 +2684,7 @@
         ],
         "summary": "Queue Sla Quote Model",
         "description": "Submit an SLA (resin) quote job to the async queue.\n\nPoll GET /v1/quote/{quote_id} until the status transitions from pending to\nsuccess or failed. The quote's pricing block carries resin volume (mL) and\nweight (g) alongside the total price.\n\n**Required permissions:** `quotes:write`",
-        "operationId": "queue_sla_quote_model_v1_quote_sla__file_id__post",
+        "operationId": "queue_sla_quote",
         "security": [
           {
             "HTTPBearer": []
@@ -2696,6 +2758,158 @@
         },
         "x-required-permissions": [
           "quotes:write"
+        ]
+      }
+    },
+    "/v1/quote": {
+      "get": {
+        "tags": [
+          "Quotes"
+        ],
+        "summary": "List Quotes",
+        "description": "List the authenticated user's quotes (FDM and SLA), newest first.\n\nEach entry is a summary: status, price, print time, and the printer and material\nused. Fetch one with **Get Quote Record** for the full breakdown. Page through\nresults by passing **next_cursor** back as **before** until it comes back null.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\n\n**Required permissions:** `quotes:read`",
+        "operationId": "list_quotes",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only quotes for this uploaded file",
+              "title": "File Id"
+            },
+            "description": "Only quotes for this uploaded file"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "pending",
+                    "success",
+                    "failed"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only quotes in this status",
+              "title": "Status"
+            },
+            "description": "Only quotes in this status"
+          },
+          {
+            "name": "technology",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "fdm",
+                    "sla"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only FDM (filament) or only SLA (resin) quotes",
+              "title": "Technology"
+            },
+            "description": "Only FDM (filament) or only SLA (resin) quotes"
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pass the previous page's next_cursor here, exactly as returned, to get the next page.",
+              "title": "Before"
+            },
+            "description": "Pass the previous page's next_cursor here, exactly as returned, to get the next page."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of quotes to return",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maximum number of quotes to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quotes retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "The file_id filter names a file that doesn't exist"
+          },
+          "500": {
+            "description": "Internal server error while listing quotes"
+          },
+          "503": {
+            "description": "Quote service temporarily unavailable; retry"
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`quotes:read`)"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permissions": [
+          "quotes:read"
         ]
       }
     },
@@ -2832,9 +3046,9 @@
         "tags": [
           "Quotes"
         ],
-        "summary": "Download Quote Gcode",
-        "description": "Retrieve the sliced output file (G-code or SLA archive) for the quote that\nmatches **quote_id**.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\n\n**Required permissions:** `quotes:read`",
-        "operationId": "download_quote_gcode_v1_quote_output__quote_id__get",
+        "summary": "Download Output File",
+        "description": "Download the sliced output file for the quote that matches **quote_id**: G-code\nfor an FDM quote, or the print archive for an SLA quote.\n\nTo hand the file to someone who has no API token (e.g. a browser, or a\ncustomer), use **Create Output Download Link** instead.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\n\n**Required permissions:** `quotes:read`",
+        "operationId": "download_output_file_v1_quote_output__quote_id__get",
         "security": [
           {
             "HTTPBearer": []
@@ -2883,6 +3097,121 @@
         "x-required-permissions": [
           "quotes:read"
         ]
+      }
+    },
+    "/v1/quote/output-link/{quote_id}": {
+      "get": {
+        "tags": [
+          "Quotes"
+        ],
+        "summary": "Create Output Download Link",
+        "description": "Create a short-lived link that downloads the sliced output file for the quote\nthat matches **quote_id** (G-code for FDM, the print archive for SLA).\n\nOpening **download_url** starts the download (see **Download Output File From\nLink**). It needs no Authorization header, so it can be opened in a browser or\nsent to a customer. It works for 15 minutes and only for this one file, and\nstops working if the quote is deleted. Treat it like a password until it\nexpires: anyone who has it can download the file.\n\nReturns 404 while the quote is still slicing, and for quotes whose output file\nwas not stored.\n\nRequires a valid API token in the Authorization header (Bearer scheme).\n\n**Required permissions:** `quotes:read`",
+        "operationId": "get_quote_output_link",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "quote_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID for the generated quote (this can be found in the quote response)",
+              "title": "Quote Id"
+            },
+            "description": "ID for the generated quote (this can be found in the quote response)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Download link created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteOutputLinkResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "Quote not found, or it has no stored output file"
+          },
+          "500": {
+            "description": "Internal server error while creating the link"
+          },
+          "403": {
+            "description": "Your API token doesn't have the required permissions (`quotes:read`)"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-required-permissions": [
+          "quotes:read"
+        ]
+      }
+    },
+    "/v1/download/quote-output": {
+      "get": {
+        "tags": [
+          "Quotes"
+        ],
+        "summary": "Download Output File From Link",
+        "description": "Download a quote's sliced output file using a link from **Create Output\nDownload Link**.\n\nYou don't normally build this URL yourself: open the **download_url** that\nroute returns. No Authorization header is needed; the signed **token** is the\nauthorization. Returns 410 once the link has expired, so create a new one.",
+        "operationId": "download_output_file_from_link_v1_download_quote_output_get",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Signed token from the download_url returned by Create Output Download Link",
+              "title": "Token"
+            },
+            "description": "Signed token from the download_url returned by Create Output Download Link"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sliced output file downloaded successfully"
+          },
+          "401": {
+            "description": "The link is invalid"
+          },
+          "404": {
+            "description": "The quote or its output file no longer exists"
+          },
+          "410": {
+            "description": "The link has expired"
+          },
+          "500": {
+            "description": "Internal server error during download"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/v1/webhook/deliveries": {
@@ -3427,7 +3756,7 @@
               }
             ],
             "title": "Default",
-            "description": "Default acceleration in mm/s\u00b2",
+            "description": "Default acceleration in mm/s²",
             "default": 10000
           },
           "first_layer": {
@@ -3440,7 +3769,7 @@
               }
             ],
             "title": "First Layer",
-            "description": "First layer acceleration in mm/s\u00b2",
+            "description": "First layer acceleration in mm/s²",
             "default": 500
           },
           "perimeter": {
@@ -3469,7 +3798,7 @@
               }
             ],
             "title": "External Perimeter",
-            "description": "External perimeter acceleration in mm/s\u00b2",
+            "description": "External perimeter acceleration in mm/s²",
             "default": 5000
           },
           "infill": {
@@ -3511,7 +3840,7 @@
               }
             ],
             "title": "Top Solid Infill",
-            "description": "Top solid infill acceleration in mm/s\u00b2",
+            "description": "Top solid infill acceleration in mm/s²",
             "default": 2000
           },
           "travel": {
@@ -3524,7 +3853,7 @@
               }
             ],
             "title": "Travel",
-            "description": "Travel acceleration in mm/s\u00b2",
+            "description": "Travel acceleration in mm/s²",
             "default": 10000
           },
           "bridge": {
@@ -4937,7 +5266,7 @@
               }
             ],
             "title": "Density",
-            "description": "Filament density in g/cm\u00b3",
+            "description": "Filament density in g/cm³",
             "default": 1.24
           },
           "cost": {
@@ -4996,7 +5325,7 @@
               }
             ],
             "title": "Max Volumetric Speed",
-            "description": "Max volumetric speed in mm\u00b3/s",
+            "description": "Max volumetric speed in mm³/s",
             "default": 15.0
           }
         },
@@ -5153,7 +5482,7 @@
               }
             ],
             "title": "Nozzle Temp",
-            "description": "Nozzle temperature in \u00b0C",
+            "description": "Nozzle temperature in °C",
             "default": 200
           },
           "first_layer_nozzle_temp": {
@@ -5166,7 +5495,7 @@
               }
             ],
             "title": "First Layer Nozzle Temp",
-            "description": "First layer nozzle temperature in \u00b0C",
+            "description": "First layer nozzle temperature in °C",
             "default": 210
           },
           "bed_temp": {
@@ -5179,7 +5508,7 @@
               }
             ],
             "title": "Bed Temp",
-            "description": "Bed temperature in \u00b0C",
+            "description": "Bed temperature in °C",
             "default": 60
           },
           "first_layer_bed_temp": {
@@ -5192,7 +5521,7 @@
               }
             ],
             "title": "First Layer Bed Temp",
-            "description": "First layer bed temperature in \u00b0C",
+            "description": "First layer bed temperature in °C",
             "default": 65
           }
         },
@@ -5229,10 +5558,45 @@
         "title": "FilamentType",
         "description": "Supported filament types (PrusaSlicer)."
       },
+      "FileFromUrlRequest": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2048,
+            "title": "Url",
+            "description": "Public https:// URL of the model file to download, e.g. a direct download link from Printables, Thingiverse, GitHub, or a shared storage bucket."
+          },
+          "file_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Name",
+            "description": "Name to store the file under, including its extension (.stl, .obj, .3mf, .amf, .step/.stp). Only needed when the URL doesn't reveal it."
+          }
+        },
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "title": "FileFromUrlRequest"
+      },
       "FileInfo": {
         "properties": {
           "file_path": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "File Path"
           },
           "gcode_path": {
@@ -5270,7 +5634,7 @@
           "gcode_file_size"
         ],
         "title": "FileInfo",
-        "description": "**File and G-code details:**\n\n    file_path (str): The file path to the file in cloud storage.\n\n    gcode_path (str): The file path to the generated G-code file in cloud storage.\n\n    gcode_name (str): The name of the generated G-code file.\n\n    gcode_file_size (float): The size of the generated G-code file in megabytes (MB)."
+        "description": "**File and G-code details:**\n\n    file_path (str): The file path to the file in cloud storage. Null once the\n        source file has been deleted; the quote itself is kept.\n\n    gcode_path (str): The file path to the generated G-code file in cloud storage.\n\n    gcode_name (str): The name of the generated G-code file.\n\n    gcode_file_size (float): The size of the generated G-code file in megabytes (MB)."
       },
       "FileUploadLink": {
         "properties": {
@@ -5529,7 +5893,7 @@
         },
         "type": "object",
         "title": "GeometryInfo",
-        "description": "**Build-plate geometry, measured from the sliced first layer:**\n\n    first_layer_area_mm2 (float): Area of the layer that is printed first, in mm\u00b2.\n        This is the geometry that actually contacts the build plate, so when\n        supports and a pad are enabled (the default) it is the pad footprint,\n        which is larger than the model's own cross-section.\n\n    build_plate_area_mm2 (float): Total usable build-plate area in mm\u00b2.\n\n    build_plate_coverage_percent (float): Share of the build plate consumed by\n        the first layer, as a percentage.\n\n    max_models_per_plate (int): floor(build plate area / first layer area).\n        A pure area ratio and therefore an **upper bound** \u2014 it ignores part\n        shape and any spacing required between parts.\n\n\nPopulated only for technology=\"sla\" quotes; None for FDM."
+        "description": "**Build-plate geometry, measured from the sliced first layer:**\n\n    first_layer_area_mm2 (float): Area of the layer that is printed first, in mm².\n        This is the geometry that actually contacts the build plate, so when\n        supports and a pad are enabled (the default) it is the pad footprint,\n        which is larger than the model's own cross-section.\n\n    build_plate_area_mm2 (float): Total usable build-plate area in mm².\n\n    build_plate_coverage_percent (float): Share of the build plate consumed by\n        the first layer, as a percentage.\n\n    max_models_per_plate (int): floor(build plate area / first layer area).\n        A pure area ratio and therefore an **upper bound** — it ignores part\n        shape and any spacing required between parts.\n\n\nPopulated only for technology=\"sla\" quotes; None for FDM."
       },
       "HTTPValidationError": {
         "properties": {
@@ -5871,7 +6235,7 @@
               }
             ],
             "title": "X",
-            "description": "Max X acceleration in mm/s\u00b2",
+            "description": "Max X acceleration in mm/s²",
             "default": 1000.0
           },
           "y": {
@@ -5884,7 +6248,7 @@
               }
             ],
             "title": "Y",
-            "description": "Max Y acceleration in mm/s\u00b2",
+            "description": "Max Y acceleration in mm/s²",
             "default": 1000.0
           },
           "z": {
@@ -5897,7 +6261,7 @@
               }
             ],
             "title": "Z",
-            "description": "Max Z acceleration in mm/s\u00b2",
+            "description": "Max Z acceleration in mm/s²",
             "default": 100.0
           },
           "e": {
@@ -5910,7 +6274,7 @@
               }
             ],
             "title": "E",
-            "description": "Max E acceleration in mm/s\u00b2",
+            "description": "Max E acceleration in mm/s²",
             "default": 5000.0
           },
           "extruding": {
@@ -5923,7 +6287,7 @@
               }
             ],
             "title": "Extruding",
-            "description": "Max extruding acceleration in mm/s\u00b2",
+            "description": "Max extruding acceleration in mm/s²",
             "default": 5000.0
           },
           "retracting": {
@@ -5936,7 +6300,7 @@
               }
             ],
             "title": "Retracting",
-            "description": "Max retracting acceleration in mm/s\u00b2",
+            "description": "Max retracting acceleration in mm/s²",
             "default": 5000.0
           },
           "travel": {
@@ -5949,7 +6313,7 @@
               }
             ],
             "title": "Travel",
-            "description": "Max travel acceleration in mm/s\u00b2",
+            "description": "Max travel acceleration in mm/s²",
             "default": 9000.0
           }
         },
@@ -6163,17 +6527,6 @@
             "type": "boolean",
             "title": "Shipping Selected"
           },
-          "priority": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Priority"
-          },
           "discount_code": {
             "anyOf": [
               {
@@ -6196,17 +6549,16 @@
             ],
             "title": "Notification Email"
           },
-          "discount_amount": {
-            "anyOf": [
-              {
-                "type": "number",
-                "minimum": 0.0
-              },
-              {
-                "type": "null"
-              }
+          "base_price_application": {
+            "type": "string",
+            "enum": [
+              "per_item",
+              "per_line_item",
+              "per_order",
+              "minimum_spend"
             ],
-            "title": "Discount Amount"
+            "title": "Base Price Application",
+            "default": "per_item"
           },
           "line_items": {
             "items": {
@@ -6322,25 +6674,221 @@
             "title": "Status",
             "default": "new"
           },
-          "quote": {
-            "additionalProperties": true,
-            "type": "object",
-            "title": "Quote"
+          "file_name": {
+            "type": "string",
+            "title": "File Name"
+          },
+          "files": {
+            "$ref": "#/components/schemas/OrderLineItemFiles"
           },
           "quantity": {
             "type": "integer",
             "minimum": 1.0,
             "title": "Quantity"
           },
-          "quote_quantity": {
-            "type": "integer",
-            "minimum": 1.0,
-            "title": "Quote Quantity"
+          "material": {
+            "$ref": "#/components/schemas/OrderLineItemMaterial"
           },
-          "file_name": {
+          "print_settings": {
+            "$ref": "#/components/schemas/OrderLineItemPrintSettings"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/OrderLineItemPriority"
+          },
+          "addons": {
+            "items": {
+              "$ref": "#/components/schemas/OrderLineItemAddon"
+            },
+            "type": "array",
+            "title": "Addons"
+          },
+          "dimensions": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrderLineItemDimensions"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "estimate": {
+            "$ref": "#/components/schemas/OrderLineItemEstimate"
+          },
+          "pricing": {
+            "$ref": "#/components/schemas/OrderLineItemPricing"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_name",
+          "quantity",
+          "material",
+          "priority"
+        ],
+        "title": "OrderLineItem"
+      },
+      "OrderLineItemAddon": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "addon_type": {
             "type": "string",
-            "title": "File Name"
+            "enum": [
+              "amount",
+              "percentage"
+            ],
+            "title": "Addon Type",
+            "default": "amount"
           },
+          "number": {
+            "type": "number",
+            "title": "Number",
+            "default": 0.0
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "title": "OrderLineItemAddon",
+        "description": "A customer-selected add-on, snapshotted so totals survive catalog edits.\n\n\"amount\" charges ``number`` per unit; \"percentage\" charges ``number``% of the\nline's part subtotal. Extra keys are kept: custom clients attach their own\ndata (e.g. a customer note) that the merchant still needs to see."
+      },
+      "OrderLineItemDimensions": {
+        "properties": {
+          "x": {
+            "type": "number",
+            "title": "X"
+          },
+          "y": {
+            "type": "number",
+            "title": "Y"
+          },
+          "z": {
+            "type": "number",
+            "title": "Z"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "x",
+          "y",
+          "z"
+        ],
+        "title": "OrderLineItemDimensions"
+      },
+      "OrderLineItemEstimate": {
+        "properties": {
+          "filament_weight_g": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Filament Weight G"
+          },
+          "print_time_seconds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Print Time Seconds"
+          }
+        },
+        "type": "object",
+        "title": "OrderLineItemEstimate",
+        "description": "Slicer estimates for one unit, from the quote."
+      },
+      "OrderLineItemFiles": {
+        "properties": {
+          "file_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Id"
+          },
+          "file_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Path"
+          },
+          "gcode_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gcode Path"
+          },
+          "gcode_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gcode Name"
+          }
+        },
+        "type": "object",
+        "title": "OrderLineItemFiles",
+        "description": "Storage paths for the line's model and sliced G-code, for downloads."
+      },
+      "OrderLineItemMaterial": {
+        "properties": {
           "filament_id": {
             "anyOf": [
               {
@@ -6374,6 +6922,65 @@
             ],
             "title": "Filament Type"
           },
+          "color": {
+            "type": "string",
+            "title": "Color"
+          },
+          "color_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "color"
+        ],
+        "title": "OrderLineItemMaterial",
+        "description": "What the part is printed in: the filament and the customer's colour."
+      },
+      "OrderLineItemPricing": {
+        "properties": {
+          "base_price": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Base Price",
+            "default": 0.0
+          },
+          "unit_price": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Unit Price",
+            "default": 0.0
+          },
+          "addons_total": {
+            "type": "number",
+            "title": "Addons Total",
+            "default": 0.0
+          },
+          "priority_total": {
+            "type": "number",
+            "title": "Priority Total",
+            "default": 0.0
+          },
+          "line_total": {
+            "type": "number",
+            "title": "Line Total",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "title": "OrderLineItemPricing",
+        "description": "How this line is priced.\n\n``base_price`` and ``unit_price`` are inputs. The base fee is applied as the\norder's ``base_price_application`` says; ``unit_price`` is the per-unit print\ncost excluding it. The ``*_total`` fields are computed by the server on every\ncreate and reprice, and ignored on input."
+      },
+      "OrderLineItemPrintSettings": {
+        "properties": {
           "print_settings_id": {
             "anyOf": [
               {
@@ -6396,36 +7003,6 @@
             ],
             "title": "Print Settings Name"
           },
-          "color": {
-            "type": "string",
-            "title": "Color"
-          },
-          "color_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Color Name"
-          },
-          "priority_name": {
-            "type": "string",
-            "title": "Priority Name"
-          },
-          "priority_surcharge": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Priority Surcharge"
-          },
           "quality_name": {
             "anyOf": [
               {
@@ -6437,88 +7014,42 @@
             ],
             "title": "Quality Name"
           },
-          "quality_layer_height": {
+          "layer_height": {
             "anyOf": [
               {
-                "type": "number"
+                "type": "number",
+                "exclusiveMinimum": 0.0
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Quality Layer Height"
-          },
-          "selected_addons": {
-            "anyOf": [
-              {
-                "items": {
-                  "additionalProperties": true,
-                  "type": "object"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Selected Addons"
-          },
-          "dimensions": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/OrderLineItemDimensions"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "priority": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Priority"
+            "title": "Layer Height"
           }
         },
         "type": "object",
-        "required": [
-          "quote",
-          "quantity",
-          "quote_quantity",
-          "file_name",
-          "color",
-          "priority_name"
-        ],
-        "title": "OrderLineItem"
+        "title": "OrderLineItemPrintSettings",
+        "description": "The preset the part was quoted with, plus the customer's quality choice.\n\nQuality is a slicing input with no surcharge, so it never enters the totals;\nit is recorded so the merchant prints at the layer height that was quoted."
       },
-      "OrderLineItemDimensions": {
+      "OrderLineItemPriority": {
         "properties": {
-          "x": {
-            "type": "number",
-            "title": "X"
+          "name": {
+            "type": "string",
+            "title": "Name"
           },
-          "y": {
+          "surcharge": {
             "type": "number",
-            "title": "Y"
-          },
-          "z": {
-            "type": "number",
-            "title": "Z"
+            "minimum": 0.0,
+            "title": "Surcharge",
+            "default": 0.0
           }
         },
-        "additionalProperties": false,
         "type": "object",
         "required": [
-          "x",
-          "y",
-          "z"
+          "name"
         ],
-        "title": "OrderLineItemDimensions"
+        "title": "OrderLineItemPriority",
+        "description": "The priority chosen for this line.\n\nThe surcharge is charged per unit when the order's priority_scope is\nper_item; under per_order the highest line surcharge is charged once."
       },
       "OrderResponse": {
         "properties": {
@@ -6612,9 +7143,7 @@
             "type": "string",
             "enum": [
               "per_order",
-              "per_item",
-              "order",
-              "item"
+              "per_item"
             ],
             "title": "Priority Scope"
           },
@@ -6629,6 +7158,17 @@
             ],
             "title": "Priority"
           },
+          "base_price_application": {
+            "type": "string",
+            "enum": [
+              "per_item",
+              "per_line_item",
+              "per_order",
+              "minimum_spend"
+            ],
+            "title": "Base Price Application",
+            "default": "per_item"
+          },
           "currency": {
             "type": "string",
             "title": "Currency"
@@ -6636,6 +7176,28 @@
           "subtotal": {
             "type": "number",
             "title": "Subtotal"
+          },
+          "order_base_fee": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Order Base Fee"
+          },
+          "order_priority_surcharge": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Order Priority Surcharge"
           },
           "discount_amount": {
             "type": "number",
@@ -6731,17 +7293,6 @@
               }
             ],
             "title": "Deadline"
-          },
-          "priority": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Priority"
           },
           "shipping_selected": {
             "anyOf": [
@@ -7866,6 +8417,63 @@
         "title": "QuoteDetailsResponse",
         "description": "**Response schema:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    user_id (str): The unique identifier of the user associated with the response.\n\n    status (str): The status of the response (e.g., 'success', 'error').\n\n    timestamp (str): The timestamp of when the response was generated.\n\n    files (FileInfo): File and G-code information.\n\n    time (TimeEstimate): Time estimation details.\n\n    pricing (PricingBreakdown): Detailed pricing breakdown.\n\n    filament_breakdown (FilamentBreakdown): Per-feature material usage,\n        including how much of the print is support. Reporting only - it does\n        not affect any price above. None for SLA quotes, for FDM quotes whose\n        G-code could not be walked, and for any FDM quote that has not finished\n        slicing yet - it is only written once the quote completes.\n\n    geometry (GeometryInfo): Build-plate geometry. SLA quotes only; None for FDM.\n\n    configurations (ConfigurationInfo): Configuration IDs and full config data."
       },
+      "QuoteListResponse": {
+        "properties": {
+          "quotes": {
+            "items": {
+              "$ref": "#/components/schemas/QuoteSummary"
+            },
+            "type": "array",
+            "title": "Quotes"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "type": "object",
+        "required": [
+          "quotes"
+        ],
+        "title": "QuoteListResponse",
+        "description": "**Response schema:**\n\n    quotes (list[QuoteSummary]): The page of quotes, newest first.\n\n    next_cursor (str): Pass as **before** to get the next page. Null on the last page."
+      },
+      "QuoteOutputLinkResponse": {
+        "properties": {
+          "quote_id": {
+            "type": "string",
+            "title": "Quote Id"
+          },
+          "download_url": {
+            "type": "string",
+            "title": "Download Url"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "expires_at": {
+            "type": "string",
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "quote_id",
+          "download_url",
+          "filename",
+          "expires_at"
+        ],
+        "title": "QuoteOutputLinkResponse",
+        "description": "**Response schema:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    download_url (str): A link that downloads the sliced output file when opened.\n        It needs no Authorization header, so anyone holding it can download\n        this one file until it expires.\n\n    filename (str): The name the file downloads as.\n\n    expires_at (str): ISO 8601 timestamp after which the link stops working."
+      },
       "QuoteQueueSubmitResponse": {
         "properties": {
           "quote_id": {
@@ -7910,6 +8518,112 @@
         ],
         "title": "QuoteQueueSubmitResponse",
         "description": "Minimal response returned when a quote is accepted into the async queue."
+      },
+      "QuoteSummary": {
+        "properties": {
+          "quote_id": {
+            "type": "string",
+            "title": "Quote Id"
+          },
+          "technology": {
+            "type": "string",
+            "title": "Technology"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "error_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Message"
+          },
+          "file_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Name"
+          },
+          "printer_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Printer Id"
+          },
+          "material_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Material Id"
+          },
+          "total_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Price"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "estimated_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estimated Time"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "quote_id",
+          "technology",
+          "status",
+          "created_at"
+        ],
+        "title": "QuoteSummary",
+        "description": "**One quote in a list:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    technology (str): \"fdm\" or \"sla\".\n\n    status (str): \"pending\", \"success\" or \"failed\".\n\n    error_message (str): Why the quote failed, if it did.\n\n    file_name (str): Name of the quoted file. Null once the file has been deleted.\n\n    printer_id (str): The printer (FDM) or SLA printer the quote used.\n\n    material_id (str): The filament (FDM) or resin (SLA) the quote used.\n\n    total_price (float): Quoted price; 0 until the quote succeeds.\n\n    currency (str): Currency of total_price.\n\n    estimated_time (str): Estimated print time, e.g. \"1h 23m\".\n\n    created_at (str): ISO 8601 UTC timestamp of when the quote was requested."
       },
       "ResinExposure": {
         "properties": {
@@ -10475,6 +11189,12 @@
     {
       "name": "Convert Files",
       "description": "Operations for converting slicer profile formats (e.g., Bambu Studio to PrusaSlicer). Requires Cloud Slicer Token"
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.cloudslicer3d.com",
+      "description": "Production server"
     }
   ]
 }
