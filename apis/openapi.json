@@ -5139,7 +5139,7 @@
               }
             ],
             "title": "Overhang Fan Threshold",
-            "description": "Overhang threshold for fan activation",
+            "description": "Overhang threshold for fan activation (Bambu Studio only): one of 0%, 10%, 25%, 50%, 75%, 95%",
             "default": "50%"
           }
         },
@@ -9008,19 +9008,6 @@
             "description": "Pad wall slope in degrees",
             "default": 45.0
           },
-          "edge_radius": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Edge Radius",
-            "description": "Pad edge radius in mm",
-            "default": 0.5
-          },
           "max_merge_distance": {
             "anyOf": [
               {
@@ -9037,7 +9024,7 @@
         },
         "type": "object",
         "title": "SLAPad",
-        "description": "SLA pad (raft) settings (PrusaSlicer `pad_*`)."
+        "description": "SLA pad (raft) settings (PrusaSlicer `pad_*`).\n\n`edge_radius` was removed: PrusaSlicer has no such setting. A request that\nstill sends it is accepted and the value ignored."
       },
       "SLAPricingConfig": {
         "properties": {
@@ -9538,32 +9525,6 @@
             "description": "Object elevation above the pad in mm",
             "default": 5.0
           },
-          "density_at_45": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Density At 45",
-            "description": "Support density at 45 degrees",
-            "default": 250
-          },
-          "density_at_horizontal": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Density At Horizontal",
-            "description": "Support density at horizontal",
-            "default": 500
-          },
           "critical_angle": {
             "anyOf": [
               {
@@ -9593,7 +9554,7 @@
         },
         "type": "object",
         "title": "SLASupports",
-        "description": "SLA support-generation settings (PrusaSlicer `support_*`)."
+        "description": "SLA support-generation settings (PrusaSlicer `support_*`).\n\n`density_at_45` and `density_at_horizontal` were removed: they are Slic3r\nsettings PrusaSlicer doesn't have, so they never reached the slicer. A\nrequest that still sends them is accepted and the values ignored."
       },
       "SeamPosition": {
         "type": "string",
