@@ -5132,14 +5132,13 @@
           "overhang_fan_threshold": {
             "anyOf": [
               {
-                "type": "string"
+                "$ref": "#/components/schemas/OverhangFanThreshold"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Overhang Fan Threshold",
-            "description": "Overhang threshold for fan activation (Bambu Studio only): one of 0%, 10%, 25%, 50%, 75%, 95%",
+            "description": "Overhang threshold for fan activation (Bambu Studio only)",
             "default": "50%"
           }
         },
@@ -7466,6 +7465,19 @@
         "type": "object",
         "title": "Overhang",
         "description": "Overhang speed settings."
+      },
+      "OverhangFanThreshold": {
+        "type": "string",
+        "enum": [
+          "0%",
+          "10%",
+          "25%",
+          "50%",
+          "75%",
+          "95%"
+        ],
+        "title": "OverhangFanThreshold",
+        "description": "Bambu Studio's overhang fan thresholds (Bambu Studio only).\n\nBambu replaces any other value with 95% without an error, so the API accepts\nonly these."
       },
       "PerimeterGenerator": {
         "type": "string",
