@@ -9322,6 +9322,21 @@
             "description": "Display gamma correction",
             "default": 1.0
           },
+          "layer_overhead_seconds": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 3600.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Layer Overhead Seconds",
+            "description": "Extra time per layer, in seconds, that the printer spends outside the exposure itself (lift, peel, retract, settle). It is added to the slicer's print-time estimate once for every layer, so the quote matches what the printer really takes. 0 keeps the slicer's own estimate. Calibrate it as (actual print time - estimated time) / layer count.",
+            "default": 0.0
+          },
           "exposure": {
             "anyOf": [
               {
