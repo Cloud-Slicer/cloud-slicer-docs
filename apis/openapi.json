@@ -9175,6 +9175,20 @@
             "description": "Enable model hollowing",
             "default": false
           },
+          "layer_overhead_seconds": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 3600.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Layer Overhead Seconds",
+            "description": "Per-layer time overhead in seconds for this quote. When set it replaces the SLA printer's layer_overhead_seconds (0 turns the overhead off for this profile). When left unset (null) the printer's value is used. Added to the slicer's print-time estimate once for every layer."
+          },
           "supports": {
             "anyOf": [
               {
