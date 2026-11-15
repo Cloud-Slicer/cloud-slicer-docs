@@ -7628,6 +7628,28 @@
             "title": "Cost Per Kwh",
             "description": "Electricity cost in $/kWh",
             "default": 0.12
+          },
+          "material_rate_curve": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RateCurve"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Graduated pricing for material: scales cost_per_gram by filament weight in grams. Null charges the flat cost_per_gram."
+          },
+          "time_rate_curve": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RateCurve"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Graduated pricing for machine time: scales cost_per_hour by print time in hours. Null charges the flat cost_per_hour."
           }
         },
         "type": "object",
@@ -8636,6 +8658,56 @@
         ],
         "title": "QuoteSummary",
         "description": "**One quote in a list:**\n\n    quote_id (str): The unique identifier of the quote.\n\n    technology (str): \"fdm\" or \"sla\".\n\n    status (str): \"pending\", \"success\" or \"failed\".\n\n    error_message (str): Why the quote failed, if it did.\n\n    file_name (str): Name of the quoted file. Null once the file has been deleted.\n\n    printer_id (str): The printer (FDM) or SLA printer the quote used.\n\n    material_id (str): The filament (FDM) or resin (SLA) the quote used.\n\n    total_price (float): Quoted price; 0 until the quote succeeds.\n\n    currency (str): Currency of total_price.\n\n    estimated_time (str): Estimated print time, e.g. \"1h 23m\".\n\n    created_at (str): ISO 8601 UTC timestamp of when the quote was requested."
+      },
+      "RateCurve": {
+        "properties": {
+          "interpolation": {
+            "type": "string",
+            "enum": [
+              "linear",
+              "step"
+            ],
+            "title": "Interpolation",
+            "description": "linear ramps the rate between points; step holds it until the next point.",
+            "default": "linear"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/RateCurvePoint"
+            },
+            "type": "array",
+            "maxItems": 12,
+            "title": "Points",
+            "description": "The curve's points. An empty list means the flat base rate."
+          }
+        },
+        "type": "object",
+        "title": "RateCurve",
+        "description": "How a base rate changes as a print gets heavier or longer.\n\nCharged like tax brackets: each gram (or hour) is billed at the rate in\neffect at that gram, so a bigger print never costs less than a smaller one.\nBefore the first point the first point's rate applies; after the last, the\nlast point's. ``linear`` ramps between points, ``step`` holds each point's\nrate until the next."
+      },
+      "RateCurvePoint": {
+        "properties": {
+          "at": {
+            "type": "number",
+            "maximum": 1000000.0,
+            "minimum": 0.0,
+            "title": "At",
+            "description": "Where this point sits: grams on the material curve, hours on the time curve."
+          },
+          "rate_percent": {
+            "type": "number",
+            "maximum": 500.0,
+            "minimum": 0.0,
+            "title": "Rate Percent",
+            "description": "The rate from this point on, as a percent of the base rate (100 = the base rate)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "at",
+          "rate_percent"
+        ],
+        "title": "RateCurvePoint"
       },
       "ResinExposure": {
         "properties": {
